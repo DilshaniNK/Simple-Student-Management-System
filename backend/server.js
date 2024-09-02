@@ -19,7 +19,7 @@ mongoose.connect(URL, {
 
 const connection = mongoose.connection;
 connection.once("open", () => {
-    console.log("Connet una yaku");
+    console.log("Database connected!");
 
 })
 const studentRoute = require("./routes/student.js");
@@ -31,6 +31,6 @@ app.use("/teacher",teacherRoute);//http://localhost:8070/teacher
 app.use("/course",coursesRoute);//http://localhost:8070/course
 
 app.listen(PORT, () =>{
-    console.log(`server run weno ${PORT} eke `);
+    console.log(`Server run on Port: ${PORT}`);
 
 })
