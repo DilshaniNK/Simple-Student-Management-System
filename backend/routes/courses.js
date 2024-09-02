@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const {Course} = require("../models/Scheam.js");
+const { Course } = require("../models/Scheam.js");
 
 
 router.route("/add").post(async (req, res) => {
