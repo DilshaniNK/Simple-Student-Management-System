@@ -39,7 +39,7 @@ router.route("/").get(async (req, res) => {
 
 // Update student
 // Update student
-router.route("/updateprofile").put(async (req, res) => {
+router.route("/update").put(async (req, res) => {
     const { name, newUsername, newage, newpassword } = req.body;
 
     try {

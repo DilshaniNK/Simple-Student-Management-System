@@ -5,41 +5,41 @@ const Schema = mongosee.Schema;
 const studentSchema = new Schema ({
     name: {
         type : String,
-        require: true
+        required: true
     },
     age: {
         type : Number,
-        require: true
+        required: true
     },
 
     gender: {
         type: String,
-        require: true
+        required: true
     },
     password: {
         type: String,
-        require: true
+        required: true
     }
 });
 
 const teacherSchema = new Schema({
     name: {
         type: String,
-        require: true
+        required: true
     },
     gender: {
         type: String,
-        require:true
+        required:true
     },
 
     age: {
         type: Number,
-        require: true
+        required: true
 
     },
     password: {
         type: String,
-        require: true
+        required: true
     }
 });
 
@@ -48,34 +48,60 @@ const courseSchema = new Schema({
 
     courseId:{
         type: String,
-        require: true
+        required: true
     },
 
     courseName: {
         type: String,
-        require: true
+        required: true
     },
 
     NoOfStudent: {
-        type: Number
+        type: Number,
+        required: true
 
     },
     courseFee: {
         type: String,
-        require: true
+        required: true
     },
 
     lectureName: {
         type: String,
-        require: true
+        required: true
     },
 
     Duration: {
         type: String,
+        required: true
 
     }
 });
 
+const assigmentSchema = new Schema({
+    assigmentId: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    courseId: {
+        type: String,
+        required: true
+    },
+    dueDate: {
+        type: Date,
+        required: true
+    },
+
+    pdfFile:{
+        type: String,
+        required: true
+
+    }    
+});
 
 
 
@@ -83,10 +109,12 @@ const courseSchema = new Schema({
 const Student = mongoose.model("Student",studentSchema);
 const Teacher = mongoose.model("Teacher",teacherSchema);
 const Course = mongoose.model("Course",courseSchema);
+const Assigment = mongoose.model("Assigment",assigmentSchema);
 
 module.exports = {
     Student,
     Teacher,
-    Course
+    Course,
+    Assigment
 }
    

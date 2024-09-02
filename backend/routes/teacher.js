@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const {Teacher} = require("../models/Scheam.js");
 
-router.route("/addteacher").post(async (req, res) => {
+router.route("/add").post(async (req, res) => {
     const { name, age, gender, password } = req.body;
 
     try {
@@ -26,7 +26,7 @@ router.route("/addteacher").post(async (req, res) => {
 });
 
 
-router.route("/teacherlogin").post(async (req, res) => {
+router.route("/login").post(async (req, res) => {
     const { name, password } = req.body;
 
     try {
@@ -44,7 +44,7 @@ router.route("/teacherlogin").post(async (req, res) => {
     }
 });
 //Update Teacher
-router.route("/updateteacher").put(async (req, res) => {
+router.route("/update").put(async (req, res) => {
     const { name, newUsername, newage, newpassword } = req.body;
 
     try {
@@ -65,7 +65,7 @@ router.route("/updateteacher").put(async (req, res) => {
     }
 });
 
-router.route("/deleteteacher").delete(async (req, res) => {
+router.route("/delete").delete(async (req, res) => {
     const {  name , password } = req.body;
 
     try {

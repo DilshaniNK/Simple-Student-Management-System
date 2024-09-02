@@ -25,10 +25,13 @@ connection.once("open", () => {
 const studentRoute = require("./routes/student.js");
 const teacherRoute = require("./routes/teacher.js");
 const coursesRoute = require("./routes/courses.js");
+const AssigmentRoute = require("./routes/assigments.js");
 
 app.use("/student",studentRoute);//http://localhost:8070/student
 app.use("/teacher",teacherRoute);//http://localhost:8070/teacher 
 app.use("/course",coursesRoute);//http://localhost:8070/course
+app.use("/assigment",AssigmentRoute);//http://localhost:8070/assigment
+
 
 app.listen(PORT, () =>{
     console.log(`server run weno ${PORT} eke `);
