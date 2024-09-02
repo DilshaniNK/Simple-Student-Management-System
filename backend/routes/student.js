@@ -6,6 +6,11 @@ router.route("/add").post(async (req, res) => {
     const { name, age, gender, password } = req.body;
 
     try {
+        const existingStudent = await Student.findOne({password});
+
+        if (existingStudent){
+            return res.status(400).send(({status: "Error"}));
+        }
         const newStudent = new Student({
             name,
             age,

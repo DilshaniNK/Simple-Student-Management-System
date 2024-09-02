@@ -5,6 +5,11 @@ router.route("/addteacher").post(async (req, res) => {
     const { name, age, gender, password } = req.body;
 
     try {
+        const existingTeacher = await Teacher.findOne({password});
+
+        if (existingTeacher){
+            return res.status(400).send({status: "Error"})
+        }
         const newTeacher = new Teacher({
             name,
             age,
@@ -64,7 +69,8 @@ router.route("/deleteteacher").delete(async (req, res) => {
     const {  name , password } = req.body;
 
     try {
-        await Teacher.findOneAndDelete({name});
+
+        await Teacher.findOneAndDelete({name, password});
         res.status(200).send({ status: "User deleted" });
     } catch (err) {
         console.log(err.message);
