@@ -44,16 +44,49 @@ const teacherSchema = new Schema({
 });
 
 
+const courseSchema = new Schema({
+
+    courseId:{
+        type: String,
+        require: true
+    },
+
+    courseName: {
+        type: String,
+        require: true
+    },
+
+    NoOfStudent: {
+        type: Number
+
+    },
+    courseFee: {
+        type: String,
+        require: true
+    },
+
+    lectureName: {
+        type: String,
+        require: true
+    },
+
+    Duration: {
+        type: String,
+
+    }
+});
+
 
 
 
 
 const Student = mongoose.model("Student",studentSchema);
 const Teacher = mongoose.model("Teacher",teacherSchema);
-
+const Course = mongoose.model("Course",courseSchema);
 
 module.exports = {
     Student,
-    Teacher
+    Teacher,
+    Course
 }
    
