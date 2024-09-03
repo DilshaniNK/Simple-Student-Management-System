@@ -19,7 +19,8 @@ router.route("/add").post(upload.single('file'), async (req, res) => {
             assignmentId: req.body.assignmentId,
             description: req.body.description,
             dueDate: req.body.dueDate,
-            pdfFile: req.file ? req.file.path : null
+            pdfFile: req.file ? req.file.path : null,
+            courseId: req.body.courseId,
         });
 
         await newAssignment.save();

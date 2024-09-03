@@ -31,50 +31,62 @@ router.route("/add").post(async (req, res) => {
 //view
 router.route("/view").get(async (req, res) => {
     try {
-        const Course = await Course.find();
-        res.json(courses);
+        const course = await Course.find();
+        res.json(course);
     } catch (err) {
         console.log(err);
         res.status(500).send({ status: "Error fetching courses", error: err.message });
     }
 });
 
-// Update courses
-router.route("/update").put(async (req, res) => {
-    const { courseId, newcourseId, newcourseName, newNoOfStudent, newcourseFee, newlectureName, newDuration } = req.body;
 
-    try {
-        const updateCourses = await Course.findOneAndUpdate(
-            { courseId },
-            { courseId: newcourseId, courseName: newcourseName, NoOfStudent: newNoOfStudent, courseFee: newcourseFee, Duration: newDuration},
-            { new: true }
-        );
+// Update course details
+router.route.put("/update", async (req, res) => {
+  const { courseId, newcourseId, newcourseName, newNoOfStudent, newcourseFee, newlectureName, newDuration } = req.body;
 
-        if (updatedStudent) {
-            res.status(200).send({ status: "Update successful", user: updatedStudent });
-        } else {
-            res.status(404).send({ status: "Course not found" });
-        }
-    } catch (err) {
-        console.log(err);
-        res.status(500).send({ status: "Error updating course", error: err.message });
+  try {
+    const updatedCourse = await Course.findOneAndUpdate(
+      { courseId },
+      { 
+        courseId: newcourseId || courseId, // Update the courseId only if provided
+        courseName: newcourseName,
+        NoOfStudent: newNoOfStudent,
+        courseFee: newcourseFee,
+        lectureName: newlectureName,
+        Duration: newDuration
+      },
+      { new: true }
+    );
+
+    if (!updatedCourse) {
+      return res.status(404).json({ message: 'Course not found' });
     }
+
+    res.status(200).json(updatedCourse);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating course' });
+  }
 });
 
 
-// Delete student
-router.route("/delete").delete(async (req, res) => {
-    const {  courseId } = req.body;
 
+
+router.route.delete("/delete", async (req, res) => {
+    const { courseId } = req.body;
+  
     try {
-        await Course.findOneAndDelete({courseId});
-        res.status(200).send({ status: "Course deleted" });
-    } catch (err) {
-        console.log(err.message);
-        res.status(500).send({ status: "Error deleting course", error: err.message });
+      const result = await Course.findOneAndDelete({ courseId });
+  
+      if (!result) {
+        return res.status(404).json({ message: 'Course not found' });
+      }
+  
+      res.status(200).json({ message: 'Course deleted successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error deleting course' });
     }
-});
-
-
+  });
 
 module.exports = router;

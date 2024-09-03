@@ -18,13 +18,7 @@ function Teacherinterface() {
   const [newPassword, setNewPassword] = useState("");
   const [newTeachertAge, setNewTeacherAge] = useState("");
 
-  //relataed to the assigment section
-
-const [assignmentId, setAssignmentId] = useState('');
-const [description, setDescription] = useState('');
-const [dueDate, setDueDate] = useState('');
-const [file, setFile] = useState(null);
-
+ 
 
 
 
@@ -76,7 +70,7 @@ const [file, setFile] = useState(null);
       return ;
     }
     try {
-      const response = await axios.put("http://localhost:8070/teacher/updateteacher", {
+      const response = await axios.put("http://localhost:8070/teacher/update", {
         name : teacherName,
         ...updatedFields
       });
@@ -99,7 +93,7 @@ const [file, setFile] = useState(null);
   const handleDeleteAccountSubmit = async (e) =>{
     e.preventDefault();
     try {
-      const response = await axios.delete('http://localhost:8070/teacher/deleteteacher',
+      const response = await axios.delete('http://localhost:8070/teacher/delete',
         {
           data : {
             name: newUsername,
@@ -121,35 +115,6 @@ const [file, setFile] = useState(null);
     }
   };
 
-const handleAddAssignment = async(e) =>{
-  e.preventDefault();
-
-  const formData = new FormData();
-  formData.append('assignmentId',assignmentId);
-  formData.append('description',description);
-  formData.append('dueDate',dueDate);
-  formData.append('file',file);
-
-  try{
-    const response = await axios.post('http://localhost:8070/assigment/add',formData,{
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    if (response.status === 200){
-      setMessage('Assigment added sucessfully');
-      setAssignmentId('');
-      setDescription('');
-      setDueDate('');
-      setFile(null);
-    }else{
-      setMessage('failed to add assigment')
-    }
-  }catch(err){
-    console.log(err);
-    setMessage('an error occurred while adding the asigments');
-  }
-};
 
 
 
@@ -189,9 +154,9 @@ const handleAddAssignment = async(e) =>{
             <ListItem button onClick={() => handleSectionChange('Courses')}>
               <ListItemText primary="Courses" />
             </ListItem>
-            <ListItem button onClick={() => handleSectionChange('Assignments')}>
+            {/* <ListItem button onClick={() => handleSectionChange('Assignments')}>
               <ListItemText primary="Assignments" />
-            </ListItem>
+            </ListItem> */}
             <ListItem button onClick={() => handleSectionChange('Other')}>
               <ListItemText primary="Other" />
             </ListItem>
@@ -229,61 +194,7 @@ const handleAddAssignment = async(e) =>{
               </Button>
             </Box>
           )}
-          {/* assigment section */}
-          {selectedSection === 'Assignments' && (
-                <Box>
-                <Typography variant="h6">Add Assignment</Typography>
-                <form onSubmit={handleAddAssignment}>
-                  <TextField
-                    label="Assignment ID"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={assignmentId}
-                    onChange={(e) => setAssignmentId(e.target.value)}
-                  />
-                  <TextField
-                    label="Description"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                  <TextField
-                    label="Due Date"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    type="date"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    value={dueDate}
-                    onChange={(e) => setDueDate(e.target.value)}
-                  />
-                  <input
-                    accept="application/pdf"
-                    type="file"
-                    onChange={(e) => setFile(e.target.files[0])}
-                  />
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                  >
-                    Add Assignment
-                  </Button>
-                </form>
-                {message && (
-                  <Typography variant="h6" color="primary" style={{ marginTop: "20px" }}>
-                    {message}
-                  </Typography>
-                )}
-              </Box>
-            
-          )}
-
+          
 
           {/* other section */}
           {selectedSection === 'Other' && (

@@ -18,7 +18,7 @@ function TeacherReg() {
       gender,
       password
     };
-    axios.post("http://localhost:8070/teacher/addteacher", newTeacher)
+    axios.post("http://localhost:8070/teacher/add", newTeacher)
       .then(() => {
         alert("Teacher added");
       })

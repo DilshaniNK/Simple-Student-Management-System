@@ -11,6 +11,9 @@ import Studentreg from './Component/studentreg';
 import ViewStudent from './Component/viewStudent';
 import Header from './Component/header';
 import TeacherReg from './Component/teacherreg';
+import Addcourses from './Component/addcourses';
+import Viewcourse from './Component/viewcourse';
+import Deletecourse from './Component/deletecourse';
 
 
 
@@ -29,6 +32,9 @@ function App() {
             <Route path='/studentreg' element={<Studentreg/>}/>
             <Route path='/viewstudent' element={<ViewStudent/>}/>
             <Route path='/teacherreg' element={<TeacherReg/>}/>
+            <Route path='/add-course' element={<Addcourses/>}/>
+            <Route path='/view-courses' element={<Viewcourse/>}/>
+            <Route path='/delete-course' element={<Deletecourse/>}/>
 
 
             </Routes>
