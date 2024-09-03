@@ -79,7 +79,7 @@ const courseSchema = new Schema({
 });
 
 const assigmentSchema = new Schema({
-    assigmentId: {
+    assignmentId: {
         type: String,
         required: true
     },
@@ -87,7 +87,7 @@ const assigmentSchema = new Schema({
         type: String,
         required: true
     },
-    courseId: {
+    courseId:{
         type: String,
         required: true
     },
@@ -109,12 +109,12 @@ const assigmentSchema = new Schema({
 const Student = mongoose.model("Student",studentSchema);
 const Teacher = mongoose.model("Teacher",teacherSchema);
 const Course = mongoose.model("Course",courseSchema);
-const Assigment = mongoose.model("Assigment",assigmentSchema);
+const Assignment = mongoose.model("Assignment",assigmentSchema);
 
 module.exports = {
     Student,
     Teacher,
     Course,
-    Assigment
+    Assignment
 }
    
