@@ -30,8 +30,8 @@ const AssigmentRoute = require("./routes/assigments.js");
 app.use("/student",studentRoute);//http://localhost:8070/student
 app.use("/teacher",teacherRoute);//http://localhost:8070/teacher 
 app.use("/course",coursesRoute);//http://localhost:8070/course
-app.use("/assigment",AssigmentRoute);//http://localhost:8070/assigment
 
+app.use("/assigment",AssigmentRoute);//http://localhost:8070/assigment
 
 app.listen(PORT, () =>{
     console.log(`server run weno ${PORT} eke `);
