@@ -23,6 +23,7 @@ function AdminLogin() {
       if (response.data.status === "Login successful") {
         // Save data in localStorage
         localStorage.setItem('AdminName', username);
+        
         navigate('/admininterface');
       } else {
         setError("Invalid credentials");

@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Collapse, TextField, Typography,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Collapse, TextField, Typography, Snackbar, Alert,
 } from '@mui/material';
 import axios from 'axios';
 
 function Viewcourse() {
   const [courses, setCourses] = useState([]);
   const [expanded, setExpanded] = useState({});
-  const [showAssignmentForm, setShowAssignmentForm] = useState({});
-  const [showUpdateAssignmentForm, setShowUpdateAssignmentForm] = useState({});
-  const [message, setMessage] = useState('');
+  const [activeForm, setActiveForm] = useState({ courseId: null, formType: null });
+  const [alert, setAlert] = useState({ open: false, severity: '', message: '' });
 
   // Assignment state
   const [assignmentId, setAssignmentId] = useState('');
@@ -40,18 +39,14 @@ function Viewcourse() {
     }));
   };
 
-  const handleAddAssignmentClick = (courseId) => {
-    setShowAssignmentForm(prevState => ({
-      ...prevState,
-      [courseId]: !prevState[courseId],
-    }));
-  };
-
-  const handleUpdateAssignmentClick = (courseId) => {
-    setShowUpdateAssignmentForm(prevState => ({
-      ...prevState,
-      [courseId]: !prevState[courseId],
-    }));
+  const handleFormClick = (courseId, formType) => {
+    setActiveForm(prevState => {
+      if (prevState.courseId === courseId && prevState.formType === formType) {
+        return { courseId: null, formType: null }; // Close form if already active
+      } else {
+        return { courseId, formType }; // Open the selected form
+      }
+    });
   };
 
   const handleAssignmentSubmit = async (e, courseId) => {
@@ -71,21 +66,18 @@ function Viewcourse() {
         },
       });
       if (response.status === 200) {
-        setMessage('Assignment added successfully');
+        setAlert({ open: true, severity: 'success', message: 'Assignment added successfully' });
         setAssignmentId('');
         setDescription('');
         setDueDate('');
         setFile(null);
-        setShowAssignmentForm(prevState => ({
-          ...prevState,
-          [courseId]: false,
-        }));
+        setActiveForm({ courseId: null, formType: null });
       } else {
-        setMessage('Failed to add assignment');
+        setAlert({ open: true, severity: 'error', message: 'Failed to add assignment' });
       }
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
-      setMessage('An error occurred while adding the assignment');
+      setAlert({ open: true, severity: 'error', message: 'An error occurred while adding the assignment' });
     }
   };
 
@@ -96,8 +88,9 @@ function Viewcourse() {
     formData.append('assignmentId', updateAssignmentId);
     formData.append('description', updateDescription);
     formData.append('dueDate', updateDueDate);
-    formData.append('file', updateFile);
-    formData.append('courseId', courseId);
+    if (updateFile) {
+      formData.append('file', updateFile);
+    }
 
     try {
       const response = await axios.put('http://localhost:8070/assignment/update', formData, {
@@ -106,21 +99,18 @@ function Viewcourse() {
         },
       });
       if (response.status === 200) {
-        setMessage('Assignment updated successfully');
+        setAlert({ open: true, severity: 'success', message: 'Assignment updated successfully' });
         setUpdateAssignmentId('');
         setUpdateDescription('');
         setUpdateDueDate('');
         setUpdateFile(null);
-        setShowUpdateAssignmentForm(prevState => ({
-          ...prevState,
-          [courseId]: false,
-        }));
+        setActiveForm({ courseId: null, formType: null });
       } else {
-        setMessage('Failed to update assignment');
+        setAlert({ open: true, severity: 'error', message: 'Failed to update assignment' });
       }
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
-      setMessage('An error occurred while updating the assignment');
+      setAlert({ open: true, severity: 'error', message: 'An error occurred while updating the assignment' });
     }
   };
 
@@ -134,6 +124,7 @@ function Viewcourse() {
             <TableCell>Add Assignment</TableCell>
             <TableCell>Update Assignment</TableCell>
             <TableCell>More Details</TableCell>
+            <TableCell>Delete Assignment</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -146,7 +137,7 @@ function Viewcourse() {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => handleAddAssignmentClick(course.courseId)}
+                    onClick={() => handleFormClick(course.courseId, 'addAssignment')}
                   >
                     Add Assignment
                   </Button>
@@ -155,7 +146,7 @@ function Viewcourse() {
                   <Button
                     variant="contained"
                     color="secondary"
-                    onClick={() => handleUpdateAssignmentClick(course.courseId)}
+                    onClick={() => handleFormClick(course.courseId, 'updateAssignment')}
                   >
                     Update Assignment
                   </Button>
@@ -167,6 +158,15 @@ function Viewcourse() {
                     onClick={() => handleExpandClick(course._id)}
                   >
                     {expanded[course._id] ? 'Hide Details' : 'More Details'}
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    // onClick={() => handleDeleteClick(course.courseId)}
+                    >
+                      Delete Assignment
                   </Button>
                 </TableCell>
               </TableRow>
@@ -186,7 +186,7 @@ function Viewcourse() {
 
               <TableRow>
                 <TableCell colSpan={5}>
-                  <Collapse in={showAssignmentForm[course.courseId]} timeout="auto" unmountOnExit>
+                  <Collapse in={activeForm.courseId === course.courseId && activeForm.formType === 'addAssignment'} timeout="auto" unmountOnExit>
                     <form onSubmit={(e) => handleAssignmentSubmit(e, course.courseId)} style={{ margin: '20px' }}>
                       <TextField
                         label="Assignment ID"
@@ -238,7 +238,7 @@ function Viewcourse() {
 
               <TableRow>
                 <TableCell colSpan={5}>
-                  <Collapse in={showUpdateAssignmentForm[course.courseId]} timeout="auto" unmountOnExit>
+                  <Collapse in={activeForm.courseId === course.courseId && activeForm.formType === 'updateAssignment'} timeout="auto" unmountOnExit>
                     <form onSubmit={(e) => handleAssignmentUpdateSubmit(e, course.courseId)} style={{ margin: '20px' }}>
                       <TextField
                         label="Assignment ID"
@@ -273,7 +273,6 @@ function Viewcourse() {
                         type="file"
                         onChange={(e) => setUpdateFile(e.target.files[0])}
                         style={{ marginTop: '20px' }}
-                        required
                       />
                       <Button
                         type="submit"
@@ -291,8 +290,15 @@ function Viewcourse() {
           ))}
         </TableBody>
       </Table>
-
-      {message && <Typography variant="subtitle1" color={message.includes('successfully') ? 'primary' : 'error'} style={{ margin: '20px' }}>{message}</Typography>}
+      <Snackbar
+        open={alert.open}
+        autoHideDuration={6000}
+        onClose={() => setAlert({ ...alert, open: false })}
+      >
+        <Alert onClose={() => setAlert({ ...alert, open: false })} severity={alert.severity}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
     </TableContainer>
   );
 }

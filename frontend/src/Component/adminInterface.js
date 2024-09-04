@@ -13,9 +13,9 @@ function AdminInterface() {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [message, setMessage] = useState("");
-  const [newUsername, setNewUsername] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [newAdminAge, setNewAdminAge] = useState("");
+  const [newadminName, setNewUsername] = useState("");
+  const [newadminPassword, setNewPassword] = useState("");
+  const [newadminAge, setNewAdminAge] = useState("");
 
   const navigate = useNavigate();
 
@@ -53,9 +53,9 @@ function AdminInterface() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const updatedFields = {};
-    if (newUsername) updatedFields.newUsername = newUsername;
-    if (newAdminAge) updatedFields.newage = newAdminAge;
-    if (newPassword) updatedFields.newpassword = newPassword;
+    if (newadminName) updatedFields.newadminName = newadminName;
+    if (newadminAge) updatedFields.newadminAge = newadminAge;
+    if (newadminPassword) updatedFields.newadminPassword = newadminPassword;
 
     if (Object.keys(updatedFields).length === 0) {
       setMessage("Please fill in at least one field to update.");
@@ -70,9 +70,9 @@ function AdminInterface() {
 
       if (response.data.status === "Update successful") {
         setMessage("Profile updated successfully");
-        if (newUsername) {
-          setAdminName(newUsername);
-          localStorage.setItem('AdminName', newUsername);
+        if (newadminName) {
+          setAdminName(newadminName);
+          localStorage.setItem('AdminName', newadminName);
         }
         setShowUpdateForm(false);
       } else {
@@ -88,8 +88,8 @@ function AdminInterface() {
     try {
       const response = await axios.delete('http://localhost:8070/admin/delete', {
         data: {
-          name: newUsername,
-          password: newPassword,
+          name: newadminName,
+          password: newadminPassword,
         },
       });
 
@@ -207,7 +207,7 @@ function AdminInterface() {
                       variant="outlined"
                       fullWidth
                       margin="normal"
-                      value={newUsername}
+                      value={newadminName}
                       onChange={(e) => setNewUsername(e.target.value)}
                     />
                     <TextField
@@ -215,7 +215,7 @@ function AdminInterface() {
                       variant="outlined"
                       fullWidth
                       margin="normal"
-                      value={newAdminAge}
+                      value={newadminAge}
                       onChange={(e) => setNewAdminAge(e.target.value)}
                     />
                     <TextField
@@ -223,7 +223,7 @@ function AdminInterface() {
                       variant="outlined"
                       fullWidth
                       margin="normal"
-                      value={newPassword}
+                      value={newadminPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                     />
                     <Button
@@ -248,7 +248,7 @@ function AdminInterface() {
                       variant="outlined"
                       fullWidth
                       margin="normal"
-                      value={newUsername}
+                      value={newadminName}
                       onChange={(e) => setNewUsername(e.target.value)}
                     />
                     <TextField
@@ -257,7 +257,7 @@ function AdminInterface() {
                       fullWidth
                       margin="normal"
                       type="password"
-                      value={newPassword}
+                      value={newadminPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                     />
                     <Button

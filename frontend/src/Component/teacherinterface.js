@@ -180,18 +180,11 @@ function Teacherinterface() {
            )}
           {selectedSection === 'Courses' && (
             <Box>
-              <Button variant="contained" color="primary" onClick={() => navigate('/add-course')}>
-                Add Course
-              </Button>
+            
               <Button variant="contained" color="primary" onClick={() => navigate('/view-courses')}>
                 View Courses
               </Button>
-              <Button variant="contained" color="primary" onClick={() => navigate('/update-course')}>
-                Update Course
-              </Button>
-              <Button variant="contained" color="primary" onClick={() => navigate('/delete-course')}>
-                Delete Course
-              </Button>
+              
             </Box>
           )}
           

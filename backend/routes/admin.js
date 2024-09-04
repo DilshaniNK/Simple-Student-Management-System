@@ -40,12 +40,12 @@ router.route("/").get(async (req, res) => {
 
 // Update admin
 router.route("/update").put(async (req, res) => {
-    const { adminId, newadminName, newadminAge, newadminGender, newadminPassword} = req.body;
+    const { adminId, newadminName, newadminAge, newadminPassword} = req.body;
 
     try {
         const updatedAdmin = await Admin.findOneAndUpdate(
             { adminId },
-            { adminName: newadminName, adminAge: newadminAge, adminGender: newadminGender, adminPassword: newadminPassword},
+            { adminName: newadminName, adminAge: newadminAge, adminPassword: newadminPassword},
             { new: true }
         );
 
