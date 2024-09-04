@@ -103,6 +103,33 @@ const assigmentSchema = new Schema({
     }    
 });
 
+const adminSchema = new Schema ({
+    adminId:{
+        type:String,
+        required: true
+    },
+    adminName:{
+        type: String,
+        required:true
+    },
+    adminAge:{
+        type: Number,
+        required: true
+    },
+
+    adminGender:{
+        type: String,
+        required: true
+    },
+
+    adminPassword:{
+        type: String,
+        required: true
+    }
+
+    
+
+});
 
 
 
@@ -111,11 +138,13 @@ const Student = mongoose.model("Student",studentSchema);
 const Teacher = mongoose.model("Teacher",teacherSchema);
 const Course = mongoose.model("Course",courseSchema);
 const Assignment = mongoose.model("Assignment",assigmentSchema);
+const Admin = mongoose.model("Admin",adminSchema);
 
 module.exports = {
     Student,
     Teacher,
     Course,
-    Assignment
+    Assignment,
+    Admin
 }
    
