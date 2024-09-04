@@ -17,11 +17,11 @@ function Viewcourse() {
 
   // Update state
   const [courseId, setCourseId] = useState('');
-  const [courseName, setCourseName] = useState('');
-  const [noOfStudents, setNoOfStudents] = useState('');
-  const [courseFee, setCourseFee] = useState('');
-  const [lectureName, setLectureName] = useState('');
-  const [duration, setDuration] = useState('');
+  const [newcoursename, setCourseName] = useState('');
+  const [newNoofstudents, setNoOfStudents] = useState('');
+  const [newcoursefee, setCourseFee] = useState('');
+  const [newlecturename, setLectureName] = useState('');
+  const [newduration, setDuration] = useState('');
 
   useEffect(() => {
     axios.get('http://localhost:8070/course/view')
@@ -111,11 +111,11 @@ function Viewcourse() {
     e.preventDefault();
 
     const updatedCourse = {};
-    if (courseName) updatedCourse.courseName = courseName;
-    if (noOfStudents) updatedCourse.NoOfStudent = noOfStudents;
-    if (courseFee) updatedCourse.courseFee = courseFee;
-    if (lectureName) updatedCourse.lectureName = lectureName;
-    if (duration) updatedCourse.Duration = duration;
+    if (newcoursename) updatedCourse.newcoursename = newcoursename;
+    if (newNoofstudents) updatedCourse.newNoofstudents = newNoofstudents;
+    if (newcoursefee) updatedCourse.newcoursefee = newcoursefee;
+    if (newlecturename) updatedCourse.newlecturename = newlecturename;
+    if (newduration) updatedCourse.newduration = newduration;
 
     try {
       const response = await axios.put('http://localhost:8070/course/update', {
@@ -125,7 +125,7 @@ function Viewcourse() {
       if (response.status === 200) {
         setMessage('Course updated successfully');
         setCourses(courses.map(course =>
-          course._id === courseId ? { ...course, ...updatedCourse } : course
+          course.courseId=== courseId ? { ...course, ...updatedCourse } : course
         ));
         setShowUpdateForm(prevState => ({
           ...prevState,
@@ -186,7 +186,7 @@ function Viewcourse() {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => handleUpdateClick(course._id)}
+                    onClick={() => handleUpdateClick(course.courseId)}
                   >
                     Update Course
                   </Button>
@@ -257,46 +257,40 @@ function Viewcourse() {
               </TableRow>
               <TableRow>
                 <TableCell colSpan={6}>
-                  <Collapse in={showUpdateForm[course._id]} timeout="auto" unmountOnExit>
+                  <Collapse in={showUpdateForm[course.courseId]} timeout="auto" unmountOnExit>
                     <form onSubmit={handleUpdateCourseSubmit} style={{ margin: '20px' }}>
-                      <TextField
-                        label="Course ID"
-                        value={courseId}
-                        onChange={(e) => setCourseId(e.target.value)}
-                        fullWidth
-                        margin="normal"
-                      />
+                  
                       <TextField
                         label="Course Name"
-                        value={courseName}
+                        value={newcoursename}
                         onChange={(e) => setCourseName(e.target.value)}
                         fullWidth
                         margin="normal"
                       />
                       <TextField
                         label="No. of Students"
-                        value={noOfStudents}
+                        value={newNoofstudents}
                         onChange={(e) => setNoOfStudents(e.target.value)}
                         fullWidth
                         margin="normal"
                       />
                       <TextField
                         label="Course Fee"
-                        value={courseFee}
+                        value={newcoursefee}
                         onChange={(e) => setCourseFee(e.target.value)}
                         fullWidth
                         margin="normal"
                       />
                       <TextField
                         label="Lecture Name"
-                        value={lectureName}
+                        value={newlecturename}
                         onChange={(e) => setLectureName(e.target.value)}
                         fullWidth
                         margin="normal"
                       />
                       <TextField
                         label="Duration"
-                        value={duration}
+                        value={newduration}
                         onChange={(e) => setDuration(e.target.value)}
                         fullWidth
                         margin="normal"

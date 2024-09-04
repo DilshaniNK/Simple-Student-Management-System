@@ -42,12 +42,12 @@ router.route("/view").get(async (req, res) => {
 
 // Update course details
 router.route("/update").put(async (req, res) => {
-  const { courseId, newcourseId, newcoursename,newNoofstudents,newcoursefee,newlecturename,newduration } = req.body;
+  const { courseId, newcoursename,newNoofstudents,newcoursefee,newlecturename,newduration } = req.body;
 
   try {
       const updatedCourse = await Course.findOneAndUpdate(
           { courseId },
-          { courseId: newcourseId, courseName: newcoursename, NoOfStudent: newNoofstudents,courseFee:newcoursefee,lectureName:newlecturename,Duration:newduration},
+          { courseName: newcoursename, NoOfStudent: newNoofstudents,courseFee:newcoursefee,lectureName:newlecturename,Duration:newduration},
           { new: true }
       );
 
