@@ -66,21 +66,17 @@ router.route("/update").put(async (req, res) => {
 
 
 
-// router.route.delete("/delete", async (req, res) => {
-//     const { courseId } = req.body;
-  
-//     try {
-//       const result = await Course.findOneAndDelete({ courseId });
-  
-//       if (!result) {
-//         return res.status(404).json({ message: 'Course not found' });
-//       }
-  
-//       res.status(200).json({ message: 'Course deleted successfully' });
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).json({ message: 'Error deleting course' });
-//     }
-//   });
+// Delete course
+router.route("/delete").delete(async (req, res) => {
+    const {  courseId } = req.body;
+
+    try {
+        await Course.findOneAndDelete({courseId});
+        res.status(200).send({ status: "Course deleted" });
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send({ status: "Error deleting courses", error: err.message });
+    }
+});
 
 module.exports = router;
