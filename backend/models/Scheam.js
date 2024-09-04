@@ -106,6 +106,7 @@ const assigmentSchema = new Schema({
 
 
 
+
 const Student = mongoose.model("Student",studentSchema);
 const Teacher = mongoose.model("Teacher",teacherSchema);
 const Course = mongoose.model("Course",courseSchema);
