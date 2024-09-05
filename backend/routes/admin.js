@@ -95,7 +95,7 @@ router.route("/login").post(async (req, res) => {
         const admin = await Admin.findOne({adminName,adminPassword });
 
         if (admin && admin.adminPassword === adminPassword) { // Check password as plain text
-            res.status(200).send({ status: "Login successful", user: admin });
+            res.status(200).send({ status: "Login successful", adminId: admin.adminId });
         } else {
             res.status(401).send({ status: "Invalid credentials" });
         }

@@ -8,6 +8,7 @@ const drawerWidth = 240;
 
 function AdminInterface() {
   const [adminName, setAdminName] = useState("");
+  const [adminId,setAdminId] = useState("");
   const [selectedSection, setSelectedSection] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
@@ -21,8 +22,10 @@ function AdminInterface() {
 
   useEffect(() => {
     const name = localStorage.getItem('AdminName');
-    if (name) {
+    const id = localStorage.getItem('AdminId');
+    if (name && id) {
       setAdminName(name);
+      setAdminId(id);
     }
   }, []);
 
@@ -64,7 +67,7 @@ function AdminInterface() {
 
     try {
       const response = await axios.put("http://localhost:8070/admin/update", {
-        name: adminName,
+        adminId: adminId,
         ...updatedFields
       });
 
@@ -73,6 +76,7 @@ function AdminInterface() {
         if (newadminName) {
           setAdminName(newadminName);
           localStorage.setItem('AdminName', newadminName);
+          
         }
         setShowUpdateForm(false);
       } else {
@@ -88,8 +92,8 @@ function AdminInterface() {
     try {
       const response = await axios.delete('http://localhost:8070/admin/delete', {
         data: {
-          name: newadminName,
-          password: newadminPassword,
+          adminId: adminId
+        
         },
       });
 

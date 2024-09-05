@@ -14,7 +14,7 @@ function TeacherLogin() {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:8070/teacher/teacherlogin", {
+      const response = await axios.post("http://localhost:8070/teacher/login", {
         name: username,
         password: password
       });

@@ -83,15 +83,22 @@ function Viewcourse() {
 
   const handleAssignmentUpdateSubmit = async (e, courseId) => {
     e.preventDefault();
-
+  
     const formData = new FormData();
-    formData.append('assignmentId', updateAssignmentId);
-    formData.append('description', updateDescription);
-    formData.append('dueDate', updateDueDate);
-    if (updateFile) {
-      formData.append('file', updateFile);
+  
+    formData.append('assignmentId', updateAssignmentId); // assignmentId should always be provided
+  
+    // Add only non-empty fields to the formData
+    if (updateDescription) {
+      formData.append('description', updateDescription);
     }
-
+    if (updateDueDate) {
+      formData.append('dueDate', updateDueDate);
+    }
+    if (updateFile) {
+      formData.append('file', updateFile); // File is optional, so include it only if a file is selected
+    }
+  
     try {
       const response = await axios.put('http://localhost:8070/assignment/update', formData, {
         headers: {
@@ -113,6 +120,7 @@ function Viewcourse() {
       setAlert({ open: true, severity: 'error', message: 'An error occurred while updating the assignment' });
     }
   };
+  
 
   return (
     <TableContainer component={Paper}>
@@ -254,7 +262,7 @@ function Viewcourse() {
                         onChange={(e) => setUpdateDescription(e.target.value)}
                         fullWidth
                         margin="normal"
-                        required
+                        
                       />
                       <TextField
                         label="Due Date"
@@ -266,7 +274,7 @@ function Viewcourse() {
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        required
+                        
                       />
                       <input
                         accept=".pdf"
