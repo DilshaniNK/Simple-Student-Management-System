@@ -10,14 +10,16 @@ function TeacherReg() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const sentData = (e) => {
+  const sentData = async (e) => {
     e.preventDefault();
+
     const newTeacher = {
       name,
       age,
       gender,
-      password
+      password, // Send plain text password
     };
+
     axios.post("http://localhost:8070/teacher/add", newTeacher)
       .then(() => {
         alert("Teacher added");

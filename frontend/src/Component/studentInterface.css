@@ -1,0 +1,22 @@
+.student-interface {
+    padding: 20px;
+  }
+  
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 20px;
+    
+  }
+  
+  .button-container .MuiButton-root {
+    margin-bottom: 30px;
+
+  }
+  
+  .update-profile-paper, .delete-account-paper {
+    padding: 20px;
+    margin-top: 20px;
+  }
+  

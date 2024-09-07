@@ -12,8 +12,10 @@ function Home() {
 
   return (
     <div className='App'>
+       <h1 className='heading'>Take Your Step with Us</h1>
       <div className='animated-text'>
-        <h1>Take Your Step with Us</h1>
+      
+       
       </div>
       <div className='modal-container'>
         

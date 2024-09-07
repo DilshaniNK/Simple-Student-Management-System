@@ -11,7 +11,7 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: #94618E;
-    padding: 0px 20px;
+    padding: 30px 20px;
     
     max-width: 100%; /* Maximizes the width of the navbar */
     backdrop-filter: blur(10px); /* Adds a blur effect */

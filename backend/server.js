@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const bodyparser =  require("body-parser");
 const app = express();
 require("dotenv").config();
+const path = require('path');
 
 const PORT = process.env.PORT || 8070;
 
@@ -39,3 +40,7 @@ app.listen(PORT, () =>{
     console.log(`server run weno ${PORT} eke `);
 
 })
+
+
+// Serve the uploads folder as static
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

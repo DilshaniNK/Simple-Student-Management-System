@@ -17,6 +17,7 @@ import Deletecourse from './Component/deletecourse';
 import Adminreg from './Component/adminreg';
 import AdminInterface from './Component/adminInterface';
 import Addminviewcourses from './Component/addminviewcourses';
+import ViewAssignmentdetails from './Component/ViewAssignmentdetails';
 
 
 
@@ -41,6 +42,7 @@ function App() {
             <Route path='/adminreg'element={<Adminreg/>}/>
             <Route path='/admininterface' element={<AdminInterface/>}/>
             <Route path='/addmin-view-courses' element={<Addminviewcourses/>}/>
+            <Route path='/viewassignment' element={<ViewAssignmentdetails/>}/>
 
 
             </Routes>

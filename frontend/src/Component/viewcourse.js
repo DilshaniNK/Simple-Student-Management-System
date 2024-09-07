@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Collapse, TextField, Typography, Snackbar, Alert,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Collapse, TextField, Typography, Snackbar, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
 } from '@mui/material';
 import axios from 'axios';
 
@@ -21,6 +21,10 @@ function Viewcourse() {
   const [updateDescription, setUpdateDescription] = useState('');
   const [updateDueDate, setUpdateDueDate] = useState('');
   const [updateFile, setUpdateFile] = useState(null);
+
+  // Delete Assignment state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteAssignmentId, setDeleteAssignmentId] = useState('');
 
   useEffect(() => {
     axios.get('http://localhost:8070/course/view')
@@ -83,11 +87,11 @@ function Viewcourse() {
 
   const handleAssignmentUpdateSubmit = async (e, courseId) => {
     e.preventDefault();
-  
+
     const formData = new FormData();
-  
+
     formData.append('assignmentId', updateAssignmentId); // assignmentId should always be provided
-  
+
     // Add only non-empty fields to the formData
     if (updateDescription) {
       formData.append('description', updateDescription);
@@ -98,7 +102,7 @@ function Viewcourse() {
     if (updateFile) {
       formData.append('file', updateFile); // File is optional, so include it only if a file is selected
     }
-  
+
     try {
       const response = await axios.put('http://localhost:8070/assignment/update', formData, {
         headers: {
@@ -120,7 +124,29 @@ function Viewcourse() {
       setAlert({ open: true, severity: 'error', message: 'An error occurred while updating the assignment' });
     }
   };
-  
+
+  const handleDeleteAssignment = async () => {
+    try {
+      const response = await axios.delete('http://localhost:8070/assignment/delete',{
+        headers:{
+          'Content-Type': 'application/json',
+        },
+        data: {
+          assignmentId: deleteAssignmentId,
+        }
+      });
+      if (response.status === 200) {
+        setAlert({ open: true, severity: 'success', message: 'Assignment deleted successfully' });
+        setDeleteDialogOpen(false);
+        setDeleteAssignmentId('');
+      } else {
+        setAlert({ open: true, severity: 'error', message: 'Failed to delete assignment' });
+      }
+    } catch (err) {
+      console.error(err.response ? err.response.data : err.message);
+      setAlert({ open: true, severity: 'error', message: 'An error occurred while deleting the assignment' });
+    }
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -172,9 +198,12 @@ function Viewcourse() {
                   <Button
                     variant="contained"
                     color="secondary"
-                    // onClick={() => handleDeleteClick(course.courseId)}
-                    >
-                      Delete Assignment
+                    onClick={() => {
+                      setDeleteAssignmentId('');
+                      setDeleteDialogOpen(true);
+                    }}
+                  >
+                    Delete Assignment
                   </Button>
                 </TableCell>
               </TableRow>
@@ -262,7 +291,6 @@ function Viewcourse() {
                         onChange={(e) => setUpdateDescription(e.target.value)}
                         fullWidth
                         margin="normal"
-                        
                       />
                       <TextField
                         label="Due Date"
@@ -274,7 +302,6 @@ function Viewcourse() {
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        
                       />
                       <input
                         accept=".pdf"
@@ -298,6 +325,36 @@ function Viewcourse() {
           ))}
         </TableBody>
       </Table>
+
+      {/* Delete Assignment Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+      >
+        <DialogTitle>Delete Assignment</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Enter the assignment ID to delete:
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Assignment ID"
+            fullWidth
+            value={deleteAssignmentId}
+            onChange={(e) => setDeleteAssignmentId(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteAssignment} color="secondary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Snackbar
         open={alert.open}
         autoHideDuration={6000}

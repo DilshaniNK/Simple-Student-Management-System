@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Button, TextField, Typography, Paper, Container, Box } from '@mui/material';
+import { Button, TextField, Typography, Paper, Container, Box, Alert, Snackbar, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './studentInterface.css';
 
 function StudentInterface() {
   const [studentName, setStudentName] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [newStudentAge, setNewStudentAge] = useState(""); // Corrected variable name
-  const [showUpdateForm, setShowUpdateForm] = useState(false); // Corrected variable name
+  const [newStudentAge, setNewStudentAge] = useState("");
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [newUsername, setNewUsername] = useState("");
   const [showDeleteForm, setShowDeleteForm] = useState(false);
-  const [message, setMessage] = useState("");
+  const [alert, setAlert] = useState({ open: false, severity: '', message: '' });
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [courses, setCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,7 +22,39 @@ function StudentInterface() {
     if (name) {
       setStudentName(name);
     }
+    fetchCourses();
   }, []);
+
+  const fetchCourses = async () => {
+    try {
+      const response = await axios.get('http://localhost:8070/course/view');
+      setCourses(response.data);
+    } catch (err) {
+      setAlert({ open: true, severity: 'error', message: 'Failed to fetch courses' });
+    }
+  };
+
+  const handleViewAssignmentsClick = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    setSelectedCourse('');
+  };
+
+  const handleCourseSelect = async (event) => {
+    const courseId = event.target.value;
+    const selectedCourseData = courses.find(course => course.courseId === courseId);
+
+    if (selectedCourseData) {
+      setSelectedCourse(courseId);
+      localStorage.setItem('SelectedCourseName', selectedCourseData.courseName); // Save selected course name
+      localStorage.setItem('SelectedCourseId',selectedCourseData.courseId);
+      // Navigate to the viewassignment page
+      navigate('/viewassignment');
+    }
+  };
 
   const handleUpdateProfile = () => {
     setShowUpdateForm(true);
@@ -40,18 +76,18 @@ function StudentInterface() {
     if (newPassword) updatedFields.newPassword = newPassword;
 
     if (Object.keys(updatedFields).length === 0) {
-      setMessage("Please fill in at least one field to update.");
+      setAlert({ open: true, severity: 'error', message: 'Please fill in at least one field to update' });
       return;
     }
 
     try {
-      const response = await axios.put("http://localhost:8070/student/updateprofile", {
+      const response = await axios.put("http://localhost:8070/student/update", {
         name: studentName,
         ...updatedFields
       });
 
       if (response.data.status === "Update successful") {
-        setMessage("Profile updated successfully");
+        setAlert({ open: true, severity: 'success', message: 'Profile updated successfully' });
 
         if (newUsername) {
           setStudentName(newUsername);
@@ -60,10 +96,10 @@ function StudentInterface() {
 
         setShowUpdateForm(false); 
       } else {
-        setMessage("Failed to update profile");
+        setAlert({ open: true, severity: 'error', message: 'Failed to update profile' });
       }
     } catch (err) {
-      setMessage("An error occurred");
+      setAlert({ open: true, severity: 'error', message: 'An error occurred' });
     }
   };
 
@@ -79,14 +115,14 @@ function StudentInterface() {
       });
 
       if (response.data.status === "User deleted") {
-        setMessage("Account deleted successfully");
+        setAlert({ open: true, severity: 'success', message: 'Account deleted successfully' });
         localStorage.removeItem('StudentName');
         navigate('/studentlogin'); 
       } else {
-        setMessage("Failed to delete account");
+        setAlert({ open: true, severity: 'error', message: 'Failed to delete account' });
       }
     } catch (err) {
-      setMessage("An error occurred while deleting the account");
+      setAlert({ open: true, severity: 'error', message: 'An error occurred while deleting the account' });
     }
   };
 
@@ -96,7 +132,7 @@ function StudentInterface() {
         <Typography variant="h4">
           Hi {studentName}
         </Typography>
-        <Box>
+        <Box className='button-container'>
           <Button
             variant="contained"
             color="primary"
@@ -111,6 +147,13 @@ function StudentInterface() {
             onClick={handleDeleteAccountClick}
           >
             Delete Account
+          </Button>
+          <Button
+            variant="contained"
+            color="info"
+            onClick={handleViewAssignmentsClick}
+          >
+            View Assignments
           </Button>
         </Box>
       </Box>
@@ -134,8 +177,8 @@ function StudentInterface() {
               variant="outlined"
               fullWidth
               margin="normal"
-              value={newStudentAge} // Corrected variable name
-              onChange={(e) => setNewStudentAge(e.target.value)} // Corrected function name
+              value={newStudentAge}
+              onChange={(e) => setNewStudentAge(e.target.value)}
             />
             <TextField
               label="New Password"
@@ -190,11 +233,40 @@ function StudentInterface() {
         </Paper>
       )}
 
-      {message && (
-        <Typography variant="h6" color="primary" style={{ marginTop: "20px" }}>
-          {message}
-        </Typography>
-      )}
+      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <DialogTitle>Select Course</DialogTitle>
+        <DialogContent>
+          <FormControl fullWidth>
+            <InputLabel>Course</InputLabel>
+            <Select
+              value={selectedCourse}
+              onChange={handleCourseSelect}
+              label="Course"
+            >
+              {courses.map(course => (
+                <MenuItem key={course.courseId} value={course.courseId}>
+                  {course.courseName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={alert.open}
+        autoHideDuration={6000}
+        onClose={() => setAlert({ ...alert, open: false })}
+      >
+        <Alert onClose={() => setAlert({ ...alert, open: false })} severity={alert.severity}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }
