@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
+// import './Addcourses.css'; // Import the CSS file
 
 function Addcourses() {
   const [courseName, setName] = useState("");
@@ -10,8 +10,6 @@ function Addcourses() {
   const [courseFee, setcoursefee] = useState("");
   const [lectureName,setlectureName] = useState("");
   const [Duration,setduration] = useState("");
-
-//   const navigate = useNavigate();
 
   const sentData = (e) => {
     e.preventDefault();
@@ -22,7 +20,6 @@ function Addcourses() {
      courseFee,
      lectureName,
      Duration
-
     };
     axios.post("http://localhost:8070/course/add", newCourse)
       .then(() => {
@@ -33,46 +30,40 @@ function Addcourses() {
         setcoursefee("");
         setlectureName("");
         setduration("");
-
       })
       .catch((err) => {
         alert(err);
       });
   };
 
-//   const handleView = () => {
-//     navigate("/viewstudent");
-//   };
-
   return (
-    <Container maxWidth="sm">
-      <Typography variant="h4" gutterBottom>
+    <Container maxWidth="sm" className="container">
+      <Typography variant="h4" gutterBottom className="title">
         Add courses
       </Typography>
-      <form onSubmit={sentData}>
+      <form onSubmit={sentData} className="form">
         <Box marginBottom={2}>
           <TextField
             label="CourseId"
-            
             variant="outlined"
             fullWidth
             required
             value={courseId}
             onChange={(e) => setId(e.target.value)}
+            className="inputField"
           />
         </Box>
         <Box marginBottom={2}>
           <TextField
             label="courseName"
-            
             variant="outlined"
             fullWidth
             required
             value={courseName}
             onChange={(e) => setName(e.target.value)}
+            className="inputField"
           />
         </Box>
-       
         <Box marginBottom={2}>
           <TextField
             label="No-Of-Student"
@@ -82,51 +73,50 @@ function Addcourses() {
             required
             value={NoOfStudent}
             onChange={(e) => setNoOfStudent(e.target.value)}
+            className="inputField"
           />
         </Box>
         <Box marginBottom={2}>
           <TextField
             label="CourseFee"
-            
             variant="outlined"
             fullWidth
             required
             value={courseFee}
             onChange={(e) => setcoursefee(e.target.value)}
+            className="inputField"
           />
         </Box>
         <Box marginBottom={2}>
           <TextField
             label="lectureName"
-            
             variant="outlined"
             fullWidth
             required
             value={lectureName}
             onChange={(e) => setlectureName(e.target.value)}
+            className="inputField"
           />
         </Box>
         <Box marginBottom={2}>
           <TextField
             label="Course-Duration"
-            
             variant="outlined"
             fullWidth
             required
             value={Duration}
             onChange={(e) => setduration(e.target.value)}
+            className="inputField"
           />
         </Box>
         <Button
           type="submit"
           variant="contained"
-          color="primary"
           fullWidth
-          style={{ marginBottom: '10px' }}
+          className="submitButton"
         >
           Submit
         </Button>
-       
       </form>
     </Container>
   );
