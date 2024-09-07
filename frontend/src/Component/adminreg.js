@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2"; // Import SweetAlert2
 import "./StudentLogin.css"; // Import the CSS file
 
 function Adminreg() {
@@ -18,10 +19,18 @@ function Adminreg() {
       adminGender,
       adminPassword,
     };
+
     axios
       .post("http://localhost:8070/admin/add", newAdmin)
       .then(() => {
-        alert("Admin added");
+        Swal.fire({
+          icon: 'success',
+          title: 'Admin added successfully!',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+
+        // Clear the form
         setId("");
         setName("");
         setAge("");
@@ -29,7 +38,11 @@ function Adminreg() {
         setPassword("");
       })
       .catch((err) => {
-        alert(err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: err.message || "Something went wrong!",
+        });
       });
   };
 
