@@ -90,19 +90,24 @@ router.route("/update").put(async (req, res) => {
   }
 });
 
-// Delete Teacher route with password verification
 router.route("/delete").delete(async (req, res) => {
   const { name, password } = req.body;
 
   try {
+    console.log('Received Name:', name);
+    console.log('Received Password:', password);
+
+    // Find the teacher by name
     const teacher = await Teacher.findOne({ name });
 
     if (!teacher) {
       return res.status(404).send({ status: "Teacher not found" });
     }
 
-    // Check if the password matches
+    // Compare the provided password with the stored hashed password
     const isMatch = await bcrypt.compare(password, teacher.password);
+
+    console.log('Password Match:', isMatch); // Log password comparison result
 
     if (isMatch) {
       await Teacher.findOneAndDelete({ name });
@@ -111,7 +116,7 @@ router.route("/delete").delete(async (req, res) => {
       res.status(401).send({ status: "Invalid credentials" });
     }
   } catch (err) {
-    console.log(err.message);
+    console.log('Error:', err.message);
     res.status(500).send({ status: "Error deleting teacher", error: err.message });
   }
 });
