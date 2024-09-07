@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Box, Drawer, List, ListItem, ListItemText, Divider, Button, Container,Paper, TextField } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Box, Drawer, List, ListItem, ListItemText, Divider, Button, Container, Paper, TextField } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import Swal from 'sweetalert2';
 
 const drawerWidth = 240;
 
@@ -13,25 +13,20 @@ function Teacherinterface() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [showDeleteForm, setShowDeleteForm] = useState(false);
-  const [message,setMessage] = useState("");
+  const [message, setMessage] = useState("");
   const [newUsername, setNewUsername] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [newTeachertAge, setNewTeacherAge] = useState("");
-
- 
-
-
+  const [newTeacherAge, setNewTeacherAge] = useState("");
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Retrieve the student's name from localStorage
+    // Retrieve the teacher's name from localStorage
     const name = localStorage.getItem('TeacherName');
     if (name) {
       setTeacherName(name);
     }
   }, []);
-
 
   const handleSectionChange = (section) => {
     setSelectedSection(section);
@@ -47,76 +42,94 @@ function Teacherinterface() {
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
-  const handleUpdateProfile = () =>{
+
+  const handleUpdateProfile = () => {
     setShowUpdateForm(true);
     setShowDeleteForm(false);
-  }
+  };
 
-  const handleDeleteAccountClick = () =>{
+  const handleDeleteAccountClick = () => {
     setShowDeleteForm(true);
     setShowUpdateForm(false);
-
-  }
+  };
 
   const handleFormSubmit = async (e) => {
-    e.preventDefault() ;
-    const updatedFields = {} ;
+    e.preventDefault();
+    const updatedFields = {};
     if (newUsername) updatedFields.newUsername = newUsername;
-    if (newTeachertAge) updatedFields.newage = newTeachertAge;
+    if (newTeacherAge) updatedFields.newage = newTeacherAge;
     if (newPassword) updatedFields.newpassword = newPassword;
 
-    if (Object.keys(updatedFields).length === 0 ){
-      setMessage("Please fill in at least one fiels to update .");
-      return ;
+    if (Object.keys(updatedFields).length === 0) {
+      setMessage("Please fill in at least one field to update.");
+      return;
     }
     try {
       const response = await axios.put("http://localhost:8070/teacher/update", {
-        name : teacherName,
+        name: teacherName,
         ...updatedFields
       });
 
-      if(response.data.status === "Update successful"){
-        setMessage("Profile updated succesfully");
-
-        if(newUsername){
+      if (response.data.status === "Update successful") {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Profile updated successfully!',
+        });
+        if (newUsername) {
           setTeacherName(newUsername);
-          localStorage.setItem('TeacherName',newUsername);
+          localStorage.setItem('TeacherName', newUsername);
         }
         setShowUpdateForm(false);
-      }else{
-        setMessage('Failed to update profile');
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to update profile',
+        });
       }
-    } catch (err){
-      setMessage('An error occurred');
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred',
+      });
     }
   };
-  const handleDeleteAccountSubmit = async (e) =>{
+
+  const handleDeleteAccountSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.delete('http://localhost:8070/teacher/delete',
-        {
-          data : {
-            name: newUsername,
-            password: newPassword,
-          },
-        }
-      );
-      if (response.data.status === "User deleted"){
-        setMessage("Account delete succesfully");
-        localStorage.removeItem('TeacherName')
-        navigate('/teacherlogin');
-
-      }else{
-        setMessage('Failed to delete account');
+      const response = await axios.delete('http://localhost:8070/teacher/delete', {
+        data: {
+          name: newUsername,
+          password: newPassword,
+        },
+      });
+      if (response.data.status === "User deleted") {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Account deleted successfully!',
+        }).then(() => {
+          localStorage.removeItem('TeacherName');
+          navigate('/teacherlogin');
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to delete account',
+        });
       }
-
-    }catch (err){
-      setMessage('An error occured while deleting the account');
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred while deleting the account',
+      });
     }
   };
-
-
-
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -174,129 +187,123 @@ function Teacherinterface() {
         >
           {/* Display content based on the selected section */}
           {selectedSection === '' && (
-             <Typography variant="h2" gutterBottom>
-                Welcome....!   {teacherName}
-                 </Typography>
-           )}
+            <Typography variant="h2" gutterBottom>
+              Welcome....! {teacherName}
+            </Typography>
+          )}
           {selectedSection === 'Courses' && (
             <Box>
-            
               <Button variant="contained" color="primary" onClick={() => navigate('/view-courses')}>
                 View Courses
               </Button>
-              
             </Box>
           )}
-          
 
-          {/* other section */}
+          {/* Other section */}
           {selectedSection === 'Other' && (
             <Container className='teacher-interface'>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-             
-              <Box>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleUpdateProfile}
-                  sx={{ mr: 2 }}
-                >
-                  Update Profile
-                </Button>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={handleDeleteAccountClick}
-                >
-                  Delete Account
-                </Button>
-              </Box>
-            </Box>
-      
-            {showUpdateForm && (
-              <Paper className='update-profile-paper'>
-                <Typography variant="h6">
-                  Update Profile
-                </Typography>
-                <form onSubmit={handleFormSubmit}>
-                  <TextField
-                    label="New Username"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={newUsername}
-                    onChange={(e) => setNewUsername(e.target.value)}
-                  />
-                  <TextField
-                    label="New Age"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={newTeachertAge} // Corrected variable name
-                    onChange={(e) => setNewTeacherAge(e.target.value)} // Corrected function name
-                  />
-                  <TextField
-                    label="New Password"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                  />
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                <Box>
                   <Button
-                    type="submit"
                     variant="contained"
                     color="primary"
+                    onClick={handleUpdateProfile}
+                    sx={{ mr: 2 }}
                   >
-                    Update
+                    Update Profile
                   </Button>
-                </form>
-              </Paper>
-            )}
-      
-            {showDeleteForm && (
-              <Paper className='delete-account-paper'>
-                <Typography variant="h6">
-                  Delete Account
-                </Typography>
-                <form onSubmit={handleDeleteAccountSubmit}>
-                  <TextField
-                    label="Username"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={newUsername}
-                    onChange={(e) => setNewUsername(e.target.value)}
-                  />
-                  <TextField
-                    label="Password"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                  />
                   <Button
-                    type="submit"
                     variant="contained"
                     color="secondary"
+                    onClick={handleDeleteAccountClick}
                   >
-                    Delete
+                    Delete Account
                   </Button>
-                </form>
-              </Paper>
-            )}
-      
-            {message && (
-              <Typography variant="h6" color="primary" style={{ marginTop: "20px" }}>
-                {message}
-              </Typography>
-            )}
-          </Container>
-        )
-      }
-        
+                </Box>
+              </Box>
+
+              {showUpdateForm && (
+                <Paper className='update-profile-paper' sx={{ p: 3 }}>
+                  <Typography variant="h6">
+                    Update Profile
+                  </Typography>
+                  <form onSubmit={handleFormSubmit}>
+                    <TextField
+                      label="New Username"
+                      variant="outlined"
+                      fullWidth
+                      margin="normal"
+                      value={newUsername}
+                      onChange={(e) => setNewUsername(e.target.value)}
+                    />
+                    <TextField
+                      label="New Age"
+                      variant="outlined"
+                      fullWidth
+                      margin="normal"
+                      value={newTeacherAge}
+                      onChange={(e) => setNewTeacherAge(e.target.value)}
+                    />
+                    <TextField
+                      label="New Password"
+                      variant="outlined"
+                      fullWidth
+                      margin="normal"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                    >
+                      Update
+                    </Button>
+                  </form>
+                </Paper>
+              )}
+
+              {showDeleteForm && (
+                <Paper className='delete-account-paper' sx={{ p: 3 }}>
+                  <Typography variant="h6">
+                    Delete Account
+                  </Typography>
+                  <form onSubmit={handleDeleteAccountSubmit}>
+                    <TextField
+                      label="Username"
+                      variant="outlined"
+                      fullWidth
+                      margin="normal"
+                      value={newUsername}
+                      onChange={(e) => setNewUsername(e.target.value)}
+                    />
+                    <TextField
+                      label="Password"
+                      variant="outlined"
+                      fullWidth
+                      margin="normal"
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="secondary"
+                    >
+                      Delete
+                    </Button>
+                  </form>
+                </Paper>
+              )}
+
+              {message && (
+                <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
+                  {message}
+                </Typography>
+              )}
+            </Container>
+          )}
         </Box>
       </Box>
     </Box>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Collapse, TextField, Typography, Snackbar, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Collapse, TextField, Typography, Snackbar, Alert,
 } from '@mui/material';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 function Viewcourse() {
   const [courses, setCourses] = useState([]);
@@ -23,7 +24,6 @@ function Viewcourse() {
   const [updateFile, setUpdateFile] = useState(null);
 
   // Delete Assignment state
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteAssignmentId, setDeleteAssignmentId] = useState('');
 
   useEffect(() => {
@@ -89,7 +89,6 @@ function Viewcourse() {
     e.preventDefault();
 
     const formData = new FormData();
-
     formData.append('assignmentId', updateAssignmentId); // assignmentId should always be provided
 
     // Add only non-empty fields to the formData
@@ -132,12 +131,11 @@ function Viewcourse() {
           'Content-Type': 'application/json',
         },
         data: {
-          assignmentId: deleteAssignmentId,
-        }
+          assignmentId: deleteAssignmentId,}
+        
       });
       if (response.status === 200) {
-        setAlert({ open: true, severity: 'success', message: 'Assignment deleted successfully' });
-        setDeleteDialogOpen(false);
+        setAlert({ open: true, severity: 'success', message: 'Assignment deleted successfully!' });
         setDeleteAssignmentId('');
       } else {
         setAlert({ open: true, severity: 'error', message: 'Failed to delete assignment' });
@@ -147,18 +145,78 @@ function Viewcourse() {
       setAlert({ open: true, severity: 'error', message: 'An error occurred while deleting the assignment' });
     }
   };
+  const handleDeleteConfirmation = () => {
+    Swal.fire({
+      title: 'Enter Assignment ID',
+      input: 'text',
+      inputLabel: 'Assignment ID',
+      inputPlaceholder: 'Enter the assignment ID to delete',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Delete Assignment',
+      cancelButtonText: 'Cancel',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'Assignment ID is required';
+        }
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const assignmentId = result.value;
+        setDeleteAssignmentId(assignmentId);
+        handleDeleteAssignment();
+      }
+    });
+  };
+  
 
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Course ID</TableCell>
-            <TableCell>Course Name</TableCell>
-            <TableCell>Add Assignment</TableCell>
-            <TableCell>Update Assignment</TableCell>
-            <TableCell>More Details</TableCell>
-            <TableCell>Delete Assignment</TableCell>
+            <TableCell
+            sx={{
+              fontWeight: 'bold',
+              fontSize: '1.1rem', // Adjust size as needed
+            }}>
+            Course ID
+            </TableCell>
+            <TableCell
+            sx={{
+              fontWeight: 'bold',
+              fontSize: '1.1rem', // Adjust size as needed
+            }}
+            >Course Name
+            </TableCell>
+            <TableCell
+            sx={{
+              fontWeight: 'bold',
+              fontSize: '1.1rem', // Adjust size as needed
+            }}
+            >
+            Add Assignment
+            </TableCell>
+            <TableCell
+            sx={{
+              fontWeight: 'bold',
+              fontSize: '1.1rem', // Adjust size as needed
+            }}>Update Assignment
+            </TableCell>
+            <TableCell
+            sx={{
+              fontWeight: 'bold',
+              fontSize: '1.1rem', // Adjust size as needed
+            }}
+            >More Details</TableCell>
+            <TableCell
+            sx={{
+              fontWeight: 'bold',
+              fontSize: '1.1rem', // Adjust size as needed
+            }}>
+            Delete Assignment
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -170,8 +228,14 @@ function Viewcourse() {
                 <TableCell>
                   <Button
                     variant="contained"
-                    color="primary"
+                    
                     onClick={() => handleFormClick(course.courseId, 'addAssignment')}
+                    sx={{
+                      backgroundColor: '#7c93c3',
+                      '&:hover':{
+                        backgroundColor: '#1e2a5e',
+                      },
+                    }}
                   >
                     Add Assignment
                   </Button>
@@ -179,8 +243,14 @@ function Viewcourse() {
                 <TableCell>
                   <Button
                     variant="contained"
-                    color="secondary"
+                  
                     onClick={() => handleFormClick(course.courseId, 'updateAssignment')}
+                    sx={{
+                      backgroundColor: '#7c93c3',
+                      '&:hover':{
+                        backgroundColor: '#1e2a5e',
+                      },
+                    }}
                   >
                     Update Assignment
                   </Button>
@@ -188,8 +258,12 @@ function Viewcourse() {
                 <TableCell>
                   <Button
                     variant="outlined"
-                    color="secondary"
+                    
                     onClick={() => handleExpandClick(course._id)}
+                    sx={{
+                      backgroundColor: '#1e2a5e',
+        
+                    }}
                   >
                     {expanded[course._id] ? 'Hide Details' : 'More Details'}
                   </Button>
@@ -197,10 +271,13 @@ function Viewcourse() {
                 <TableCell>
                   <Button
                     variant="contained"
-                    color="secondary"
-                    onClick={() => {
-                      setDeleteAssignmentId('');
-                      setDeleteDialogOpen(true);
+                    
+                    onClick={handleDeleteConfirmation}
+                    sx={{
+                      backgroundColor: '#7c93c3',
+                      '&:hover':{
+                        backgroundColor: '#1e2a5e',
+                      },
                     }}
                   >
                     Delete Assignment
@@ -209,7 +286,7 @@ function Viewcourse() {
               </TableRow>
 
               <TableRow>
-                <TableCell colSpan={5} style={{ paddingBottom: 0, paddingTop: 0 }}>
+                <TableCell colSpan={6} style={{ paddingBottom: 0, paddingTop: 0 }}>
                   <Collapse in={expanded[course._id]} timeout="auto" unmountOnExit>
                     <div style={{ margin: '20px' }}>
                       <Typography><strong>No. of Students:</strong> {course.NoOfStudent}</Typography>
@@ -222,7 +299,7 @@ function Viewcourse() {
               </TableRow>
 
               <TableRow>
-                <TableCell colSpan={5}>
+                <TableCell colSpan={6}>
                   <Collapse in={activeForm.courseId === course.courseId && activeForm.formType === 'addAssignment'} timeout="auto" unmountOnExit>
                     <form onSubmit={(e) => handleAssignmentSubmit(e, course.courseId)} style={{ margin: '20px' }}>
                       <TextField
@@ -244,37 +321,25 @@ function Viewcourse() {
                       <TextField
                         label="Due Date"
                         type="date"
+                        InputLabelProps={{ shrink: true }}
                         value={dueDate}
                         onChange={(e) => setDueDate(e.target.value)}
                         fullWidth
                         margin="normal"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
                         required
                       />
                       <input
-                        accept=".pdf"
                         type="file"
                         onChange={(e) => setFile(e.target.files[0])}
-                        style={{ marginTop: '20px' }}
-                        required
+                        fullWidth
+                        margin="normal"
                       />
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        style={{ marginTop: '20px' }}
-                      >
-                        Submit
+                      <Button type="submit" variant="contained" color="primary">
+                        Add Assignment
                       </Button>
                     </form>
                   </Collapse>
-                </TableCell>
-              </TableRow>
 
-              <TableRow>
-                <TableCell colSpan={5}>
                   <Collapse in={activeForm.courseId === course.courseId && activeForm.formType === 'updateAssignment'} timeout="auto" unmountOnExit>
                     <form onSubmit={(e) => handleAssignmentUpdateSubmit(e, course.courseId)} style={{ margin: '20px' }}>
                       <TextField
@@ -295,27 +360,20 @@ function Viewcourse() {
                       <TextField
                         label="Due Date"
                         type="date"
+                        InputLabelProps={{ shrink: true }}
                         value={updateDueDate}
                         onChange={(e) => setUpdateDueDate(e.target.value)}
                         fullWidth
                         margin="normal"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
                       />
                       <input
-                        accept=".pdf"
                         type="file"
                         onChange={(e) => setUpdateFile(e.target.files[0])}
-                        style={{ marginTop: '20px' }}
+                        fullWidth
+                        margin="normal"
                       />
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        color="secondary"
-                        style={{ marginTop: '20px' }}
-                      >
-                        Update
+                      <Button type="submit" variant="contained" color="primary">
+                        Update Assignment
                       </Button>
                     </form>
                   </Collapse>
@@ -326,40 +384,7 @@ function Viewcourse() {
         </TableBody>
       </Table>
 
-      {/* Delete Assignment Dialog */}
-      <Dialog
-        open={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
-      >
-        <DialogTitle>Delete Assignment</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Enter the assignment ID to delete:
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Assignment ID"
-            fullWidth
-            value={deleteAssignmentId}
-            onChange={(e) => setDeleteAssignmentId(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleDeleteAssignment} color="secondary">
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Snackbar
-        open={alert.open}
-        autoHideDuration={6000}
-        onClose={() => setAlert({ ...alert, open: false })}
-      >
+      <Snackbar open={alert.open} autoHideDuration={6000} onClose={() => setAlert({ ...alert, open: false })}>
         <Alert onClose={() => setAlert({ ...alert, open: false })} severity={alert.severity}>
           {alert.message}
         </Alert>

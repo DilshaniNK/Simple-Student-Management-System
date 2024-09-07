@@ -1,22 +1,29 @@
 const router = require("express").Router();
-const {Admin} = require("../models/Scheam.js");
+const { Admin } = require("../models/Scheam.js");
+const bcrypt = require("bcrypt");
 
 // Add Admin
 router.route("/add").post(async (req, res) => {
-    const { adminId, adminName, adminAge, adminGender,adminPassword } = req.body;
+    const { adminId, adminName, adminAge, adminGender, adminPassword } = req.body;
 
     try {
-        const existingAdmin = await Admin.findOne({adminPassword});
+        // Check if admin already exists
+        const existingAdmin = await Admin.findOne({ adminName });
 
-        if (existingAdmin){
-            return res.status(400).send(({status: "Error"}));
+        if (existingAdmin) {
+            return res.status(400).send({ status: "Error", message: "Admin already exists" });
         }
+
+        // Hash the password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(adminPassword, salt);
+
         const newAdmin = new Admin({
             adminId,
             adminName,
             adminAge,
             adminGender,
-            adminPassword // Store password as plain text (not recommended for production)
+            adminPassword: hashedPassword, // Store hashed password
         });
 
         await newAdmin.save();
@@ -27,25 +34,29 @@ router.route("/add").post(async (req, res) => {
     }
 });
 
-// View admin
+// View admins
 router.route("/").get(async (req, res) => {
     try {
-        const Admin = await Admin.find();
-        res.json(Admin);
+        const admins = await Admin.find();
+        res.json(admins);
     } catch (err) {
         console.log(err);
-        res.status(500).send({ status: "Error fetching Admin", error: err.message });
+        res.status(500).send({ status: "Error fetching admins", error: err.message });
     }
 });
 
 // Update admin
 router.route("/update").put(async (req, res) => {
-    const { adminId, newadminName, newadminAge, newadminPassword} = req.body;
+    const { adminId, newadminName, newadminAge, newadminPassword } = req.body;
 
     try {
+        // Hash the new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newadminPassword, salt);
+
         const updatedAdmin = await Admin.findOneAndUpdate(
             { adminId },
-            { adminName: newadminName, adminAge: newadminAge, adminPassword: newadminPassword},
+            { adminName: newadminName, adminAge: newadminAge, adminPassword: hashedPassword },
             { new: true }
         );
 
@@ -56,16 +67,16 @@ router.route("/update").put(async (req, res) => {
         }
     } catch (err) {
         console.log(err);
-        res.status(500).send({ status: "Error updating Admin", error: err.message });
+        res.status(500).send({ status: "Error updating admin", error: err.message });
     }
 });
 
 // Delete Admin
 router.route("/delete").delete(async (req, res) => {
-    const {  adminId} = req.body;
+    const { adminId } = req.body;
 
     try {
-        await Admin.findOneAndDelete({adminId});
+        await Admin.findOneAndDelete({ adminId });
         res.status(200).send({ status: "User deleted" });
     } catch (err) {
         console.log(err.message);
@@ -75,10 +86,10 @@ router.route("/delete").delete(async (req, res) => {
 
 // Get admin by ID
 router.route("/get/").get(async (req, res) => {
-    const {adminId} = req.body;
+    const { adminId } = req.query;
 
     try {
-        const admin = await Admin.findOne({adminId});
+        const admin = await Admin.findOne({ adminId });
         res.status(200).send({ status: "User fetched", user: admin });
     } catch (err) {
         console.log(err);
@@ -91,10 +102,10 @@ router.route("/login").post(async (req, res) => {
     const { adminName, adminPassword } = req.body;
 
     try {
-        // Find student by name
-        const admin = await Admin.findOne({adminName,adminPassword });
+        // Find admin by name
+        const admin = await Admin.findOne({ adminName });
 
-        if (admin && admin.adminPassword === adminPassword) { // Check password as plain text
+        if (admin && await bcrypt.compare(adminPassword, admin.adminPassword)) { // Compare hashed passwords
             res.status(200).send({ status: "Login successful", adminId: admin.adminId });
         } else {
             res.status(401).send({ status: "Invalid credentials" });

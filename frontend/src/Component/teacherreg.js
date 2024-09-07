@@ -1,111 +1,113 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { Container, TextField, Button, Typography, FormControl, InputLabel, Select, MenuItem, Box } from '@mui/material';
+import React, { useState } from "react";
+import axios from "axios";
+import "./StudentLogin.css"; // Import the CSS file
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 function TeacherReg() {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
-  const sentData = async (e) => {
+  const sentData = (e) => {
     e.preventDefault();
 
     const newTeacher = {
       name,
       age,
       gender,
-      password, // Send plain text password
+      password,
     };
 
-    axios.post("http://localhost:8070/teacher/add", newTeacher)
+    axios
+      .post("http://localhost:8070/teacher/add", newTeacher)
       .then(() => {
-        alert("Teacher added");
+        // SweetAlert success message
+        Swal.fire({
+          icon: "success",
+          title: "Teacher Successfully Registered!",
+          showConfirmButton: false,
+          timer: 2000, // Auto close after 2 seconds
+        });
+
+        // Clear form fields
+        setName("");
+        setAge("");
+        setGender("");
+        setPassword("");
       })
       .catch((err) => {
-        alert(err);
+        // SweetAlert error message
+        Swal.fire({
+          icon: "error",
+          title: "Oops... Something went wrong!",
+          text: err.message || "Please try again.",
+        });
       });
   };
 
-  const handleView = () => {
-    navigate("/viewstudent");
-  };
-
   return (
-    <Container maxWidth="sm">
-      <Typography variant="h4" gutterBottom>
-        Register Teacher
-      </Typography>
-      <form onSubmit={sentData}>
-        <Box marginBottom={2}>
-          <TextField
-            label="Name"
-            variant="outlined"
-            fullWidth
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </Box>
-        <Box marginBottom={2}>
-          <TextField
-            label="Age"
-            type="number"
-            variant="outlined"
-            fullWidth
-            required
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-          />
-        </Box>
-        <Box marginBottom={2}>
-          <FormControl fullWidth variant="outlined">
-            <InputLabel>Gender</InputLabel>
-            <Select
+    <div className="container">
+      <div className="paper">
+        <h2 className="header">Register Teacher</h2>
+        <form onSubmit={sentData} className="form">
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <input
+              id="name"
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your name"
+              className="form-control"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="age">Age</label>
+            <input
+              id="age"
+              type="number"
+              required
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+              placeholder="Enter your age"
+              className="form-control"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="gender">Gender</label>
+            <select
+              id="gender"
+              required
               value={gender}
+              className="form-control"
               onChange={(e) => setGender(e.target.value)}
-              label="Gender"
             >
-              <MenuItem value=""><em>Select Gender</em></MenuItem>
-              <MenuItem value="male">Male</MenuItem>
-              <MenuItem value="female">Female</MenuItem>
-              <MenuItem value="other">Other</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-        <Box marginBottom={2}>
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Box>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          style={{ marginBottom: '10px' }}
-        >
-          Submit
-        </Button>
-        <Button
-          type="button"
-          variant="outlined"
-          color="secondary"
-          fullWidth
-          onClick={handleView}
-        >
-          View
-        </Button>
-      </form>
-    </Container>
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              className="form-control"
+            />
+          </div>
+          <button type="submit" className="button">
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
 

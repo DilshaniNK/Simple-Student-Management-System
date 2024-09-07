@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { Container, TextField, Button, Typography, FormControl, InputLabel, Select, MenuItem, Box } from '@mui/material';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "./StudentLogin.css";
 
 function Studentreg() {
   const [name, setName] = useState("");
@@ -16,9 +16,10 @@ function Studentreg() {
       name,
       age,
       gender,
-      password
+      password,
     };
-    axios.post("http://localhost:8070/student/add", newStudent)
+    axios
+      .post("http://localhost:8070/student/add", newStudent)
       .then(() => {
         alert("Student added");
         setName("");
@@ -36,78 +37,70 @@ function Studentreg() {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Typography variant="h4" gutterBottom>
-        Register Student
-      </Typography>
-      <form onSubmit={sentData}>
-        <Box marginBottom={2}>
-          <TextField
-            label="Name"
-            variant="outlined"
-            fullWidth
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </Box>
-        <Box marginBottom={2}>
-          <TextField
-            label="Age"
-            type="number"
-            variant="outlined"
-            fullWidth
-            required
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-          />
-        </Box>
-        <Box marginBottom={2}>
-          <FormControl fullWidth variant="outlined">
-            <InputLabel>Gender</InputLabel>
-            <Select
+    <div className="container">
+      <div className="paper">
+        <h1 className="header">Register Student</h1>
+        <form onSubmit={sentData} className="form">
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              className="form-control"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              placeholder="Enter your name"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="age">Age</label>
+            <input
+              type="number"
+              id="age"
+              className="form-control"
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+              required
+              placeholder="Enter your age"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="gender">Gender</label>
+            <select
+              id="gender"
+              className="form-control"
               value={gender}
               onChange={(e) => setGender(e.target.value)}
-              label="Gender"
+              required
             >
-              <MenuItem value=""><em>Select Gender</em></MenuItem>
-              <MenuItem value="male">Male</MenuItem>
-              <MenuItem value="female">Female</MenuItem>
-              <MenuItem value="other">Other</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-        <Box marginBottom={2}>
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Box>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          style={{ marginBottom: '10px' }}
-        >
-          Submit
-        </Button>
-        <Button
-          type="button"
-          variant="outlined"
-          color="secondary"
-          fullWidth
-          onClick={handleView}
-        >
-          View
-        </Button>
-      </form>
-    </Container>
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              className="form-control"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="Enter your password"
+            />
+          </div>
+          <button type="submit" className="button">
+            Submit
+          </button>
+          <button type="button" className="viewbutton" onClick={handleView}>
+            View
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
 

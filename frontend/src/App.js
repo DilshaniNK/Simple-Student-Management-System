@@ -8,7 +8,7 @@ import AdminLogin from './Component/Adminlogin';
 import StudentInterface from './Component/StudentInterface';
 import Teacherinterface from './Component/teacherinterface';
 import Studentreg from './Component/studentreg';
-import ViewStudent from './Component/viewStudent';
+// import ViewStudent from './Component/viewStudent';
 import Header from './Component/header';
 import TeacherReg from './Component/teacherreg';
 import Addcourses from './Component/addcourses';
@@ -34,7 +34,7 @@ function App() {
             <Route path="/studentinterface" element={<StudentInterface/>}/>
             <Route path="/teacherinterface" element={<Teacherinterface/>}/>
             <Route path='/studentreg' element={<Studentreg/>}/>
-            <Route path='/viewstudent' element={<ViewStudent/>}/>
+            {/* <Route path='/viewstudent' element={<ViewStudent/>}/> */}
             <Route path='/teacherreg' element={<TeacherReg/>}/>
             <Route path='/add-course' element={<Addcourses/>}/>
             <Route path='/view-courses' element={<Viewcourse/>}/>
