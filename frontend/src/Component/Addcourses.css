@@ -1,0 +1,35 @@
+.container {
+    background-image: url('../assest/R.png');
+    background-size: cover;
+    background-position: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .title {
+    text-align: center;
+    color: white;
+    margin-bottom: 20px;
+  }
+  
+  .form {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .inputField {
+    background-color: white;
+    border-radius: 5px;
+  }
+  
+  .submitButton {
+    background-color: #1976d2; /* Material-UI default primary color */
+    color: white;
+  }
+  
+  .submitButton:hover {
+    background-color: #115293;
+  }
+  

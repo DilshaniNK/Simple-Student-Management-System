@@ -39,12 +39,12 @@ function Addcourses() {
   return (
     <Container maxWidth="sm" className="container">
       <Typography variant="h4" gutterBottom className="title">
-        Add courses
+        Add Courses
       </Typography>
       <form onSubmit={sentData} className="form">
         <Box marginBottom={2}>
           <TextField
-            label="CourseId"
+            label="Course ID"
             variant="outlined"
             fullWidth
             required
@@ -55,7 +55,7 @@ function Addcourses() {
         </Box>
         <Box marginBottom={2}>
           <TextField
-            label="courseName"
+            label="Course Name"
             variant="outlined"
             fullWidth
             required
@@ -66,7 +66,7 @@ function Addcourses() {
         </Box>
         <Box marginBottom={2}>
           <TextField
-            label="No-Of-Student"
+            label="No of Students"
             type="number"
             variant="outlined"
             fullWidth
@@ -78,7 +78,7 @@ function Addcourses() {
         </Box>
         <Box marginBottom={2}>
           <TextField
-            label="CourseFee"
+            label="Course Fee"
             variant="outlined"
             fullWidth
             required
@@ -89,7 +89,7 @@ function Addcourses() {
         </Box>
         <Box marginBottom={2}>
           <TextField
-            label="lectureName"
+            label="Lecture Name"
             variant="outlined"
             fullWidth
             required
@@ -100,7 +100,7 @@ function Addcourses() {
         </Box>
         <Box marginBottom={2}>
           <TextField
-            label="Course-Duration"
+            label="Course Duration"
             variant="outlined"
             fullWidth
             required

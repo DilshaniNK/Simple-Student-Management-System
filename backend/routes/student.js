@@ -1,5 +1,7 @@
 const router = require("express").Router();
 const {Student} = require("../models/Scheam.js");
+const bcrypt = require("bcrypt");
+
 
 // Add student
 router.route("/add").post(async (req, res) => {
@@ -11,11 +13,15 @@ router.route("/add").post(async (req, res) => {
         if (existingStudent){
             return res.status(400).send(({status: "Error"}));
         }
+
+        const salat = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password,salat);
+
         const newStudent = new Student({
             name,
             age,
             gender,
-            password // Store password as plain text (not recommended for production)
+            password: hashedPassword,// Store password as plain text (not recommended for production)
         });
 
         await newStudent.save();

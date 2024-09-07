@@ -10,8 +10,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #94618E;
-    padding: 30px 20px;
+    background-color: #ffffff;
+    padding:  30px 20px;
     
     max-width: 100%; /* Maximizes the width of the navbar */
     backdrop-filter: blur(10px); /* Adds a blur effect */
@@ -20,12 +20,13 @@ body {
 
 .logo {
     color: white;
-    font-size: 20px;
+    font-size: 30px;
     font-weight: bold;
+
 }
 
 .logo span {
-    color: #49274A;
+    color: #7C93C3;
 }
 
 .nav-links {
@@ -34,22 +35,28 @@ body {
 }
 
 .nav-links li {
-    margin: 0 15px;
+    margin: 0 10px;
 }
 
 .nav-links a {
     color: white;
     text-decoration: none;
     font-size: 15px;
-    padding: 5px 10px;
-    border-radius: 5px;
+    padding: 10px 20px;
+    background-color: #7C93C3;
+    border-radius: 20px;
     transition: background 0.3s, color 0.3s;
+
 }
 
-.nav-links a.active,
-.nav-links a:hover {
-    background-color: #94618E;
-    color: black;
+.nav-links a.active {
+    background-color: #1E2A5E;
+    color: rgb(255, 255, 255);
+    padding: 10px 20px;
+}
+.nav-links a:hover{
+    background-color: #1E2A5E;
+    color: rgb(255, 255, 255);
 }
 
 .mobile-menu-icon {

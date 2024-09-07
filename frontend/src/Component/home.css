@@ -1,47 +1,68 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 * {
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 .App {
+  position: relative; /* Add position relative to parent */
   height: 100vh;
   justify-content: center;
+  background: url("../assest/bg.jpeg");
+  background-size: cover;
   align-items: center;
-  background-size: 800% 800%;
   animation: BackgroundAnimation 12s ease infinite;
 }
 
-@keyframes BackgroundAnimation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.App::before {
+  content: ""; /* Empty content for the pseudo-element */
+  position: absolute; /* Position it absolutely to cover the parent */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3); /* Semi-transparent black overlay */
+  z-index: 1; /* Ensure the overlay is above the background but below content */
 }
 
 .modal-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 70%;
+  height: 60%;
+  position: relative; /* Ensure content is positioned above the overlay */
+  z-index: 2; /* Position above the overlay */
+}
+
+.heading {
+  /* margin-top: 40px; */
+  font-size: 25px;
+  padding-top: 40px;
+}
+.heading h1 {
+  text-align: center;
 }
 
 .modal {
-  background-color: #E1D7B7;
+  background-color: #fafafa28;
   padding: 40px 80px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 50px;
+  box-shadow: 0 4px 8px 0 #94949470, 0 0 rgba(255, 248, 231, 0.713);
+  transition: all 0.35s ease;
   max-width: 400px;
   width: 100%;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  /* border: 2px solid rgba(255, 255, 255, 0.2); */
 }
-
+.modal:hover {
+  box-shadow: none;
+  transform: translateY(7px);
+}
 .modal-body h1 {
   color: rgb(9, 6, 9);
   text-align: center;
-  font-size: 2rem;
+  font-size: 25px;
   margin-bottom: 20px;
 }
-
 
 .button-group {
   display: flex;
@@ -62,6 +83,10 @@
   font-weight: 600;
 }
 
+.user-type-button:hover{
+  background-color: #7C93C3;
+}
+
 .animated-text {
   overflow: hidden; /* Ensures text outside the container is hidden */
   white-space: nowrap; /* Prevents text from wrapping */
@@ -77,6 +102,10 @@
 }
 
 @keyframes TextSlide {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }

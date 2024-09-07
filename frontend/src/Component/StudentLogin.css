@@ -1,0 +1,107 @@
+.container {
+    position: relative; /* Make sure the container has relative positioning */
+    margin: 0 auto;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('../assest/bg3.jpeg'); /* Replace with your image path */
+    background-size: cover; /* Adjust to cover the entire container */
+    background-position: center; /* Center the background image */
+    background-repeat: no-repeat;
+  }
+  
+  .container::before {
+    content: ""; /* Empty content for the pseudo-element */
+    position: absolute; /* Position it absolutely to cover the container */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+    z-index: 1; /* Ensure the overlay is above the background but below content */
+  }
+  
+  .paper {
+    position: relative; /* Position relative to stack above the overlay */
+    width: 400px;
+    margin-top: 50px;
+    padding: 30px 50px;
+    margin-left: 450px;
+    box-shadow: 0 4px 8px 0 #94949470, 0 0 rgba(255, 197, 61, 0.713);
+    transition: all 0.35s ease;
+    border-radius: 50px;
+    background-color: #fafafa14;
+    z-index: 2; /* Position above the overlay */
+  }
+  
+  .paper:hover {
+    box-shadow: none;
+    transform: translateY(7px);
+  }
+  
+  .header {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 25px;
+    color: white;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: white;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .btn {
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .button {
+    padding: 10px 30px;
+    font-size: 16px;
+    background-color: #1E2A5E;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-left: 140px;
+  }
+  
+  .button:hover {
+    background-color: #7C93C3;
+  }
+  
+  .error-message {
+    color: red;
+    margin-bottom: 15px;
+  }
+  
+  .link {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .link p {
+    font-size: 14px;
+  }
+  
+  a{
+      color: rgb(156, 174, 253);
+      text-decoration: none;
+  }
+  

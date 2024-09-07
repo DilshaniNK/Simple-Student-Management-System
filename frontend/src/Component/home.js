@@ -11,34 +11,32 @@ function Home() {
   };
 
   return (
-    <div className='App'>
-       <h1 className='heading'>Take Your Step with Us</h1>
-      <div className='animated-text'>
-      
-       
-      </div>
-      <div className='modal-container'>
-        
+    <div className="App">
+      <h1 className="heading">
+        Write your future with{" "}
+        <span style={{ color: "#1E2A5E", fontSize: "40px" }}>ChalkBoard !</span>
+      </h1>
+      <div className="animated-text"></div>
+      <div className="modal-container">
         <div className="modal">
-          
           <div className="modal-body">
             <h1>Select User Type</h1>
             <div className="button-group">
-              <button 
-                className="user-type-button" 
-                onClick={() => navigateTo('/studentlogin')}
+              <button
+                className="user-type-button"
+                onClick={() => navigateTo("/studentlogin")}
               >
                 Student
               </button>
-              <button 
-                className="user-type-button" 
-                onClick={() => navigateTo('/teacherlogin')}
+              <button
+                className="user-type-button"
+                onClick={() => navigateTo("/teacherlogin")}
               >
                 Teacher
               </button>
-              <button 
-                className="user-type-button" 
-                onClick={() => navigateTo('/adminlogin')}
+              <button
+                className="user-type-button"
+                onClick={() => navigateTo("/adminlogin")}
               >
                 Admin
               </button>

@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { Container, Paper, Typography, TextField, Button, Link, Box } from '@mui/material';
-import './student.css';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "./StudentLogin.css";
 
 function StudentLogin() {
   const navigate = useNavigate();
@@ -16,71 +15,68 @@ function StudentLogin() {
     try {
       const response = await axios.post("http://localhost:8070/student/login", {
         name: username,
-        password: password
+        password: password,
       });
 
-      console.log('Response:', response.data); // Debugging: Log the response
+      console.log("Response:", response.data); // Debugging: Log the response
 
       if (response.data.status === "Login successful") {
         //save data in localstorage
-        localStorage.setItem('StudentName',username);
-        navigate('/studentinterface');
+        localStorage.setItem("StudentName", username);
+        navigate("/studentinterface");
       } else {
         setError("Invalid credentials");
       }
     } catch (err) {
-      console.error('Error:', err); // Debugging: Log the error
+      console.error("Error:", err); // Debugging: Log the error
       setError("An error occurred during login");
     }
   };
 
   return (
-    <Container className='container'>
-      <Paper className='paper'>
-        <Typography variant="h5" className='header'>
-          Log In
-        </Typography>
+    <div className="container">
+      <div className="paper">
+        <h2 className="header">Student Log In</h2>
         <form onSubmit={handleLogin}>
-          <TextField
-            label="Username"
-            variant="outlined"
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              id="username"
+              type="text"
+              className="form-control"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              placeholder="Enter your username"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              className="form-control"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="Enter your password"
+            />
+          </div>
+          {error && <p className="error-message">{error}</p>}
+          <div className="btn">
+            <button type="submit" className="button">
+              Login
+            </button>
+          </div>
 
-            fullWidth
-            required
-            className='textField'
-            margin="normal"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            required
-            className='textField'
-            margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {error && <Typography color="error">{error}</Typography>}
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            className='button'
-            margin="normal"
-          >
-            Login
-          </Button>
-          <Box className='link'>
-            <Typography variant="body2">
-              Don't have an account? <Link href="/studentreg">Sign Up Now</Link>
-            </Typography>
-          </Box>
+          <div className="link">
+            <p>
+              Don't have an account? <a href="/studentreg">Sign Up Now</a>
+            </p>
+          </div>
         </form>
-      </Paper>
-    </Container>
+      </div>
+    </div>
   );
 }
 

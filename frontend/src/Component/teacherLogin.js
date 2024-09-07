@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Container, Paper, Typography, TextField, Button, Link, Box } from '@mui/material';
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
- 
+import axios from "axios";
+import "./StudentLogin.css";
+
 
 function TeacherLogin() {
   const navigate = useNavigate();
@@ -16,70 +16,65 @@ function TeacherLogin() {
     try {
       const response = await axios.post("http://localhost:8070/teacher/login", {
         name: username,
-        password: password
+        password: password,
       });
 
-      console.log('Response:', response.data);
+      console.log("Response:", response.data);
 
       if (response.data.status === "Login successful") {
         // Save data in localStorage
-        localStorage.setItem('TeacherName', username);
-        navigate('/teacherinterface');
+        localStorage.setItem("TeacherName", username);
+        navigate("/teacherinterface");
       } else {
         setError("Invalid credentials");
       }
     } catch (err) {
-      console.error('Error:', err);
+      console.error("Error:", err);
       setError("An error occurred during login");
     }
   };
 
   return (
-    <Container className='container'>
-      <Paper className='paper'>
-        <Typography variant="h5" className='header'>
-          Log In
-        </Typography>
+    <div className="container">
+      <div className="paper">
+        <h1 className="header">Teacher Log In</h1>
         <form onSubmit={handleLogin}>
-          <TextField
-            label="Username"
-            variant="outlined"
-            fullWidth
-            required
-            className='textField'
-            margin="normal"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            required
-            className='textField'
-            margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {error && <Typography color="error">{error}</Typography>}
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            className='button'
-            margin="normal"
-          >
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              className="form-control"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              placeholder="Enter your username"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              className="form-control"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="Enter your password"
+            />
+          </div>
+          {error && <div className="error-message">{error}</div>}
+          <button type="submit" className="button">
             Login
-          </Button>
-          <Box className='link'>
-            <Typography variant="body2">
-              Don't have an account? <Link href="/teacherreg">Sign Up Now</Link>
-            </Typography>
-          </Box>
+          </button>
+          <div className="link">
+            <p>
+              Don't have an account? <a href="/teacherreg">Sign Up Now</a>
+            </p>
+          </div>
         </form>
-      </Paper>
-    </Container>
+      </div>
+    </div>
   );
 }
 
