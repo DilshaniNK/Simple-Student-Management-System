@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';  // Import SweetAlert2
 import "./StudentLogin.css";
 
 function Studentreg() {
+  const[studentId,setId] = useState("");
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
@@ -14,6 +15,7 @@ function Studentreg() {
   const sentData = (e) => {
     e.preventDefault();
     const newStudent = {
+      studentId,
       name,
       age,
       gender,
@@ -48,6 +50,18 @@ function Studentreg() {
       <div className="paper">
         <h1 className="header">Register Student</h1>
         <form onSubmit={sentData} className="form">
+        <div className="form-group">
+            <label htmlFor="studentId">Student Id</label>
+            <input
+              type="text"
+              id="studentId"
+              className="form-control"
+              value={studentId}
+              onChange={(e) => setId(e.target.value)}
+              required
+              placeholder="Enter Student ID"
+            />
+          </div>
           <div className="form-group">
             <label htmlFor="name">Name</label>
             <input

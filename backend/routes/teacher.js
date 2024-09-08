@@ -4,11 +4,11 @@ const bcrypt = require("bcryptjs"); // Import bcryptjs
 
 // Add Teacher route with password hashing
 router.route("/add").post(async (req, res) => {
-  const { name, age, gender, password } = req.body;
+  const { teacherId, name, age, gender, password } = req.body;
 
   try {
     // Check if teacher already exists
-    const existingTeacher = await Teacher.findOne({ name });
+    const existingTeacher = await Teacher.findOne({ teacherId });
 
     if (existingTeacher) {
       return res.status(400).send({ status: "Teacher already exists" });
@@ -20,6 +20,7 @@ router.route("/add").post(async (req, res) => {
 
     // Create new teacher with hashed password
     const newTeacher = new Teacher({
+      teacherId,
       name,
       age,
       gender,
@@ -50,7 +51,7 @@ router.route("/login").post(async (req, res) => {
     const isMatch = await bcrypt.compare(password, teacher.password);
 
     if (isMatch) {
-      res.status(200).send({ status: "Login successful", user: teacher });
+      res.status(200).send({ status: "Login successful", teacherId: teacher.teacherId, user: teacher });
     } else {
       res.status(401).send({ status: "Invalid credentials" });
     }
@@ -62,7 +63,7 @@ router.route("/login").post(async (req, res) => {
 
 // Update Teacher route with password hashing
 router.route("/update").put(async (req, res) => {
-  const { name, newUsername, newage, newpassword } = req.body;
+  const { teacherId, name, newUsername, newage, newpassword } = req.body;
 
   try {
     let hashedPassword = newpassword;
@@ -74,7 +75,7 @@ router.route("/update").put(async (req, res) => {
     }
 
     const updatedTeacher = await Teacher.findOneAndUpdate(
-      { name },
+      { teacherId },
       { name: newUsername, age: newage, password: hashedPassword },
       { new: true }
     );
@@ -91,14 +92,14 @@ router.route("/update").put(async (req, res) => {
 });
 
 router.route("/delete").delete(async (req, res) => {
-  const { name, password } = req.body;
+  const { teacherId, password } = req.body;
 
   try {
-    console.log('Received Name:', name);
-    console.log('Received Password:', password);
+    // console.log('Received Name:', name);
+    // console.log('Received Password:', password);
 
     // Find the teacher by name
-    const teacher = await Teacher.findOne({ name });
+    const teacher = await Teacher.findOne({ teacherId });
 
     if (!teacher) {
       return res.status(404).send({ status: "Teacher not found" });
@@ -110,7 +111,7 @@ router.route("/delete").delete(async (req, res) => {
     console.log('Password Match:', isMatch); // Log password comparison result
 
     if (isMatch) {
-      await Teacher.findOneAndDelete({ name });
+      await Teacher.findOneAndDelete({ teacherId });
       res.status(200).send({ status: "Teacher deleted" });
     } else {
       res.status(401).send({ status: "Invalid credentials" });

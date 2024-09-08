@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './studentInterface.css';
 
 function StudentInterface() {
+  const [studentId,setStudentId] = useState("");
   const [studentName, setStudentName] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newStudentAge, setNewStudentAge] = useState("");
@@ -19,8 +20,10 @@ function StudentInterface() {
 
   useEffect(() => {
     const name = localStorage.getItem('StudentName');
-    if (name) {
+    const id = localStorage.getItem('StudentId');
+    if (name && id) {
       setStudentName(name);
+      setStudentId(id);
     }
     fetchCourses();
   }, []);
@@ -82,7 +85,7 @@ function StudentInterface() {
 
     try {
       const response = await axios.put("http://localhost:8070/student/update", {
-        name: studentName,
+        studentId: studentId,
         ...updatedFields
       });
 
@@ -109,7 +112,7 @@ function StudentInterface() {
     try {
       const response = await axios.delete('http://localhost:8070/student/delete', {
         data: {
-          name: newUsername,
+          studentId: studentId,
           password: newPassword,
         },
       });

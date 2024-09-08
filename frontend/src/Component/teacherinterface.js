@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 const drawerWidth = 240;
 
 function Teacherinterface() {
+  const [teacherId, setTeacherId] = useState("");
   const [teacherName, setTeacherName] = useState("");
   const [selectedSection, setSelectedSection] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -23,8 +24,10 @@ function Teacherinterface() {
   useEffect(() => {
     // Retrieve the teacher's name from localStorage
     const name = localStorage.getItem('TeacherName');
-    if (name) {
+    const id = localStorage.getItem('TeacherId');
+    if (name && id) {
       setTeacherName(name);
+      setTeacherId(id);
     }
   }, []);
 
@@ -66,7 +69,7 @@ function Teacherinterface() {
     }
     try {
       const response = await axios.put("http://localhost:8070/teacher/update", {
-        name: teacherName,
+        teacherId: teacherId,
         ...updatedFields
       });
 
@@ -102,7 +105,7 @@ function Teacherinterface() {
     try {
       const response = await axios.delete('http://localhost:8070/teacher/delete', {
         data: {
-          name: teacherName,
+          teacherId: teacherId,
           password: newPassword,
         },
       });

@@ -3,6 +3,10 @@ const mongosee = require('mongoose');
 const Schema = mongosee.Schema;
 
 const studentSchema = new Schema ({
+    studentId: {
+        type: String,
+        required: true
+    },
     name: {
         type : String,
         required: true
@@ -23,6 +27,10 @@ const studentSchema = new Schema ({
 });
 
 const teacherSchema = new Schema({
+    teacherId: {
+        type: String,
+        required: true
+    },
     name: {
         type: String,
         required: true
