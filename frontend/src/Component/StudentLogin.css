@@ -5,7 +5,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-image: url('../assest/bg3.jpeg'); /* Replace with your image path */
+    background-image: url('../assets/bg3.jpeg'); /* Replace with your image path */
     background-size: cover; /* Adjust to cover the entire container */
     background-position: center; /* Center the background image */
     background-repeat: no-repeat;
