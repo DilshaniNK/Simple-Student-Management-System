@@ -1,0 +1,52 @@
+.student-interface{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.menubar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;  
+}
+
+.btn-gap button{
+    margin-left: 10px;
+}
+
+.profile-paper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.profile-paper form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+}
+
+.inputs{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .inputs input{
+    width: 300px;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #F2BA1D;
+    font-size: 20px;
+  }
+   
