@@ -102,11 +102,11 @@ function Teacherinterface() {
     try {
       const response = await axios.delete('http://localhost:8070/teacher/delete', {
         data: {
-          name: newUsername,
+          name: teacherName,
           password: newPassword,
         },
       });
-      if (response.data.status === "User deleted") {
+      if (response.data.status === "Teacher deleted") {
         Swal.fire({
           icon: 'success',
           title: 'Success',

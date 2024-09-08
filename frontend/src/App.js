@@ -21,8 +21,7 @@ import ViewAssignmentdetails from './Component/ViewAssignmentdetails';
 import About from './Component/About';
 import Contact from './Component/Contact';
 import MyHome from './Component/MyHome';
-
-
+import ViewAssignment from './Component/TeacherViewAssignment';
 
 function App() {
   return (
@@ -49,6 +48,7 @@ function App() {
             <Route path='/viewassignment' element={<ViewAssignmentdetails/>}/>
             <Route path="/about" element={<About />} />
             <Route path="/Contact" element={<Contact />} />
+            <Route path='/teacherviewassignment' element={<ViewAssignment/>}/>
 
 
             </Routes>

@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Collapse, TextField, Typography, Snackbar, Alert,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom'; // Use for navigation
 import axios from 'axios';
-import Swal from 'sweetalert2';
 
 function Viewcourse() {
   const [courses, setCourses] = useState([]);
   const [expanded, setExpanded] = useState({});
   const [activeForm, setActiveForm] = useState({ courseId: null, formType: null });
   const [alert, setAlert] = useState({ open: false, severity: '', message: '' });
+
+  const navigate = useNavigate(); // For navigation
 
   // Assignment state
   const [assignmentId, setAssignmentId] = useState('');
@@ -22,9 +24,6 @@ function Viewcourse() {
   const [updateDescription, setUpdateDescription] = useState('');
   const [updateDueDate, setUpdateDueDate] = useState('');
   const [updateFile, setUpdateFile] = useState(null);
-
-  // Delete Assignment state
-  const [deleteAssignmentId, setDeleteAssignmentId] = useState('');
 
   useEffect(() => {
     axios.get('http://localhost:8070/course/view')
@@ -124,99 +123,24 @@ function Viewcourse() {
     }
   };
 
-  const handleDeleteAssignment = async () => {
-    try {
-      const response = await axios.delete('http://localhost:8070/assignment/delete',{
-        headers:{
-          'Content-Type': 'application/json',
-        },
-        data: {
-          assignmentId: deleteAssignmentId,}
-        
-      });
-      if (response.status === 200) {
-        setAlert({ open: true, severity: 'success', message: 'Assignment deleted successfully!' });
-        setDeleteAssignmentId('');
-      } else {
-        setAlert({ open: true, severity: 'error', message: 'Failed to delete assignment' });
-      }
-    } catch (err) {
-      console.error(err.response ? err.response.data : err.message);
-      setAlert({ open: true, severity: 'error', message: 'An error occurred while deleting the assignment' });
-    }
+  // Handle delete action by navigating to the teacherviewassignment page
+  const handleDeleteNavigation = (courseId,courseName) => {
+    localStorage.setItem('selectedCourseID',courseId);
+    localStorage.setItem('selectedCourseName',courseName);
+    navigate('/teacherviewassignment');
   };
-  const handleDeleteConfirmation = () => {
-    Swal.fire({
-      title: 'Enter Assignment ID',
-      input: 'text',
-      inputLabel: 'Assignment ID',
-      inputPlaceholder: 'Enter the assignment ID to delete',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Delete Assignment',
-      cancelButtonText: 'Cancel',
-      inputValidator: (value) => {
-        if (!value) {
-          return 'Assignment ID is required';
-        }
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const assignmentId = result.value;
-        setDeleteAssignmentId(assignmentId);
-        handleDeleteAssignment();
-      }
-    });
-  };
-  
 
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell
-            sx={{
-              fontWeight: 'bold',
-              fontSize: '1.1rem', // Adjust size as needed
-            }}>
-            Course ID
-            </TableCell>
-            <TableCell
-            sx={{
-              fontWeight: 'bold',
-              fontSize: '1.1rem', // Adjust size as needed
-            }}
-            >Course Name
-            </TableCell>
-            <TableCell
-            sx={{
-              fontWeight: 'bold',
-              fontSize: '1.1rem', // Adjust size as needed
-            }}
-            >
-            Add Assignment
-            </TableCell>
-            <TableCell
-            sx={{
-              fontWeight: 'bold',
-              fontSize: '1.1rem', // Adjust size as needed
-            }}>Update Assignment
-            </TableCell>
-            <TableCell
-            sx={{
-              fontWeight: 'bold',
-              fontSize: '1.1rem', // Adjust size as needed
-            }}
-            >More Details</TableCell>
-            <TableCell
-            sx={{
-              fontWeight: 'bold',
-              fontSize: '1.1rem', // Adjust size as needed
-            }}>
-            Delete Assignment
-            </TableCell>
+            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Course ID</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Course Name</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Add Assignment</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Update Assignment</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>More Details</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Delete Assignment</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -228,11 +152,10 @@ function Viewcourse() {
                 <TableCell>
                   <Button
                     variant="contained"
-                    
                     onClick={() => handleFormClick(course.courseId, 'addAssignment')}
                     sx={{
                       backgroundColor: '#7c93c3',
-                      '&:hover':{
+                      '&:hover': {
                         backgroundColor: '#1e2a5e',
                       },
                     }}
@@ -243,11 +166,10 @@ function Viewcourse() {
                 <TableCell>
                   <Button
                     variant="contained"
-                  
                     onClick={() => handleFormClick(course.courseId, 'updateAssignment')}
                     sx={{
                       backgroundColor: '#7c93c3',
-                      '&:hover':{
+                      '&:hover': {
                         backgroundColor: '#1e2a5e',
                       },
                     }}
@@ -258,11 +180,9 @@ function Viewcourse() {
                 <TableCell>
                   <Button
                     variant="outlined"
-                    
                     onClick={() => handleExpandClick(course._id)}
                     sx={{
                       backgroundColor: '#1e2a5e',
-        
                     }}
                   >
                     {expanded[course._id] ? 'Hide Details' : 'More Details'}
@@ -271,11 +191,10 @@ function Viewcourse() {
                 <TableCell>
                   <Button
                     variant="contained"
-                    
-                    onClick={handleDeleteConfirmation}
+                    onClick={() => handleDeleteNavigation(course.courseId,course.courseName)} // Navigate to teacherviewassignment page
                     sx={{
                       backgroundColor: '#7c93c3',
-                      '&:hover':{
+                      '&:hover': {
                         backgroundColor: '#1e2a5e',
                       },
                     }}
@@ -308,7 +227,6 @@ function Viewcourse() {
                         onChange={(e) => setAssignmentId(e.target.value)}
                         fullWidth
                         margin="normal"
-                        required
                       />
                       <TextField
                         label="Description"
@@ -316,30 +234,43 @@ function Viewcourse() {
                         onChange={(e) => setDescription(e.target.value)}
                         fullWidth
                         margin="normal"
-                        required
                       />
                       <TextField
                         label="Due Date"
                         type="date"
-                        InputLabelProps={{ shrink: true }}
                         value={dueDate}
                         onChange={(e) => setDueDate(e.target.value)}
                         fullWidth
                         margin="normal"
-                        required
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
                       />
-                      <input
-                        type="file"
-                        onChange={(e) => setFile(e.target.files[0])}
-                        fullWidth
-                        margin="normal"
-                      />
-                      <Button type="submit" variant="contained" color="primary">
-                        Add Assignment
+                      <Button variant="contained" component="label">
+                        Upload File
+                        <input type="file" hidden onChange={(e) => setFile(e.target.files[0])} />
+                      </Button>
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        sx={{
+                          backgroundColor: '#7c93c3',
+                          '&:hover': {
+                            backgroundColor: '#1e2a5e',
+                          },
+                          marginTop: '10px',
+                        }}
+                      >
+                        Submit Assignment
                       </Button>
                     </form>
                   </Collapse>
+                </TableCell>
+              </TableRow>
 
+              <TableRow>
+                <TableCell colSpan={6}>
                   <Collapse in={activeForm.courseId === course.courseId && activeForm.formType === 'updateAssignment'} timeout="auto" unmountOnExit>
                     <form onSubmit={(e) => handleAssignmentUpdateSubmit(e, course.courseId)} style={{ margin: '20px' }}>
                       <TextField
@@ -348,7 +279,6 @@ function Viewcourse() {
                         onChange={(e) => setUpdateAssignmentId(e.target.value)}
                         fullWidth
                         margin="normal"
-                        required
                       />
                       <TextField
                         label="Description"
@@ -360,19 +290,30 @@ function Viewcourse() {
                       <TextField
                         label="Due Date"
                         type="date"
-                        InputLabelProps={{ shrink: true }}
                         value={updateDueDate}
                         onChange={(e) => setUpdateDueDate(e.target.value)}
                         fullWidth
                         margin="normal"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
                       />
-                      <input
-                        type="file"
-                        onChange={(e) => setUpdateFile(e.target.files[0])}
-                        fullWidth
-                        margin="normal"
-                      />
-                      <Button type="submit" variant="contained" color="primary">
+                      <Button variant="contained" component="label">
+                        Upload File
+                        <input type="file" hidden onChange={(e) => setUpdateFile(e.target.files[0])} />
+                      </Button>
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        sx={{
+                          backgroundColor: '#7c93c3',
+                          '&:hover': {
+                            backgroundColor: '#1e2a5e',
+                          },
+                          marginTop: '10px',
+                        }}
+                      >
                         Update Assignment
                       </Button>
                     </form>
@@ -384,6 +325,7 @@ function Viewcourse() {
         </TableBody>
       </Table>
 
+      {/* Success/Error Alert */}
       <Snackbar open={alert.open} autoHideDuration={6000} onClose={() => setAlert({ ...alert, open: false })}>
         <Alert onClose={() => setAlert({ ...alert, open: false })} severity={alert.severity}>
           {alert.message}
