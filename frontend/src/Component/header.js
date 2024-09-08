@@ -20,8 +20,8 @@ function Header() {
       >
         <li>
           <a
-            href="/"
-            className={location.pathname === "/" ? "active" : ""}
+            href="/home"
+            className={location.pathname === "/home" ? "active" : ""}
           >
             Home
           </a>
@@ -41,6 +41,14 @@ function Header() {
             className={location.pathname === "/contact" ? "active" : ""}
           >
             Contact
+          </a>
+        </li>
+        <li>
+          <a
+            href="/"
+            className={location.pathname === "/" ? "active" : ""}
+          >
+            Sign Up
           </a>
         </li>
       </ul>

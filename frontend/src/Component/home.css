@@ -6,7 +6,8 @@
 
 .App {
   position: relative; /* Add position relative to parent */
-  height: 100vh;
+  height: 84vh;
+  margin-top: -15px;
   justify-content: center;
   background: url("../assets/bg.jpeg");
   background-size: cover;
@@ -39,13 +40,14 @@
   font-size: 25px;
   padding-top: 40px;
 }
+
 .heading h1 {
   text-align: center;
 }
 
 .modal {
   background-color: #fafafa28;
-  padding: 40px 80px;
+  padding: 20px 60px;
   border-radius: 50px;
   box-shadow: 0 4px 8px 0 #94949470, 0 0 rgba(255, 248, 231, 0.713);
   transition: all 0.35s ease;
@@ -53,10 +55,12 @@
   width: 100%;
   /* border: 2px solid rgba(255, 255, 255, 0.2); */
 }
+
 .modal:hover {
   box-shadow: none;
   transform: translateY(7px);
 }
+
 .modal-body h1 {
   color: rgb(9, 6, 9);
   text-align: center;

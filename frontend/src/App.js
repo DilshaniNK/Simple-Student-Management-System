@@ -20,6 +20,7 @@ import Addminviewcourses from './Component/addminviewcourses';
 import ViewAssignmentdetails from './Component/ViewAssignmentdetails';
 import About from './Component/About';
 import Contact from './Component/Contact';
+import MyHome from './Component/MyHome';
 
 
 
@@ -30,6 +31,7 @@ function App() {
           <Header/>
           <Routes>
             <Route path="/" element={<Home/>}/>
+            <Route path="/home" element={<MyHome />} />
             <Route path="/studentlogin" element={<StudentLogin/>}/>
             <Route path="/teacherlogin" element={<TeacherLogin/>}/>
             <Route path="/adminlogin" element={<AdminLogin/>}/>

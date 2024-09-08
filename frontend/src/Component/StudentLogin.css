@@ -1,4 +1,5 @@
 .container {
+    display: flex;
     position: relative; /* Make sure the container has relative positioning */
     margin: 0 auto;
     padding: 20px;
@@ -24,6 +25,8 @@
   
   .paper {
     position: relative; /* Position relative to stack above the overlay */
+    /* align-items: center; */
+    /* justify-content: center; */
     width: 400px;
     margin-top: 50px;
     padding: 30px 50px;
