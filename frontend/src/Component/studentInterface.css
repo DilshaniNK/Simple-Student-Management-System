@@ -1,5 +1,13 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #c4c8cd; /* Add the desired color here */
+}
+
 .student-interface {
     padding: 20px;
+    
   }
   
   .button-container {

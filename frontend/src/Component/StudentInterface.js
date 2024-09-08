@@ -130,7 +130,7 @@ function StudentInterface() {
   };
 
   return (
-    <Container className='student-interface'>
+    <Container className='student-interface' >
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' , flexDirection: 'column', mb: 2 }}>
         <Typography variant="h4">
           Hi, {studentName.toLocaleUpperCase()}
@@ -138,23 +138,29 @@ function StudentInterface() {
         <Box className='button-container'>
           <Button
             variant="contained"
-            color="primary"
+            
             onClick={handleUpdateProfile}
+            sx={{ mr: 2, backgroundColor: '#1e2a5e', '&:hover': { backgroundColor: '#7c93c3' }}}
+
             // sx={{ mr: 2 }}
           >
             Update Profile
           </Button>
           <Button
             variant="contained"
-            color="secondary"
+            
             onClick={handleDeleteAccountClick}
+            sx={{ mr: 2, backgroundColor: '#1e2a5e', '&:hover': { backgroundColor: '#7c93c3' }}}
+
           >
             Delete Account
           </Button>
           <Button
             variant="contained"
-            color="info"
+            
             onClick={handleViewAssignmentsClick}
+            sx={{ mr: 2, backgroundColor: '#1e2a5e', '&:hover': { backgroundColor: '#7c93c3' }}}
+
           >
             View Assignments
           </Button>
@@ -194,7 +200,8 @@ function StudentInterface() {
             <Button
               type="submit"
               variant="contained"
-              color="primary"
+              sx={{ mr: 2, backgroundColor: '#7c93c3'}}
+
             >
               Update
             </Button>
@@ -228,7 +235,8 @@ function StudentInterface() {
             <Button
               type="submit"
               variant="contained"
-              color="secondary"
+              sx={{ mr: 2, backgroundColor: '#7c93c3'}}
+
             >
               Delete
             </Button>
@@ -236,16 +244,14 @@ function StudentInterface() {
         </Paper>
       )}
 
-      <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>Select Course</DialogTitle>
-        <DialogContent>
+    <Dialog open={dialogOpen} onClose={handleDialogClose} PaperProps={{ style: { borderRadius: '10px', padding: '10px' } }}>
+        <DialogTitle>
+          <Typography variant="h5" sx={{ color: '#1E2A5E', fontWeight: 'bold' }}>Select Course</Typography>
+        </DialogTitle>
+        <DialogContent sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', minWidth: '300px' }}>
           <FormControl fullWidth>
             <InputLabel>Course</InputLabel>
-            <Select
-              value={selectedCourse}
-              onChange={handleCourseSelect}
-              label="Course"
-            >
+            <Select value={selectedCourse} onChange={handleCourseSelect} label="Course">
               {courses.map(course => (
                 <MenuItem key={course.courseId} value={course.courseId}>
                   {course.courseName}
@@ -255,9 +261,7 @@ function StudentInterface() {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            Close
-          </Button>
+          <Button onClick={handleDialogClose} sx={{ color: '#7C93C3', fontWeight: 'bold' }}>Close</Button>
         </DialogActions>
       </Dialog>
 

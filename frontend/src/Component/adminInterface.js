@@ -137,7 +137,7 @@ function AdminInterface() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar sx={{backgroundColor: '#1e2a5e'}}>
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer}>
             <MenuIcon />
           </IconButton>

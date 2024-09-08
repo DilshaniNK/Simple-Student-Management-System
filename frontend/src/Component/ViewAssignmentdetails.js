@@ -35,13 +35,13 @@ function ViewAssignmentdetails() {
       {error && <Alert severity="error">{error}</Alert>}
 
       <Paper>
-        <Table>
+        <Table >
           <TableHead>
             <TableRow>
-              <TableCell>Assignment ID</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Due Date</TableCell>
-              <TableCell>PDF</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Assignment ID</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Description</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Due Date</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>PDF</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

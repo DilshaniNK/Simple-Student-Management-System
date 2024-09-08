@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 
-function Viewcourse() {
+function Addminviewcourses() {
   const [courses, setCourses] = useState([]);
   const [expanded, setExpanded] = useState({});
 //   const [showAssignmentForm, setShowAssignmentForm] = useState({});
@@ -65,7 +65,7 @@ function Viewcourse() {
         }
       });
       if (response.status === 200) {
-        setMessage('Course deleted successfully');
+        
         setCourses(courses.map(course =>
           course.courseId === selectedCourseId ? { ...course, deleted: true } : course
         ));
@@ -124,16 +124,16 @@ function Viewcourse() {
   };
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} sx={{ maxWidth: '80%', margin: '0 auto', backgroundColor: '#f0f4f8', borderRadius: '10px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Course ID</TableCell>
-            <TableCell>Course Name</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Course ID</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Course Name</TableCell>
             {/* <TableCell>Add Assignment</TableCell> */}
-            <TableCell>More Details</TableCell>
-            <TableCell>Update Course</TableCell>
-            <TableCell>Delete Course</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>More Details</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Update Course</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Delete Course</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -150,15 +150,7 @@ function Viewcourse() {
                   <>
                     <TableCell>{course.courseId}</TableCell>
                     <TableCell>{course.courseName}</TableCell>
-                    {/* <TableCell>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleAddAssignmentClick(course._id)}
-                      >
-                        Add Assignment
-                      </Button>
-                    </TableCell> */}
+                   
                     <TableCell>
                       <Button
                         variant="outlined"
@@ -171,8 +163,14 @@ function Viewcourse() {
                     <TableCell>
                       <Button
                         variant="contained"
-                        color="primary"
+                       
                         onClick={() => handleUpdateClick(course.courseId)}
+                        sx={{
+                          backgroundColor: '#7c93c3',
+                          '&:hover': {
+                            backgroundColor: '#1e2a5e',
+                        },
+                      }}
                       >
                         Update Course
                       </Button>
@@ -180,8 +178,14 @@ function Viewcourse() {
                     <TableCell>
                       <Button
                         variant="contained"
-                        color="secondary"
+                   
                         onClick={() => handleDeleteClick(course.courseId)}
+                        sx={{
+                          backgroundColor: '#7c93c3',
+                          '&:hover': {
+                            backgroundColor: '#1e2a5e',
+                          },
+                        }}
                       >
                         Delete Course
                       </Button>
@@ -207,59 +211,7 @@ function Viewcourse() {
                     </TableCell>
                   </TableRow>
 
-                  {/* Assignment Form Row
-                  <TableRow>
-                    <TableCell colSpan={6}>
-                      <Collapse in={showAssignmentForm[course._id]} timeout="auto" unmountOnExit>
-                        <form onSubmit={(e) => handleAssignmentSubmit(e, course._id)} style={{ margin: '20px' }}>
-                          <TextField
-                            label="Assignment ID"
-                            value={assignmentId}
-                            onChange={(e) => setAssignmentId(e.target.value)}
-                            fullWidth
-                            margin="normal"
-                            required
-                          />
-                          <TextField
-                            label="Description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            fullWidth
-                            margin="normal"
-                            required
-                          />
-                          <TextField
-                            label="Due Date"
-                            type="date"
-                            value={dueDate}
-                            onChange={(e) => setDueDate(e.target.value)}
-                            fullWidth
-                            margin="normal"
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                            required
-                          />
-                          <input
-                            accept=".pdf"
-                            type="file"
-                            onChange={(e) => setFile(e.target.files[0])}
-                            style={{ marginTop: '20px' }}
-                            required
-                          />
-                          <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            style={{ marginTop: '20px' }}
-                          >
-                            Submit
-                          </Button>
-                        </form>
-                      </Collapse>
-                    </TableCell>
-                  </TableRow> */}
-
+                 
                   {/* Update Form Row */}
                   <TableRow>
                     <TableCell colSpan={6}>
@@ -346,4 +298,4 @@ function Viewcourse() {
   );
 }
 
-export default Viewcourse;
+export default Addminviewcourses;
