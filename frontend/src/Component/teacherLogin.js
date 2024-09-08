@@ -24,6 +24,7 @@ function TeacherLogin() {
       if (response.data.status === "Login successful") {
         // Save data in localStorage
         localStorage.setItem("TeacherName", username);
+        localStorage.setItem("TeacherId", response.data.teacherId); // Storing teacherId
         navigate("/teacherinterface");
       } else {
         setError("Invalid credentials");

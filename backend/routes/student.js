@@ -4,10 +4,10 @@ const bcrypt = require("bcrypt");
 
 // Add student
 router.route("/add").post(async (req, res) => {
-    const { name, age, gender, password } = req.body;
+    const { studentId,name, age, gender, password } = req.body;
 
     try {
-        const existingStudent = await Student.findOne({ name });
+        const existingStudent = await Student.findOne({ studentId });
 
         if (existingStudent) {
             return res.status(400).send({ status: "Error", message: "Student already exists" });
@@ -17,6 +17,7 @@ router.route("/add").post(async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const newStudent = new Student({
+            studentId,
             name,
             age,
             gender,
@@ -44,7 +45,7 @@ router.route("/").get(async (req, res) => {
 
 // Update student
 router.route("/update").put(async (req, res) => {
-    const { name, newUsername, newAge, newPassword } = req.body;
+    const { studentId,name, newUsername, newAge, newPassword } = req.body;
 
     try {
         // Prepare the fields to update
@@ -61,7 +62,7 @@ router.route("/update").put(async (req, res) => {
         }
 
         const updatedStudent = await Student.findOneAndUpdate(
-            { name },
+            { studentId },
             updateFields,
             { new: true } // Return the updated student document
         );
@@ -78,12 +79,26 @@ router.route("/update").put(async (req, res) => {
 });
 
 
-// Delete student
 router.route("/delete").delete(async (req, res) => {
-    const { name } = req.body;
+    const { studentId, password } = req.body;
 
     try {
-        await Student.findOneAndDelete({ name });
+        // Find the student by studentId
+        const student = await Student.findOne({ studentId });
+
+        if (!student) {
+            return res.status(404).send({ status: "Student not found" });
+        }
+
+        // Verify the password
+        const isPasswordMatch = await bcrypt.compare(password, student.password);
+
+        if (!isPasswordMatch) {
+            return res.status(401).send({ status: "Invalid password" });
+        }
+
+        // Delete the student if the password matches
+        await Student.findOneAndDelete({ studentId });
         res.status(200).send({ status: "User deleted" });
     } catch (err) {
         console.log(err.message);
@@ -93,10 +108,10 @@ router.route("/delete").delete(async (req, res) => {
 
 // Get student by name
 router.route("/get/").get(async (req, res) => {
-    const { name } = req.query;
+    const { studentId } = req.query;
 
     try {
-        const student = await Student.findOne({ name });
+        const student = await Student.findOne({ studentId });
         res.status(200).send({ status: "User fetched", user: student });
     } catch (err) {
         console.log(err);
@@ -113,7 +128,7 @@ router.route("/login").post(async (req, res) => {
         const student = await Student.findOne({ name });
 
         if (student && await bcrypt.compare(password, student.password)) {
-            res.status(200).send({ status: "Login successful", user: student });
+            res.status(200).send({ status: "Login successful", studentId: student.studentId, user: student });
         } else {
             res.status(401).send({ status: "Invalid credentials" });
         }

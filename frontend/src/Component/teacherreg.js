@@ -5,6 +5,7 @@ import Swal from "sweetalert2"; // Import SweetAlert2
 import { useNavigate } from "react-router-dom";
 
 function TeacherReg() {
+  const [teacherId,setId] = useState("");
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
@@ -15,6 +16,7 @@ function TeacherReg() {
     e.preventDefault();
 
     const newTeacher = {
+      teacherId,
       name,
       age,
       gender,
@@ -55,6 +57,16 @@ function TeacherReg() {
         <h2 className="header">Register Teacher</h2>
         <form onSubmit={sentData} className="form">
           <div className="form-group">
+          <label htmlFor="teacherId">Teacher Id</label>
+            <input
+              id="teacherId"
+              type="text"
+              required
+              value={teacherId}
+              onChange={(e) => setId(e.target.value)}
+              placeholder="Enter Teacher Id"
+              className="form-control"
+            />
             <label htmlFor="name">Name</label>
             <input
               id="name"

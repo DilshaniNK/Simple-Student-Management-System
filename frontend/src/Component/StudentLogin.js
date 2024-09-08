@@ -23,6 +23,7 @@ function StudentLogin() {
       if (response.data.status === "Login successful") {
         //save data in localstorage
         localStorage.setItem("StudentName", username);
+        localStorage.setItem("StudentId",response.data.studentId);
         navigate("/studentinterface");
       } else {
         setError("Invalid credentials");
