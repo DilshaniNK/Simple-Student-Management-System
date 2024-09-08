@@ -18,7 +18,7 @@ const Hero = () => {
             A Learning Management System (LMS) is a software application for the administration, documentation, tracking, reporting, and delivery of educational courses, training programs, or learning and development programs. It provides an online platform for educators to create, manage, and deliver content, as well as for learners to access and engage with the content.
             </p>
             <div onClick={toggleMenu}>
-            <NavLink exact to="/history" onClick={() => setMobileMenu(false)}>
+            <NavLink exact to="/" onClick={() => setMobileMenu(false)}>
             <button className='btn'>Explore More <div className='btnSetup'><ReadMoreIcon /></div></button>
             </NavLink>
             </div>
