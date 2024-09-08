@@ -22,6 +22,7 @@ import About from './Component/About';
 import Contact from './Component/Contact';
 import MyHome from './Component/MyHome';
 import ViewAssignment from './Component/TeacherViewAssignment';
+import ContactUs from './HomeComps/ContactUs/ContactUs2';
 
 function App() {
   return (
@@ -47,7 +48,8 @@ function App() {
             <Route path='/addmin-view-courses' element={<Addminviewcourses/>}/>
             <Route path='/viewassignment' element={<ViewAssignmentdetails/>}/>
             <Route path="/about" element={<About />} />
-            <Route path="/Contact" element={<Contact />} />
+            {/* <Route path="/Contact" element={<Contact />} /> */}
+            <Route path="/contact" element={<ContactUs /> } />
             <Route path='/teacherviewassignment' element={<ViewAssignment/>}/>
 
 
