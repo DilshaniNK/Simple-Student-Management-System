@@ -3,12 +3,13 @@ import { AppBar, Toolbar, Typography, IconButton, Box, Drawer, List, ListItem, L
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const drawerWidth = 240;
 
 function AdminInterface() {
   const [adminName, setAdminName] = useState("");
-  const [adminId,setAdminId] = useState("");
+  const [adminId, setAdminId] = useState("");
   const [selectedSection, setSelectedSection] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
@@ -72,18 +73,30 @@ function AdminInterface() {
       });
 
       if (response.data.status === "Update successful") {
-        setMessage("Profile updated successfully");
-        if (newadminName) {
-          setAdminName(newadminName);
-          localStorage.setItem('AdminName', newadminName);
-          
-        }
-        setShowUpdateForm(false);
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Profile updated successfully!',
+        }).then(() => {
+          if (newadminName) {
+            setAdminName(newadminName);
+            localStorage.setItem('AdminName', newadminName);
+          }
+          setShowUpdateForm(false);
+        });
       } else {
-        setMessage('Failed to update profile');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to update profile',
+        });
       }
     } catch (err) {
-      setMessage('An error occurred');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred',
+      });
     }
   };
 
@@ -93,19 +106,31 @@ function AdminInterface() {
       const response = await axios.delete('http://localhost:8070/admin/delete', {
         data: {
           adminId: adminId
-        
         },
       });
 
       if (response.data.status === "User deleted") {
-        setMessage("Account deleted successfully");
-        localStorage.removeItem('AdminName');
-        navigate('/adminlogin');
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Account deleted successfully!',
+        }).then(() => {
+          localStorage.removeItem('AdminName');
+          navigate('/adminlogin');
+        });
       } else {
-        setMessage('Failed to delete account');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to delete account',
+        });
       }
     } catch (err) {
-      setMessage('An error occurred while deleting the account');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred while deleting the account',
+      });
     }
   };
 
@@ -166,15 +191,9 @@ function AdminInterface() {
               <Button variant="contained" color="primary" sx={{ marginRight: 2 }} onClick={() => navigate('/add-course')}>
                 Add Course
               </Button>
-              <Button variant="contained" color="primary" sx={{ marginRight: 2 }} onClick={() => navigate('/addmin-view-courses')}>
+              <Button variant="contained" color="primary" sx={{ marginRight: 2 }} onClick={() => navigate('/admin-view-courses')}>
                 View Courses
               </Button>
-              {/* <Button variant="contained" color="primary" onClick={() => navigate('/update-course')}>
-                Update Course
-              </Button>
-              <Button variant="contained" color="primary" onClick={() => navigate('/delete-course')}>
-                Delete Course
-              </Button> */}
             </Box>
           )}
 

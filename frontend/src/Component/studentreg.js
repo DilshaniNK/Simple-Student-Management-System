@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';  // Import SweetAlert2
 import "./StudentLogin.css";
 
 function Studentreg() {
@@ -21,21 +22,26 @@ function Studentreg() {
     axios
       .post("http://localhost:8070/student/add", newStudent)
       .then(() => {
-        alert("Student added");
-        setName("");
-        setAge("");
-        setGender("");
-        setPassword("");
+        Swal.fire({
+          icon: 'success',
+          title: 'Student Registered',
+          text: 'Student has been successfully registered!',
+        }).then(() => {
+          setName("");
+          setAge("");
+          setGender("");
+          setPassword("");
+          navigate('/home');  // Navigate after the SweetAlert is closed
+        });
       })
       .catch((err) => {
-        alert(err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Something went wrong!',
+        });
       });
-      navigate('/home');
   };
-
-  // const handleView = () => {
-  //   navigate("/viewstudent");
-  // };
 
   return (
     <div className="container">
@@ -96,9 +102,6 @@ function Studentreg() {
           <button type="submit" className="button">
             Submit
           </button>
-          {/* <button type="button" className="viewbutton" onClick={handleView}>
-            View
-          </button> */}
         </form>
       </div>
     </div>

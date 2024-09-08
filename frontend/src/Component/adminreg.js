@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2"; // Import SweetAlert2
 import "./StudentLogin.css"; // Import the CSS file
+import { Navigate } from "react-router-dom";
 
 function Adminreg() {
   const [adminId, setId] = useState("");
@@ -36,6 +37,7 @@ function Adminreg() {
         setAge("");
         setGender("");
         setPassword("");
+        Navigate('/home');
       })
       .catch((err) => {
         Swal.fire({
