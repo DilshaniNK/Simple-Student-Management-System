@@ -14,11 +14,7 @@ function Viewcourse() {
   const [openDialog, setOpenDialog] = useState(false); // For the confirmation dialog
   const [selectedCourseId, setSelectedCourseId] = useState(''); // To track which course is being deleted
 
-  // Assignment state
-//   const [assignmentId, setAssignmentId] = useState('');
-//   const [description, setDescription] = useState('');
-//   const [dueDate, setDueDate] = useState('');
-//   const [file, setFile] = useState(null);
+
 
   // Update state
   const [courseId, setCourseId] = useState('');
@@ -47,12 +43,6 @@ function Viewcourse() {
     }));
   };
 
-//   const handleAddAssignmentClick = (courseId) => {
-//     setShowAssignmentForm(prevState => ({
-//       ...prevState,
-//       [courseId]: !prevState[courseId],
-//     }));
-//   };
 
   const handleUpdateClick = (courseId) => {
     setCourseId(courseId); // Set courseId for update
@@ -93,50 +83,17 @@ function Viewcourse() {
     setOpenDialog(false);
   };
 
-//   const handleAssignmentSubmit = async (e, courseId) => {
-//     e.preventDefault();
 
-//     const formData = new FormData();
-//     formData.append('assignmentId', assignmentId);
-//     formData.append('description', description);
-//     formData.append('dueDate', dueDate);
-//     formData.append('file', file);
-//     formData.append('courseId', courseId);
-
-//     try {
-//       const response = await axios.post('http://localhost:8070/assignment/add', formData, {
-//         headers: {
-//           'Content-Type': 'multipart/form-data',
-//         },
-//       });
-//       if (response.status === 200) {
-//         setMessage('Assignment added successfully');
-//         setAssignmentId('');
-//         setDescription('');
-//         setDueDate('');
-//         setFile(null);
-//         setShowAssignmentForm(prevState => ({
-//           ...prevState,
-//           [courseId]: false,
-//         }));
-//       } else {
-//         setMessage('Failed to add assignment');
-//       }
-//     } catch (err) {
-//       console.error(err.response ? err.response.data : err.message);
-//       setMessage('An error occurred while adding the assignment');
-//     }
-//   };
 
   const handleUpdateCourseSubmit = async (e) => {
     e.preventDefault();
 
     const updatedCourse = {};
-    if (newcoursename) updatedCourse.courseName = newcoursename;
-    if (newNoofstudents) updatedCourse.NoOfStudent = newNoofstudents;
-    if (newcoursefee) updatedCourse.courseFee = newcoursefee;
-    if (newlecturename) updatedCourse.lectureName = newlecturename;
-    if (newduration) updatedCourse.Duration = newduration;
+    if (newcoursename) updatedCourse.newcoursename = newcoursename;
+    if (newNoofstudents) updatedCourse.newNoofstudents = newNoofstudents;
+    if (newcoursefee) updatedCourse.newcoursefee = newcoursefee;
+    if (newlecturename) updatedCourse.newlecturename = newlecturename;
+    if (newduration) updatedCourse.newduration = newduration;
 
     try {
       const response = await axios.put('http://localhost:8070/course/update', {

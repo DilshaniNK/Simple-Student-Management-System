@@ -20,6 +20,7 @@ import Addminviewcourses from './Component/addminviewcourses';
 import ViewAssignmentdetails from './Component/ViewAssignmentdetails';
 import About from './Component/About';
 import Contact from './Component/Contact';
+import ViewAssignment from './Component/TeacherViewAssignment';
 
 
 
@@ -47,6 +48,7 @@ function App() {
             <Route path='/viewassignment' element={<ViewAssignmentdetails/>}/>
             <Route path="/about" element={<About />} />
             <Route path="/Contact" element={<Contact />} />
+            <Route path='/teacherviewassignment' element={<ViewAssignment/>}/>
 
 
             </Routes>
