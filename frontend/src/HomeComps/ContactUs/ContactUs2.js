@@ -50,12 +50,13 @@ const ContactUs = () => {
     return (
         <div className='contact' id='contactus'>
             <div className="contact-col">
-                <h3>Summon a Dragon<div className='setalign'><WhatshotIcon /></div></h3>
-                <p>The act of calling a dragon, often referred to as `summoning` or `bonding with` a dragon, is a unique ability primarily associated with House Targaryen.</p>
+                <h3>Ask Anything about our LMS<div className='setalign'><WhatshotIcon /></div></h3>
+                <p>The best Learning Management System in the World</p>
+                <p>Our LMS provides a comprehensive platform for online learning and course management.</p>
                 <ul>
-                    <li><img src={m1} alt="" />trageryenTheGreatest@westerose.ws</li>
-                    <li><img src={m3} alt="" />3eyedRaven.bran</li>
-                    <li><img src={m2} alt="" />Dragonstone</li>
+                    <li><img src={m1} alt="" />www.chalkboard.com</li>
+                    <li><img src={m3} alt="" />chalkboard@gmail.com</li>
+                    <li><img src={m2} alt="" />Chalkboard</li>
                 </ul>
             </div>
             <div className="contact-col">
@@ -92,7 +93,7 @@ const ContactUs = () => {
                     <textarea 
                         name="message" 
                         rows="6" 
-                        placeholder='Any thoughts about the king' 
+                        placeholder='Enter your message' 
                         {...formik.getFieldProps('message')}
                         required
                     />
