@@ -16,7 +16,7 @@ function ViewAssignment() {
       const response = await axios.get(`http://localhost:8070/assignment/getass?courseId=${courseId}`);
       setAssignments(response.data);
     } catch (error) {
-    //   setError('Failed to retrieve assignments');
+    
     }
   }, [courseId]);
 
