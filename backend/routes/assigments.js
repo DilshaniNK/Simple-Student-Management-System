@@ -79,7 +79,7 @@ router.route("/update").put(upload.single('file'), async (req, res) => {
 
 // Delete assignment route
 router.route("/delete").delete(async (req, res) => {
-    const { assignmentId } = req.body;
+    const { assignmentId } = req.query;
 
     try {
         // Find the assignment by its ID

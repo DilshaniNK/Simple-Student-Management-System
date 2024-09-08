@@ -16,7 +16,7 @@ function ViewAssignment() {
       const response = await axios.get(`http://localhost:8070/assignment/getass?courseId=${courseId}`);
       setAssignments(response.data);
     } catch (error) {
-      setError('Failed to retrieve assignments');
+    //   setError('Failed to retrieve assignments');
     }
   }, [courseId]);
 
@@ -31,15 +31,15 @@ function ViewAssignment() {
 
   const deleteAssignment = async (assignmentId) => {
     try {
-      await axios.delete(`http://localhost:8070/assignment/delete/${assignmentId}`);
-      setSuccess('Assignment deleted successfully');
-      // Refetch the assignments after deletion
-      fetchAssignments();
+      await axios.delete(`http://localhost:8070/assignment/delete?assignmentId=${assignmentId}`);
+      // Immediately update the assignments state
+      setAssignments(prevAssignments => prevAssignments.filter(assignment => assignment.assignmentId !== assignmentId));
+    //   setSuccess('Assignment deleted successfully');
     } catch (error) {
       setError('Failed to delete assignment');
     }
   };
-
+  
   const handleDeleteClick = (assignmentId) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -51,11 +51,17 @@ function ViewAssignment() {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteAssignment(assignmentId);
-        Swal.fire('Deleted!', 'The assignment has been deleted.', 'success');
+        deleteAssignment(assignmentId)
+          .then(() => {
+            Swal.fire('Deleted!', 'The assignment has been deleted.', 'success');
+          })
+          .catch(() => {
+            Swal.fire('Error!', 'Failed to delete the assignment.', 'error');
+          });
       }
     });
   };
+  
 
   return (
     <Container>

@@ -124,9 +124,9 @@ function Viewcourse() {
   };
 
   // Handle delete action by navigating to the teacherviewassignment page
-  const handleDeleteNavigation = (courseId,courseName) => {
-    localStorage.setItem('selectedCourseID',courseId);
-    localStorage.setItem('selectedCourseName',courseName);
+  const handleDeleteNavigation = (courseId, courseName) => {
+    localStorage.setItem('selectedCourseID', courseId);
+    localStorage.setItem('selectedCourseName', courseName);
     navigate('/teacherviewassignment');
   };
 
@@ -191,7 +191,7 @@ function Viewcourse() {
                 <TableCell>
                   <Button
                     variant="contained"
-                    onClick={() => handleDeleteNavigation(course.courseId,course.courseName)} // Navigate to teacherviewassignment page
+                    onClick={() => handleDeleteNavigation(course.courseId, course.courseName)} // Navigate to teacherviewassignment page
                     sx={{
                       backgroundColor: '#7c93c3',
                       '&:hover': {
@@ -226,14 +226,16 @@ function Viewcourse() {
                         value={assignmentId}
                         onChange={(e) => setAssignmentId(e.target.value)}
                         fullWidth
-                        margin="normal"
+                        required
+                        sx={{ mb: 2 }} // Margin bottom to increase space
                       />
                       <TextField
                         label="Description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         fullWidth
-                        margin="normal"
+                        required
+                        sx={{ mb: 2 }} // Margin bottom to increase space
                       />
                       <TextField
                         label="Due Date"
@@ -241,36 +243,32 @@ function Viewcourse() {
                         value={dueDate}
                         onChange={(e) => setDueDate(e.target.value)}
                         fullWidth
-                        margin="normal"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
+                        required
+                        sx={{ mb: 2 }} // Margin bottom to increase space
+                        InputLabelProps={{ shrink: true }}
                       />
-                      <Button variant="contained" component="label">
+                      <Button
+                        variant="contained"
+                        component="label"
+                        sx={{ mb: 2, backgroundColor: '#7c93c3', '&:hover': { backgroundColor: '#1e2a5e' } }}
+                      >
                         Upload File
-                        <input type="file" hidden onChange={(e) => setFile(e.target.files[0])} />
+                        <input
+                          type="file"
+                          hidden
+                          onChange={(e) => setFile(e.target.files[0])}
+                        />
                       </Button>
                       <Button
                         type="submit"
                         variant="contained"
-                        color="primary"
-                        sx={{
-                          backgroundColor: '#7c93c3',
-                          '&:hover': {
-                            backgroundColor: '#1e2a5e',
-                          },
-                          marginTop: '10px',
-                        }}
+                        sx={{ backgroundColor: '#7c93c3', '&:hover': { backgroundColor: '#1e2a5e' },marginLeft: '50px',marginBottom:'20px' }}
                       >
-                        Submit Assignment
+                        Add Assignment
                       </Button>
                     </form>
                   </Collapse>
-                </TableCell>
-              </TableRow>
 
-              <TableRow>
-                <TableCell colSpan={6}>
                   <Collapse in={activeForm.courseId === course.courseId && activeForm.formType === 'updateAssignment'} timeout="auto" unmountOnExit>
                     <form onSubmit={(e) => handleAssignmentUpdateSubmit(e, course.courseId)} style={{ margin: '20px' }}>
                       <TextField
@@ -278,14 +276,15 @@ function Viewcourse() {
                         value={updateAssignmentId}
                         onChange={(e) => setUpdateAssignmentId(e.target.value)}
                         fullWidth
-                        margin="normal"
+                        required
+                        sx={{ mb: 2 }} // Margin bottom to increase space
                       />
                       <TextField
                         label="Description"
                         value={updateDescription}
                         onChange={(e) => setUpdateDescription(e.target.value)}
                         fullWidth
-                        margin="normal"
+                        sx={{ mb: 2 }} // Margin bottom to increase space
                       />
                       <TextField
                         label="Due Date"
@@ -293,26 +292,25 @@ function Viewcourse() {
                         value={updateDueDate}
                         onChange={(e) => setUpdateDueDate(e.target.value)}
                         fullWidth
-                        margin="normal"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
+                        sx={{ mb: 2 }} // Margin bottom to increase space
+                        InputLabelProps={{ shrink: true }}
                       />
-                      <Button variant="contained" component="label">
+                      <Button
+                        variant="contained"
+                        component="label"
+                        sx={{ mb: 2, backgroundColor: '#7c93c3', '&:hover': { backgroundColor: '#1e2a5e' } }}
+                      >
                         Upload File
-                        <input type="file" hidden onChange={(e) => setUpdateFile(e.target.files[0])} />
+                        <input
+                          type="file"
+                          hidden
+                          onChange={(e) => setUpdateFile(e.target.files[0])}
+                        />
                       </Button>
                       <Button
                         type="submit"
                         variant="contained"
-                        color="primary"
-                        sx={{
-                          backgroundColor: '#7c93c3',
-                          '&:hover': {
-                            backgroundColor: '#1e2a5e',
-                          },
-                          marginTop: '10px',
-                        }}
+                        sx={{ backgroundColor: '#7c93c3', '&:hover': { backgroundColor: '#1e2a5e' } ,marginLeft:'50px',marginBottom:'20px'}}
                       >
                         Update Assignment
                       </Button>
@@ -324,9 +322,11 @@ function Viewcourse() {
           ))}
         </TableBody>
       </Table>
-
-      {/* Success/Error Alert */}
-      <Snackbar open={alert.open} autoHideDuration={6000} onClose={() => setAlert({ ...alert, open: false })}>
+      <Snackbar
+        open={alert.open}
+        autoHideDuration={6000}
+        onClose={() => setAlert({ ...alert, open: false })}
+      >
         <Alert onClose={() => setAlert({ ...alert, open: false })} severity={alert.severity}>
           {alert.message}
         </Alert>
