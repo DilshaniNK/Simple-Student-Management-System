@@ -12,10 +12,13 @@ function Home() {
 
   return (
     <div className="App">
-      <h1 className="heading">
-        Write your future with{" "}
-        <span style={{ color: "#1E2A5E", fontSize: "40px" }}>ChalkBoard !</span>
-      </h1>
+      <div className='heading'>
+        <h1>
+          Write your future with{" "}
+          <br />
+          <span style={{ color: "#1E2A5E", fontSize: "40px" }}>ChalkBoard !</span>
+        </h1>
+      </div>
       <div className="animated-text"></div>
       <div className="modal-container">
         <div className="modal">
