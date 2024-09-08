@@ -157,8 +157,8 @@ function AdminInterface() {
           sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
         >
           {selectedSection === '' && (
-            <Typography variant="h2" gutterBottom>
-              Welcome, {adminName}!
+            <Typography variant="h4" >
+              Welcome, {adminName.toUpperCase()}!
             </Typography>
           )}
           {selectedSection === 'Courses' && (
