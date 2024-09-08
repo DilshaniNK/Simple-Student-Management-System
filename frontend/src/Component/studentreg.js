@@ -8,7 +8,7 @@ function Studentreg() {
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const sentData = (e) => {
     e.preventDefault();
@@ -32,9 +32,9 @@ function Studentreg() {
       });
   };
 
-  const handleView = () => {
-    navigate("/viewstudent");
-  };
+  // const handleView = () => {
+  //   navigate("/viewstudent");
+  // };
 
   return (
     <div className="container">
@@ -95,9 +95,9 @@ function Studentreg() {
           <button type="submit" className="button">
             Submit
           </button>
-          <button type="button" className="viewbutton" onClick={handleView}>
+          {/* <button type="button" className="viewbutton" onClick={handleView}>
             View
-          </button>
+          </button> */}
         </form>
       </div>
     </div>

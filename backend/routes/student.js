@@ -47,13 +47,23 @@ router.route("/update").put(async (req, res) => {
     const { name, newUsername, newAge, newPassword } = req.body;
 
     try {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        // Prepare the fields to update
+        const updateFields = {
+            name: newUsername || undefined,
+            age: newAge || undefined,
+        };
+
+        // If newPassword is provided, hash it and include it in the update
+        if (newPassword) {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(newPassword, salt);
+            updateFields.password = hashedPassword;
+        }
 
         const updatedStudent = await Student.findOneAndUpdate(
             { name },
-            { name: newUsername, age: newAge, password: hashedPassword },
-            { new: true }
+            updateFields,
+            { new: true } // Return the updated student document
         );
 
         if (updatedStudent) {
@@ -66,6 +76,7 @@ router.route("/update").put(async (req, res) => {
         res.status(500).send({ status: "Error updating student", error: err.message });
     }
 });
+
 
 // Delete student
 router.route("/delete").delete(async (req, res) => {

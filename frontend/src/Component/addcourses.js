@@ -1,29 +1,36 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Container, TextField, Button, Typography, Box } from '@mui/material';
-// import './Addcourses.css'; // Import the CSS file
+import { Container, TextField, Button, Typography, Box, Paper } from '@mui/material';
+import Swal from 'sweetalert2';  // Import SweetAlert
 
 function Addcourses() {
   const [courseName, setName] = useState("");
   const [courseId, setId] = useState("");
   const [NoOfStudent, setNoOfStudent] = useState("");
   const [courseFee, setcoursefee] = useState("");
-  const [lectureName,setlectureName] = useState("");
-  const [Duration,setduration] = useState("");
+  const [lectureName, setlectureName] = useState("");
+  const [Duration, setduration] = useState("");
 
   const sentData = (e) => {
     e.preventDefault();
     const newCourse = {
-     courseId,
-     courseName,
-     NoOfStudent,
-     courseFee,
-     lectureName,
-     Duration
+      courseId,
+      courseName,
+      NoOfStudent,
+      courseFee,
+      lectureName,
+      Duration
     };
+
     axios.post("http://localhost:8070/course/add", newCourse)
       .then(() => {
-        alert("Course Added");
+        Swal.fire({
+          icon: 'success',
+          title: 'Course Added',
+          text: 'Successfully added the course!'
+        });
+
+        // Clear form fields after success
         setId("");
         setName("");
         setNoOfStudent("");
@@ -32,92 +39,93 @@ function Addcourses() {
         setduration("");
       })
       .catch((err) => {
-        alert(err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: err.message
+        });
       });
   };
 
   return (
-    <Container maxWidth="sm" className="container">
-      <Typography variant="h4" gutterBottom className="title">
-        Add Courses
-      </Typography>
-      <form onSubmit={sentData} className="form">
-        <Box marginBottom={2}>
-          <TextField
-            label="Course ID"
-            variant="outlined"
+    <Container maxWidth="sm">
+      <Paper elevation={3} sx={{ padding: 4, marginTop: 5 }}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Add Course
+        </Typography>
+        <form onSubmit={sentData}>
+          <Box marginBottom={2}>
+            <TextField
+              label="Course ID"
+              variant="outlined"
+              fullWidth
+              required
+              value={courseId}
+              onChange={(e) => setId(e.target.value)}
+            />
+          </Box>
+          <Box marginBottom={2}>
+            <TextField
+              label="Course Name"
+              variant="outlined"
+              fullWidth
+              required
+              value={courseName}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </Box>
+          <Box marginBottom={2}>
+            <TextField
+              label="No of Students"
+              type="number"
+              variant="outlined"
+              fullWidth
+              required
+              value={NoOfStudent}
+              onChange={(e) => setNoOfStudent(e.target.value)}
+            />
+          </Box>
+          <Box marginBottom={2}>
+            <TextField
+              label="Course Fee"
+              variant="outlined"
+              fullWidth
+              required
+              value={courseFee}
+              onChange={(e) => setcoursefee(e.target.value)}
+            />
+          </Box>
+          <Box marginBottom={2}>
+            <TextField
+              label="Lecture Name"
+              variant="outlined"
+              fullWidth
+              required
+              value={lectureName}
+              onChange={(e) => setlectureName(e.target.value)}
+            />
+          </Box>
+          <Box marginBottom={2}>
+            <TextField
+              label="Course Duration"
+              variant="outlined"
+              fullWidth
+              required
+              value={Duration}
+              onChange={(e) => setduration(e.target.value)}
+            />
+          </Box>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
             fullWidth
-            required
-            value={courseId}
-            onChange={(e) => setId(e.target.value)}
-            className="inputField"
-          />
-        </Box>
-        <Box marginBottom={2}>
-          <TextField
-            label="Course Name"
-            variant="outlined"
-            fullWidth
-            required
-            value={courseName}
-            onChange={(e) => setName(e.target.value)}
-            className="inputField"
-          />
-        </Box>
-        <Box marginBottom={2}>
-          <TextField
-            label="No of Students"
-            type="number"
-            variant="outlined"
-            fullWidth
-            required
-            value={NoOfStudent}
-            onChange={(e) => setNoOfStudent(e.target.value)}
-            className="inputField"
-          />
-        </Box>
-        <Box marginBottom={2}>
-          <TextField
-            label="Course Fee"
-            variant="outlined"
-            fullWidth
-            required
-            value={courseFee}
-            onChange={(e) => setcoursefee(e.target.value)}
-            className="inputField"
-          />
-        </Box>
-        <Box marginBottom={2}>
-          <TextField
-            label="Lecture Name"
-            variant="outlined"
-            fullWidth
-            required
-            value={lectureName}
-            onChange={(e) => setlectureName(e.target.value)}
-            className="inputField"
-          />
-        </Box>
-        <Box marginBottom={2}>
-          <TextField
-            label="Course Duration"
-            variant="outlined"
-            fullWidth
-            required
-            value={Duration}
-            onChange={(e) => setduration(e.target.value)}
-            className="inputField"
-          />
-        </Box>
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-          className="submitButton"
-        >
-          Submit
-        </Button>
-      </form>
+            sx={{ backgroundColor: '#7C93C3', '&:hover': { backgroundColor: '#1E2A5E' } }}
+          >
+            Submit
+          </Button>
+        </form>
+      </Paper>
     </Container>
   );
 }

@@ -50,10 +50,12 @@ router.route("/update").put(async (req, res) => {
     const { adminId, newadminName, newadminAge, newadminPassword } = req.body;
 
     try {
+        let hashedPassword = newadminPassword;
         // Hash the new password
+        if(newadminPassword){
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(newadminPassword, salt);
-
+        hashedPassword = await bcrypt.hash(newadminPassword, salt);
+        }
         const updatedAdmin = await Admin.findOneAndUpdate(
             { adminId },
             { adminName: newadminName, adminAge: newadminAge, adminPassword: hashedPassword },
