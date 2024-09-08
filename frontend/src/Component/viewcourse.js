@@ -131,7 +131,7 @@ function Viewcourse() {
   };
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} sx={{ maxWidth: '80%', margin: '0 auto', backgroundColor: '#f0f4f8', borderRadius: '10px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}>
       <Table>
         <TableHead>
           <TableRow>

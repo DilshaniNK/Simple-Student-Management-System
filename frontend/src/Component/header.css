@@ -16,6 +16,9 @@ body {
     max-width: 100%; /* Maximizes the width of the navbar */
     backdrop-filter: blur(10px); /* Adds a blur effect */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Adds a shadow for better separation */
+    position: sticky; /* Make the navbar sticky */
+    top: 0; /* Stick to the top of the viewport */
+    z-index: 1000; /* Ensures navbar is above other content */
 }
 
 .logo {

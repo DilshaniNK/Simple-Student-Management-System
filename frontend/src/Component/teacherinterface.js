@@ -135,10 +135,10 @@ function Teacherinterface() {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh'}}>
       {/* Navbar */}
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar sx={{backgroundColor: '#1E2A5E'}}>
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer}>
             <MenuIcon />
           </IconButton>
@@ -170,9 +170,7 @@ function Teacherinterface() {
             <ListItem button onClick={() => handleSectionChange('Courses')}>
               <ListItemText primary="Courses" />
             </ListItem>
-            {/* <ListItem button onClick={() => handleSectionChange('Assignments')}>
-              <ListItemText primary="Assignments" />
-            </ListItem> */}
+            
             <ListItem button onClick={() => handleSectionChange('Other')}>
               <ListItemText primary="Other" />
             </ListItem>
@@ -185,18 +183,20 @@ function Teacherinterface() {
 
         {/* Main Content */}
         <Box
-          component="main"
-          sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+          // component="main"
+          sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 , alignItems: 'center'}}
         >
           {/* Display content based on the selected section */}
           {selectedSection === '' && (
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom >
               Welcome....! {teacherName.toUpperCase()}
             </Typography>
           )}
           {selectedSection === 'Courses' && (
             <Box>
-              <Button variant="contained" color="primary" onClick={() => navigate('/view-courses')}>
+              <Button variant="contained"  onClick={() => navigate('/view-courses')}
+                sx={{ backgroundColor: '#7c93c3', '&:hover': { backgroundColor: '#1e2a5e' }}}
+                >
                 View Courses
               </Button>
             </Box>
@@ -209,16 +209,18 @@ function Teacherinterface() {
                 <Box>
                   <Button
                     variant="contained"
-                    color="primary"
+                    // color="primary"
                     onClick={handleUpdateProfile}
-                    sx={{ mr: 2 }}
-                  >
+                    sx={{ mr: 2, backgroundColor: '#7c93c3', '&:hover': { backgroundColor: '#1e2a5e' }}}
+                    > 
+                  
                     Update Profile
                   </Button>
                   <Button
                     variant="contained"
-                    color="secondary"
+                    
                     onClick={handleDeleteAccountClick}
+                    sx={{ mr: 2, backgroundColor: '#7c93c3', '&:hover': { backgroundColor: '#1e2a5e' }}}
                   >
                     Delete Account
                   </Button>
@@ -258,7 +260,7 @@ function Teacherinterface() {
                     <Button
                       type="submit"
                       variant="contained"
-                      color="primary"
+                      sx={{ mr: 2, backgroundColor: '#1e2a5e'}}
                     >
                       Update
                     </Button>
@@ -292,7 +294,7 @@ function Teacherinterface() {
                     <Button
                       type="submit"
                       variant="contained"
-                      color="secondary"
+                      sx={{ mr: 2, backgroundColor: '#1e2a5e'}}
                     >
                       Delete
                     </Button>

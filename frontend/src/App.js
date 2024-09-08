@@ -19,7 +19,7 @@ import AdminInterface from './Component/adminInterface';
 import Addminviewcourses from './Component/addminviewcourses';
 import ViewAssignmentdetails from './Component/ViewAssignmentdetails';
 import About from './Component/About';
-import Contact from './Component/Contact';
+// import Contact from './Component/Contact';
 import MyHome from './Component/MyHome';
 import ViewAssignment from './Component/TeacherViewAssignment';
 import ContactUs from './HomeComps/ContactUs/ContactUs2';
@@ -45,7 +45,7 @@ function App() {
             <Route path='/delete-course' element={<Deletecourse/>}/>
             <Route path='/adminreg'element={<Adminreg/>}/>
             <Route path='/admininterface' element={<AdminInterface/>}/>
-            <Route path='/addmin-view-courses' element={<Addminviewcourses/>}/>
+            <Route path='/admin-view-courses' element={<Addminviewcourses/>}/>
             <Route path='/viewassignment' element={<ViewAssignmentdetails/>}/>
             <Route path="/about" element={<About />} />
             {/* <Route path="/Contact" element={<Contact />} /> */}
