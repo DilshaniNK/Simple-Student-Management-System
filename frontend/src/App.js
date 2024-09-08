@@ -18,6 +18,8 @@ import Adminreg from './Component/adminreg';
 import AdminInterface from './Component/adminInterface';
 import Addminviewcourses from './Component/addminviewcourses';
 import ViewAssignmentdetails from './Component/ViewAssignmentdetails';
+import About from './Component/About';
+import Contact from './Component/Contact';
 
 
 
@@ -43,6 +45,8 @@ function App() {
             <Route path='/admininterface' element={<AdminInterface/>}/>
             <Route path='/addmin-view-courses' element={<Addminviewcourses/>}/>
             <Route path='/viewassignment' element={<ViewAssignmentdetails/>}/>
+            <Route path="/about" element={<About />} />
+            <Route path="/Contact" element={<Contact />} />
 
 
             </Routes>

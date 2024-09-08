@@ -22,7 +22,7 @@ mongoose.connect(URL, {
 
 const connection = mongoose.connection;
 connection.once("open", () => {
-    console.log("Connet una yaku");
+    console.log("Connected to MongoDB");
 
 })
 const studentRoute = require("./routes/student.js");
@@ -34,12 +34,11 @@ const AdminRouter = require("./routes/admin.js");
 app.use("/student",studentRoute);//http://localhost:8070/student
 app.use("/teacher",teacherRoute);//http://localhost:8070/teacher 
 app.use("/course",coursesRoute);//http://localhost:8070/course
-
 app.use("/assignment",AssigmentRoute);//http://localhost:8070/assigment
 app.use("/admin",AdminRouter);//http://localhost:8070/admin
 
 app.listen(PORT, () =>{
-    console.log(`server run weno ${PORT} eke `);
+    console.log(`Server Runs on ${PORT} PORT `);
 
 })
 
