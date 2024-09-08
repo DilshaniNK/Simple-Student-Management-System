@@ -187,8 +187,8 @@ function Teacherinterface() {
         >
           {/* Display content based on the selected section */}
           {selectedSection === '' && (
-            <Typography variant="h2" gutterBottom>
-              Welcome....! {teacherName}
+            <Typography variant="h4" gutterBottom>
+              Welcome....! {teacherName.toUpperCase()}
             </Typography>
           )}
           {selectedSection === 'Courses' && (

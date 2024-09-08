@@ -163,10 +163,10 @@ function AdminInterface() {
           )}
           {selectedSection === 'Courses' && (
             <Box>
-              <Button variant="contained" color="primary" onClick={() => navigate('/add-course')}>
+              <Button variant="contained" color="primary" sx={{ marginRight: 2 }} onClick={() => navigate('/add-course')}>
                 Add Course
               </Button>
-              <Button variant="contained" color="primary" onClick={() => navigate('/addmin-view-courses')}>
+              <Button variant="contained" color="primary" sx={{ marginRight: 2 }} onClick={() => navigate('/addmin-view-courses')}>
                 View Courses
               </Button>
               {/* <Button variant="contained" color="primary" onClick={() => navigate('/update-course')}>

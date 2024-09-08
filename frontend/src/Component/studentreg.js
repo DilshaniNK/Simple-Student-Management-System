@@ -8,7 +8,7 @@ function Studentreg() {
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const sentData = (e) => {
     e.preventDefault();
@@ -30,6 +30,7 @@ function Studentreg() {
       .catch((err) => {
         alert(err);
       });
+      navigate('/home');
   };
 
   // const handleView = () => {

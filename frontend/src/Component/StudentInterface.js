@@ -128,16 +128,16 @@ function StudentInterface() {
 
   return (
     <Container className='student-interface'>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' , flexDirection: 'column', mb: 2 }}>
         <Typography variant="h4">
-          Hi {studentName}
+          Hi, {studentName.toLocaleUpperCase()}
         </Typography>
         <Box className='button-container'>
           <Button
             variant="contained"
             color="primary"
             onClick={handleUpdateProfile}
-            sx={{ mr: 2 }}
+            // sx={{ mr: 2 }}
           >
             Update Profile
           </Button>

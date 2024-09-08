@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./StudentLogin.css"; // Import the CSS file
 import Swal from "sweetalert2"; // Import SweetAlert2
+import { useNavigate } from "react-router-dom";
 
 function TeacherReg() {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const sentData = (e) => {
     e.preventDefault();
@@ -44,6 +46,7 @@ function TeacherReg() {
           text: err.message || "Please try again.",
         });
       });
+      navigate('/home');
   };
 
   return (
