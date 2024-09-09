@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2"; // Import SweetAlert2
 import "./StudentLogin.css"; // Import the CSS file
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Adminreg() {
   const [adminId, setId] = useState("");
@@ -10,7 +10,7 @@ function Adminreg() {
   const [adminAge, setAge] = useState("");
   const [adminGender, setGender] = useState("");
   const [adminPassword, setPassword] = useState("");
-
+  const navigate = useNavigate();
   const sendData = (e) => {
     e.preventDefault();
     const newAdmin = {
@@ -37,7 +37,7 @@ function Adminreg() {
         setAge("");
         setGender("");
         setPassword("");
-        Navigate('/home');
+        navigate('/home');
       })
       .catch((err) => {
         Swal.fire({
