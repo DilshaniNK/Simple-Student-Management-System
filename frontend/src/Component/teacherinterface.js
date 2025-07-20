@@ -1,313 +1,267 @@
-import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Box, Drawer, List, ListItem, ListItemText, Divider, Button, Container, Paper, TextField } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Swal from 'sweetalert2';
-
-const drawerWidth = 240;
+import React, { useState, useEffect } from "react";
+import {
+  Typography,
+  Box,
+  Button,
+  Paper,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import axios from "axios";
+import Swal from "sweetalert2";
+import Sidebar from "./teacher-sidebar";
+import Navbar from "./navbar";
+import { useNavigate } from "react-router-dom";
 
 function Teacherinterface() {
   const [teacherId, setTeacherId] = useState("");
   const [teacherName, setTeacherName] = useState("");
-  const [selectedSection, setSelectedSection] = useState('');
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [showUpdateForm, setShowUpdateForm] = useState(false);
-  const [showDeleteForm, setShowDeleteForm] = useState(false);
-  const [message, setMessage] = useState("");
-  const [newUsername, setNewUsername] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [newTeacherAge, setNewTeacherAge] = useState("");
+  const [selectedSection, setSelectedSection] = useState("");
+
+  const [students, setStudents] = useState([]);
+  const [editingStudentId, setEditingStudentId] = useState(null);
+  const [editName, setEditName] = useState("");
+  const [editAge, setEditAge] = useState("");
+  const [editGender, setEditGender] = useState("");
+  const [editClass, setEditClass] = useState("");
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Retrieve the teacher's name from localStorage
-    const name = localStorage.getItem('TeacherName');
-    const id = localStorage.getItem('TeacherId');
+    const name = localStorage.getItem("TeacherName");
+    const id = localStorage.getItem("TeacherId");
     if (name && id) {
       setTeacherName(name);
       setTeacherId(id);
     }
   }, []);
 
-  const handleSectionChange = (section) => {
-    setSelectedSection(section);
-    setIsDrawerOpen(false); // Close the drawer when a section is selected
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  const fetchStudents = () => {
+    axios
+      .get("http://localhost:8070/student/")
+      .then((res) => setStudents(res.data))
+      .catch((err) => console.error("Error fetching students:", err));
   };
 
-  const handleLogout = () => {
-    navigate('/teacherlogin');
-    localStorage.removeItem('TeacherName');
-    // Redirect to login page or wherever necessary
+  const handleEditClick = (student) => {
+    setEditingStudentId(student.studentId);  // <-- Use studentId, NOT _id
+    setEditName(student.name);
+    setEditAge(student.age);
+    setEditGender(student.gender);
+    setEditClass(student.class);
   };
 
-  const toggleDrawer = () => {
-    setIsDrawerOpen(!isDrawerOpen);
+  const handleEditCancel = () => {
+    setEditingStudentId(null);
   };
 
-  const handleUpdateProfile = () => {
-    setShowUpdateForm(true);
-    setShowDeleteForm(false);
-  };
-
-  const handleDeleteAccountClick = () => {
-    setShowDeleteForm(true);
-    setShowUpdateForm(false);
-  };
-
-  const handleFormSubmit = async (e) => {
+  const handleEditSubmit = async (e) => {
     e.preventDefault();
-    const updatedFields = {};
-    if (newUsername) updatedFields.newUsername = newUsername;
-    if (newTeacherAge) updatedFields.newage = newTeacherAge;
-    if (newPassword) updatedFields.newpassword = newPassword;
 
-    if (Object.keys(updatedFields).length === 0) {
-      setMessage("Please fill in at least one field to update.");
-      return;
-    }
     try {
-      const response = await axios.put("http://localhost:8070/teacher/update", {
-        teacherId: teacherId,
-        ...updatedFields
-      });
+      const updatedStudent = {
+        name: editName,
+        age: Number(editAge),  // Convert to number
+        gender: editGender,
+        class: editClass,
+      };
 
-      if (response.data.status === "Update successful") {
+      const response = await axios.put(
+        `http://localhost:8070/teacher/student/update/${editingStudentId}`,
+        updatedStudent
+      );
+
+      if (response.status === 200) {
         Swal.fire({
-          icon: 'success',
-          title: 'Success',
-          text: 'Profile updated successfully!',
+          icon: "success",
+          title: "Success",
+          text: "Student updated successfully!",
         });
-        if (newUsername) {
-          setTeacherName(newUsername);
-          localStorage.setItem('TeacherName', newUsername);
-        }
-        setShowUpdateForm(false);
+        setEditingStudentId(null);
+        fetchStudents();
       } else {
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to update profile',
+          icon: "error",
+          title: "Error",
+          text: "Failed to update student",
         });
       }
     } catch (err) {
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'An error occurred',
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while updating student",
       });
-    }
-  };
-
-  const handleDeleteAccountSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.delete('http://localhost:8070/teacher/delete', {
-        data: {
-          teacherId: teacherId,
-          password: newPassword,
-        },
-      });
-      if (response.data.status === "Teacher deleted") {
-        Swal.fire({
-          icon: 'success',
-          title: 'Success',
-          text: 'Account deleted successfully!',
-        }).then(() => {
-          localStorage.removeItem('TeacherName');
-          navigate('/teacherlogin');
-        });
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to delete account',
-        });
-      }
-    } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'An error occurred while deleting the account',
-      });
+      console.error(err);
     }
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh'}}>
-      {/* Navbar */}
-      <AppBar position="static">
-        <Toolbar sx={{backgroundColor: '#1E2A5E'}}>
-          <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer}>
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Teacher Dashboard
-          </Typography>
-        </Toolbar>
-      </AppBar>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+      <Navbar />
 
-      {/* Main content area with sidebar and content */}
-      <Box sx={{ display: 'flex', flexGrow: 1 }}>
-        {/* Sidebar */}
-        <Drawer
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
-              width: drawerWidth,
-              boxSizing: 'border-box',
-              mt: '64px', // Adjust for the height of the AppBar
-            },
-          }}
-          variant="temporary"
-          anchor="left"
-          open={isDrawerOpen}
-          onClose={toggleDrawer}
-        >
-          <List>
-            <ListItem button onClick={() => handleSectionChange('Courses')}>
-              <ListItemText primary="Courses" />
-            </ListItem>
-            
-            <ListItem button onClick={() => handleSectionChange('Other')}>
-              <ListItemText primary="Other" />
-            </ListItem>
-            <Divider />
-            <ListItem button onClick={handleLogout}>
-              <ListItemText primary="Logout" />
-            </ListItem>
-          </List>
-        </Drawer>
+      <Box sx={{ display: "flex", flexGrow: 1 }}>
+        <Sidebar
+          selectedSection={selectedSection}
+          setSelectedSection={setSelectedSection}
+        />
 
-        {/* Main Content */}
-        <Box
-          // component="main"
-          sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 , alignItems: 'center'}}
-        >
-          {/* Display content based on the selected section */}
-          {selectedSection === '' && (
-            <Typography variant="h4" gutterBottom >
-              Welcome....! {teacherName.toUpperCase()}
-            </Typography>
-          )}
-          {selectedSection === 'Courses' && (
-            <Box>
-              <Button variant="contained"  onClick={() => navigate('/view-courses')}
-                sx={{ backgroundColor: '#7c93c3', '&:hover': { backgroundColor: '#1e2a5e' }}}
-                >
-                View Courses
-              </Button>
-            </Box>
-          )}
+        <Box sx={{ flexGrow: 1, bgcolor: "background.default", p: 3, mt: "64px" }}>
+          {selectedSection === "" && (
+            <>
+              <Typography variant="h4" gutterBottom>
+                Welcome....! {teacherName.toUpperCase()}
+              </Typography>
 
-          {/* Other section */}
-          {selectedSection === 'Other' && (
-            <Container className='teacher-interface'>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                <Box>
-                  <Button
-                    variant="contained"
-                    // color="primary"
-                    onClick={handleUpdateProfile}
-                    sx={{ mr: 2, backgroundColor: '#7c93c3', '&:hover': { backgroundColor: '#1e2a5e' }}}
-                    > 
-                  
-                    Update Profile
-                  </Button>
-                  <Button
-                    variant="contained"
-                    
-                    onClick={handleDeleteAccountClick}
-                    sx={{ mr: 2, backgroundColor: '#7c93c3', '&:hover': { backgroundColor: '#1e2a5e' }}}
-                  >
-                    Delete Account
-                  </Button>
-                </Box>
-              </Box>
-
-              {showUpdateForm && (
-                <Paper className='update-profile-paper' sx={{ p: 3 }}>
-                  <Typography variant="h6">
-                    Update Profile
-                  </Typography>
-                  <form onSubmit={handleFormSubmit}>
-                    <TextField
-                      label="New Username"
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                      value={newUsername}
-                      onChange={(e) => setNewUsername(e.target.value)}
-                    />
-                    <TextField
-                      label="New Age"
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                      value={newTeacherAge}
-                      onChange={(e) => setNewTeacherAge(e.target.value)}
-                    />
-                    <TextField
-                      label="New Password"
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                    />
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      sx={{ mr: 2, backgroundColor: '#1e2a5e'}}
-                    >
-                      Update
-                    </Button>
-                  </form>
-                </Paper>
-              )}
-
-              {showDeleteForm && (
-                <Paper className='delete-account-paper' sx={{ p: 3 }}>
-                  <Typography variant="h6">
-                    Delete Account
-                  </Typography>
-                  <form onSubmit={handleDeleteAccountSubmit}>
-                    <TextField
-                      label="Username"
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                      value={newUsername}
-                      onChange={(e) => setNewUsername(e.target.value)}
-                    />
-                    <TextField
-                      label="Password"
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                    />
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      sx={{ mr: 2, backgroundColor: '#1e2a5e'}}
-                    >
-                      Delete
-                    </Button>
-                  </form>
-                </Paper>
-              )}
-
-              {message && (
-                <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
-                  {message}
-                </Typography>
-              )}
-            </Container>
+              <TableContainer
+                component={Paper}
+                sx={{
+                  maxWidth: "90%",
+                  margin: "30px auto",
+                  bgcolor: "#f9fbfd",
+                  borderRadius: 3,
+                  boxShadow: 4,
+                  mt: 3,
+                }}
+              >
+                <Table>
+                  <TableHead>
+                    <TableRow sx={{ bgcolor: "#1d2f81" }}>
+                      <TableCell
+                        sx={{ color: "#fff", fontWeight: "bold", fontSize: "1.1rem" }}
+                      >
+                        Student ID
+                      </TableCell>
+                      <TableCell
+                        sx={{ color: "#fff", fontWeight: "bold", fontSize: "1.1rem" }}
+                      >
+                        Name
+                      </TableCell>
+                      <TableCell
+                        sx={{ color: "#fff", fontWeight: "bold", fontSize: "1.1rem" }}
+                      >
+                        Age
+                      </TableCell>
+                      <TableCell
+                        sx={{ color: "#fff", fontWeight: "bold", fontSize: "1.1rem" }}
+                      >
+                        Gender
+                      </TableCell>
+                      <TableCell
+                        sx={{ color: "#fff", fontWeight: "bold", fontSize: "1.1rem" }}
+                      >
+                        Class
+                      </TableCell>
+                      <TableCell
+                        sx={{ color: "#fff", fontWeight: "bold", fontSize: "1.1rem" }}
+                      >
+                        Actions
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {students.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} align="center" sx={{ py: 3 }}>
+                          No students found.
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      students.map((student) => (
+                        <TableRow key={student._id} hover>
+                          <TableCell>{student.studentId}</TableCell>
+                          <TableCell>
+                            {editingStudentId === student.studentId ? (
+                              <TextField
+                                value={editName}
+                                onChange={(e) => setEditName(e.target.value)}
+                                size="small"
+                              />
+                            ) : (
+                              student.name
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {editingStudentId === student.studentId ? (
+                              <TextField
+                                value={editAge}
+                                onChange={(e) => setEditAge(e.target.value)}
+                                size="small"
+                                type="number"
+                              />
+                            ) : (
+                              student.age
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {editingStudentId === student.studentId ? (
+                              <TextField
+                                value={editGender}
+                                onChange={(e) => setEditGender(e.target.value)}
+                                size="small"
+                              />
+                            ) : (
+                              student.gender
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {editingStudentId === student.studentId ? (
+                              <TextField
+                                value={editClass}
+                                onChange={(e) => setEditClass(e.target.value)}
+                                size="small"
+                              />
+                            ) : (
+                              student.class
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {editingStudentId === student.studentId ? (
+                              <>
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  size="small"
+                                  onClick={handleEditSubmit}
+                                  sx={{ mr: 1 }}
+                                >
+                                  Save
+                                </Button>
+                                <Button
+                                  variant="outlined"
+                                  color="secondary"
+                                  size="small"
+                                  onClick={handleEditCancel}
+                                >
+                                  Cancel
+                                </Button>
+                              </>
+                            ) : (
+                              <Button
+                                variant="contained"
+                                size="small"
+                                onClick={() => handleEditClick(student)}
+                              >
+                                Edit
+                              </Button>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </>
           )}
         </Box>
       </Box>
