@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const { Admin } = require("../models/Scheam.js");
 const bcrypt = require("bcrypt");
+const { Teacher } = require("../models/Scheam.js");  // Adjust path if needed
+
 
 // Add Admin
 router.route("/add").post(async (req, res) => {
@@ -117,5 +119,129 @@ router.route("/login").post(async (req, res) => {
         res.status(500).send({ status: "Error logging in", error: err.message });
     }
 });
+
+
+
+// Route to add teacher (only admin should access this)
+router.post("/add-teacher", async (req, res) => {
+  const { teacherId, name, age, gender, assignedClass,password } = req.body;
+
+  try {
+    // Check if teacher already exists
+    const existingTeacher = await Teacher.findOne({ teacherId });
+    if (existingTeacher) {
+  
+    return res.status(400).send({ status: "Teacher already exists" });
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create and save teacher
+    const newTeacher = new Teacher({
+      teacherId,
+      name,
+      age,
+      gender,
+      assignedClass,
+      password: hashedPassword,
+    
+    });
+
+    await newTeacher.save();
+    res.json({ status: "Teacher added successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ status: "Error adding teacher", error: err.message });
+  }
+});
+
+
+// View all teachers
+router.get("/teachers/view", async (req, res) => {
+  try {
+    const teachers = await Teacher.find();
+    res.status(200).json(teachers);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ status: "Error fetching teachers", error: err.message });
+  }
+});
+
+
+router.put("/teachers/update", async (req, res) => {
+  const { teacherId, newName, newAge, newGender, newPassword } = req.body;
+
+  try {
+    let hashedPassword = newPassword;
+    if (newPassword) {
+      const salt = await bcrypt.genSalt(10);
+      hashedPassword = await bcrypt.hash(newPassword, salt);
+    }
+
+    const updatedTeacher = await Teacher.findOneAndUpdate(
+      { teacherId },
+      { 
+        name: newName, 
+        age: newAge, 
+        gender: newGender,
+        ...(newPassword && { password: hashedPassword })
+      },
+      { new: true }
+    );
+
+    if (updatedTeacher) {
+      res.status(200).send({ status: "Teacher updated successfully", teacher: updatedTeacher });
+    } else {
+      res.status(404).send({ status: "Teacher not found" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ status: "Error updating teacher", error: err.message });
+  }
+});
+
+
+router.delete("/teachers/delete", async (req, res) => {
+  const { teacherId } = req.body;
+
+  try {
+    await Teacher.findOneAndDelete({ teacherId });
+    res.status(200).send({ status: "Teacher deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ status: "Error deleting teacher", error: err.message });
+  }
+});
+
+
+// In your admin routes
+const { Student } = require("../models/Scheam");
+
+// Get total counts
+// For teachers
+router.get("/teacher/count", async (req, res) => {
+  try {
+    const count = await Teacher.countDocuments();
+    res.json({ count });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// For students
+router.get("/student/count", async (req, res) => {
+  try {
+    const count = await Student.countDocuments();
+    res.json({ count });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
+
 
 module.exports = router;

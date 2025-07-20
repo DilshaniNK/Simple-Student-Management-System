@@ -4,8 +4,18 @@ import {
   Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
 } from '@mui/material';
 import axios from 'axios';
+import { Box } from '@mui/material';
+import Sidebar from './admin-sidebar';
+    import AdminNavbar from './navbar';  // adjust path as needed
+import { useNavigate } from 'react-router-dom';
+
+
+
+
 
 function Addminviewcourses() {
+  const [selectedSection, setSelectedSection] = useState('Courses');
+  const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [expanded, setExpanded] = useState({});
 //   const [showAssignmentForm, setShowAssignmentForm] = useState({});
@@ -42,6 +52,10 @@ function Addminviewcourses() {
       [courseId]: !prevState[courseId],
     }));
   };
+
+  const handleProfileClick = () => {
+  setSelectedSection('Profile'); // Or whatever you want to do when Profile is clicked
+};
 
 
   const handleUpdateClick = (courseId) => {
@@ -124,177 +138,164 @@ function Addminviewcourses() {
   };
 
   return (
-    <TableContainer component={Paper} sx={{ maxWidth: '80%', margin: '0 auto', backgroundColor: '#f0f4f8', borderRadius: '10px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Course ID</TableCell>
-            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Course Name</TableCell>
-            {/* <TableCell>Add Assignment</TableCell> */}
-            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>More Details</TableCell>
-            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Update Course</TableCell>
-            <TableCell sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Delete Course</TableCell>
+
+  <Box sx={{ display: 'flex', bgcolor: '#f0f2f5', minHeight: '100vh' }}>
+        <AdminNavbar onProfileClick={handleProfileClick} />
+
+<Sidebar selectedSection={selectedSection} setSelectedSection={setSelectedSection} />
+<Box sx={{ flexGrow: 1, p: 3, mt: '64px' }}>
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
+
+  <Button
+              variant="contained"
+              sx={{
+                background: "linear-gradient(to right, #1d2f81, #3b5998)",
+                color: "#fff",
+                px: 4,
+                py: 1,
+                mt:'64px',
+                fontWeight: "bold",
+                "&:hover": {
+                  background: "linear-gradient(to right, #3b5998, #1d2f81)",
+                },
+              }}
+              onClick={() => navigate("/addcourses")}
+            >
+              Add Course
+            </Button>
+            </Box>
+
+   <TableContainer
+  component={Paper}
+  sx={{
+    maxWidth: '90%',
+    margin: '30px auto',
+    bgcolor: '#f9fbfd',
+    borderRadius: 3,
+    boxShadow: 4,
+    mt:'75px'
+  }}
+>
+  <Table>
+    <TableHead>
+      <TableRow sx={{ bgcolor: '#1d2f81' }}>
+        <TableCell sx={{ color: '#fff', fontWeight: 'bold', fontSize: '1.1rem' }}>Course ID</TableCell>
+        <TableCell sx={{ color: '#fff', fontWeight: 'bold', fontSize: '1.1rem' }}>Course Name</TableCell>
+        <TableCell sx={{ color: '#fff', fontWeight: 'bold', fontSize: '1.1rem' }}>More Details</TableCell>
+        <TableCell sx={{ color: '#fff', fontWeight: 'bold', fontSize: '1.1rem' }}>Update</TableCell>
+        <TableCell sx={{ color: '#fff', fontWeight: 'bold', fontSize: '1.1rem' }}>Delete</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {courses.map((course) => (
+        <React.Fragment key={course._id}>
+          <TableRow hover>
+            {course.deleted ? (
+              <TableCell colSpan={5} sx={{ bgcolor: '#fdecea', textAlign: 'center' }}>
+                <Typography color="error">Course deleted successfully</Typography>
+              </TableCell>
+            ) : (
+              <>
+                <TableCell>{course.courseId}</TableCell>
+                <TableCell>{course.courseName}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    color="secondary"
+                    onClick={() => handleExpandClick(course._id)}
+                  >
+                    {expanded[course._id] ? 'Hide' : 'Details'}
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      bgcolor: '#3f51b5',
+                      color: '#fff',
+                      '&:hover': { bgcolor: '#1d2f81' },
+                    }}
+                    onClick={() => handleUpdateClick(course.courseId)}
+                  >
+                    Update
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="error"
+                    onClick={() => handleDeleteClick(course.courseId)}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
+              </>
+            )}
           </TableRow>
-        </TableHead>
-        <TableBody>
-          {courses.map((course) => (
-            <React.Fragment key={course._id}>
+
+          {/* Details Section */}
+          {!course.deleted && (
+            <>
               <TableRow>
-                {course.deleted ? (
-                  <TableCell colSpan={6} style={{ backgroundColor: '#f8d7da', textAlign: 'center' }}>
-                    <Typography variant="body1" color="error">
-                      Course deleted successfully
-                    </Typography>
-                  </TableCell>
-                ) : (
-                  <>
-                    <TableCell>{course.courseId}</TableCell>
-                    <TableCell>{course.courseName}</TableCell>
-                   
-                    <TableCell>
-                      <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={() => handleExpandClick(course._id)}
-                      >
-                        {expanded[course._id] ? 'Hide Details' : 'More Details'}
-                      </Button>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                       
-                        onClick={() => handleUpdateClick(course.courseId)}
-                        sx={{
-                          backgroundColor: '#7c93c3',
-                          '&:hover': {
-                            backgroundColor: '#1e2a5e',
-                        },
-                      }}
-                      >
-                        Update Course
-                      </Button>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                   
-                        onClick={() => handleDeleteClick(course.courseId)}
-                        sx={{
-                          backgroundColor: '#7c93c3',
-                          '&:hover': {
-                            backgroundColor: '#1e2a5e',
-                          },
-                        }}
-                      >
-                        Delete Course
-                      </Button>
-                    </TableCell>
-                  </>
-                )}
+                <TableCell colSpan={5} sx={{ py: 0 }}>
+                  <Collapse in={expanded[course._id]} timeout="auto" unmountOnExit>
+                    <Box sx={{ p: 2, bgcolor: '#e3f2fd', borderRadius: 2 }}>
+                      <Typography><strong>No. of Students:</strong> {course.NoOfStudent}</Typography>
+                      <Typography><strong>Course Fee:</strong> {course.courseFee} LKR</Typography>
+                      <Typography><strong>Lecture Name:</strong> {course.lectureName}</Typography>
+                      <Typography><strong>Duration:</strong> {course.Duration}</Typography>
+                    </Box>
+                  </Collapse>
+                </TableCell>
               </TableRow>
 
-              {/* Only show additional rows if the course is not deleted */}
-              {!course.deleted && (
-                <>
-                  {/* Details Row */}
-                  <TableRow>
-                    <TableCell colSpan={6} style={{ paddingBottom: 0, paddingTop: 0 }}>
-                      <Collapse in={expanded[course._id]} timeout="auto" unmountOnExit>
-                        <div style={{ margin: '20px' }}>
-                          <Typography><strong>No. of Students:</strong> {course.NoOfStudent}</Typography>
-                          <Typography><strong>Course Fee:</strong> {course.courseFee} LKR</Typography>
-                          <Typography><strong>Lecture Name:</strong> {course.lectureName}</Typography>
-                          <Typography><strong>Course Duration:</strong> {course.Duration}</Typography>
-                        </div>
-                      </Collapse>
-                    </TableCell>
-                  </TableRow>
+              {/* Update Section */}
+              <TableRow>
+                <TableCell colSpan={5}>
+                  <Collapse in={showUpdateForm[course.courseId]} timeout="auto" unmountOnExit>
+                    <Box sx={{ p: 2, bgcolor: '#f0f4f8', borderRadius: 2 }}>
+                      <form onSubmit={handleUpdateCourseSubmit}>
+                        <TextField label="Course Name" value={newcoursename} onChange={(e) => setCourseName(e.target.value)} fullWidth sx={{ mb: 2 }} />
+                        <TextField label="No. of Students" value={newNoofstudents} onChange={(e) => setNoOfStudents(e.target.value)} fullWidth sx={{ mb: 2 }} />
+                        <TextField label="Course Fee" value={newcoursefee} onChange={(e) => setCourseFee(e.target.value)} fullWidth sx={{ mb: 2 }} />
+                        <TextField label="Lecture Name" value={newlecturename} onChange={(e) => setLectureName(e.target.value)} fullWidth sx={{ mb: 2 }} />
+                        <TextField label="Duration" value={newduration} onChange={(e) => setDuration(e.target.value)} fullWidth sx={{ mb: 2 }} />
+                        <Button type="submit" variant="contained" color="primary">Update Course</Button>
+                      </form>
+                    </Box>
+                  </Collapse>
+                </TableCell>
+              </TableRow>
+            </>
+          )}
+        </React.Fragment>
+      ))}
+    </TableBody>
+  </Table>
 
-                 
-                  {/* Update Form Row */}
-                  <TableRow>
-                    <TableCell colSpan={6}>
-                      <Collapse in={showUpdateForm[course.courseId]} timeout="auto" unmountOnExit>
-                        <form onSubmit={handleUpdateCourseSubmit} style={{ margin: '20px' }}>
-                          <TextField
-                            label="New Course Name"
-                            value={newcoursename}
-                            onChange={(e) => setCourseName(e.target.value)}
-                            fullWidth
-                            margin="normal"
-                          />
-                          <TextField
-                            label="New No. of Students"
-                            value={newNoofstudents}
-                            onChange={(e) => setNoOfStudents(e.target.value)}
-                            fullWidth
-                            margin="normal"
-                          />
-                          <TextField
-                            label="New Course Fee"
-                            value={newcoursefee}
-                            onChange={(e) => setCourseFee(e.target.value)}
-                            fullWidth
-                            margin="normal"
-                          />
-                          <TextField
-                            label="New Lecture Name"
-                            value={newlecturename}
-                            onChange={(e) => setLectureName(e.target.value)}
-                            fullWidth
-                            margin="normal"
-                          />
-                          <TextField
-                            label="New Course Duration"
-                            value={newduration}
-                            onChange={(e) => setDuration(e.target.value)}
-                            fullWidth
-                            margin="normal"
-                          />
-                          <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            style={{ marginTop: '20px' }}
-                          >
-                            Update
-                          </Button>
-                        </form>
-                      </Collapse>
-                    </TableCell>
-                  </TableRow>
-                </>
-              )}
-            </React.Fragment>
-          ))}
-        </TableBody>
-      </Table>
+  {/* Dialog & Message */}
+  <Dialog open={openDialog} onClose={handleDialogClose}>
+    <DialogTitle>Confirm Delete</DialogTitle>
+    <DialogContent>
+      <DialogContentText>Are you sure you want to delete this course?</DialogContentText>
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={handleDialogClose}>No</Button>
+      <Button onClick={handleDeleteConfirm} color="error">Yes</Button>
+    </DialogActions>
+  </Dialog>
 
-      {/* Confirmation Dialog */}
-      <Dialog
-        open={openDialog}
-        onClose={handleDialogClose}
-      >
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this course?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            No
-          </Button>
-          <Button onClick={handleDeleteConfirm} color="secondary">
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Success/Error Message */}
-      {message && <Typography variant="subtitle1" color={message.includes('successfully') ? 'primary' : 'error'} style={{ margin: '20px' }}>{message}</Typography>}
-    </TableContainer>
+  {message && (
+    <Typography align="center" color={message.includes('successfully') ? 'primary' : 'error'} sx={{ mt: 2 }}>
+      {message}
+    </Typography>
+  )}
+</TableContainer>
+    </Box>
+    ,</Box>
   );
 }
 

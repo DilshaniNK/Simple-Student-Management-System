@@ -4,6 +4,10 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; // Use for navigation
 import axios from 'axios';
+import Navbar from './navbar'; // Import Navbar component
+import { Box } from '@mui/material';
+import Sidebar from './teacher-sidebar'; // Import Sidebar component
+
 
 function Viewcourse() {
   const [courses, setCourses] = useState([]);
@@ -24,6 +28,12 @@ function Viewcourse() {
   const [updateDescription, setUpdateDescription] = useState('');
   const [updateDueDate, setUpdateDueDate] = useState('');
   const [updateFile, setUpdateFile] = useState(null);
+
+
+const [selectedSection, setSelectedSection] = useState('');
+const handleSectionChange = (section) => setSelectedSection(section);
+
+
 
   useEffect(() => {
     axios.get('http://localhost:8070/course/view')
@@ -131,7 +141,19 @@ function Viewcourse() {
   };
 
   return (
-    <TableContainer component={Paper} sx={{ maxWidth: '80%', margin: '0 auto', backgroundColor: '#f0f4f8', borderRadius: '10px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}>
+
+        <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" ,backgroundColor: '#ffffffff'}}>
+    
+      <Navbar />
+      
+      
+            <Box sx={{ display: "flex", flexGrow: 1 }}>
+              <Sidebar
+                selectedSection={selectedSection}
+                setSelectedSection={handleSectionChange}
+              />
+    
+    <TableContainer component={Paper} sx={{ maxWidth: '80%', margin: '0 auto', backgroundColor: '#f0f4f8', borderRadius: '10px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',mt: '100px' }}>
       <Table>
         <TableHead>
           <TableRow>
@@ -331,7 +353,9 @@ function Viewcourse() {
           {alert.message}
         </Alert>
       </Snackbar>
-    </TableContainer>
+      </TableContainer>
+      </Box>
+      </Box>
   );
 }
 
