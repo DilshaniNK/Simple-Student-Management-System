@@ -58,6 +58,18 @@ const marksSchema = new Schema({
     marks: { type: Number, required: true }
 });
 
+const classSchema = new Schema({
+    className: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    students: [{
+        type: String
+    }]
+});
+
+
 // Models
 const Student = mongoose.model("Student", studentSchema);
 const Teacher = mongoose.model("Teacher", teacherSchema);
@@ -65,6 +77,7 @@ const Course = mongoose.model("Course", courseSchema);
 const Assignment = mongoose.model("Assignment", assignmentSchema);
 const Admin = mongoose.model("Admin", adminSchema);
 const Marks = mongoose.model("Marks", marksSchema);  // ✅ Added Marks Model
+const Classes = mongoose.model("Classes", classSchema);
 
 module.exports = {
     Student,
@@ -72,5 +85,6 @@ module.exports = {
     Course,
     Assignment,
     Admin,
-    Marks  // ✅ Exported Marks
+    Marks , // ✅ Exported Marks
+    Classes
 };

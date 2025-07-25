@@ -5,8 +5,8 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { Box } from '@mui/material';
-import Sidebar from './admin-sidebar';
-    import AdminNavbar from './navbar';  // adjust path as needed
+import Sidebar from '../../Component/admin-sidebar';
+    // adjust path as needed
 import { useNavigate } from 'react-router-dom';
 
 
@@ -140,9 +140,9 @@ function Addminviewcourses() {
   return (
 
   <Box sx={{ display: 'flex', bgcolor: '#f0f2f5', minHeight: '100vh' }}>
-        <AdminNavbar onProfileClick={handleProfileClick} />
+        
 
-<Sidebar selectedSection={selectedSection} setSelectedSection={setSelectedSection} />
+
 <Box sx={{ flexGrow: 1, p: 3, mt: '64px' }}>
     <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
 
@@ -159,7 +159,7 @@ function Addminviewcourses() {
                   background: "linear-gradient(to right, #3b5998, #1d2f81)",
                 },
               }}
-              onClick={() => navigate("/addcourses")}
+              onClick={() => navigate("/admin/add_courses")}
             >
               Add Course
             </Button>

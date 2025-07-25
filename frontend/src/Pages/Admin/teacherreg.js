@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "./StudentLogin.css"; // Import the CSS file
+
 import Swal from "sweetalert2"; // Import SweetAlert2
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +8,7 @@ function TeacherReg() {
   const [teacherId,setId] = useState("");
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
+  const[assignedClass,setAssignedClass] = useState("");
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -20,11 +21,12 @@ function TeacherReg() {
       name,
       age,
       gender,
+      assignedClass,
       password,
     };
 
     axios
-      .post("http://localhost:8070/teacher/add", newTeacher)
+      .post("http://localhost:8070/admin/add-teacher", newTeacher)
       .then(() => {
         // SweetAlert success message
         Swal.fire({
@@ -52,7 +54,7 @@ function TeacherReg() {
   };
 
   return (
-    <div className="container">
+    <div className="container mt-[100px]">
       <div className="paper">
         <h2 className="header">Register Teacher</h2>
         <form onSubmit={sentData} className="form">
