@@ -37,7 +37,7 @@ app.use("/teacher",teacherRoute);//http://localhost:8070/teacher
 app.use("/course",coursesRoute);//http://localhost:8070/course
 app.use("/assignment",AssigmentRoute);//http://localhost:8070/assigment
 app.use("/admin",AdminRouter);//http://localhost:8070/admin
-app,use("/common", CommonRouter);//http://localhost:8070/common
+app.use("/common", CommonRouter);//http://localhost:8070/common
 
 
 

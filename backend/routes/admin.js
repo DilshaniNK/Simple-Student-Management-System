@@ -2,7 +2,33 @@ const router = require("express").Router();
 const { Admin } = require("../models/Scheam.js");
 const bcrypt = require("bcrypt");
 const { Teacher } = require("../models/Scheam.js");  // Adjust path if needed
+const multer = require("multer");
+const nodemailer = require("nodemailer");
+const path = require("path");
+require("dotenv").config();
+//------------------------multer setup for document store-------------------------
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/qualifications/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+const upload = multer({ storage });
+
+//--------------otp generator--------------
+const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
+
+// -------------------- Email Setup --------------------
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+})
 
 // Add Admin
 router.route("/add").post(async (req, res) => {
@@ -123,34 +149,66 @@ router.route("/login").post(async (req, res) => {
 
 
 // Route to add teacher (only admin should access this)
-router.post("/add-teacher", async (req, res) => {
-  const { teacherId, name, age, gender, assignedClass,password } = req.body;
+router.post("/add-teacher", upload.single("qualifications") ,async (req, res) => {
+  const { firstName,lastName,address,contactNumber,email,subject,grade,age,gender} = req.body;
 
   try {
     // Check if teacher already exists
-    const existingTeacher = await Teacher.findOne({ teacherId });
+    const existingTeacher = await Teacher.findOne({ email });
     if (existingTeacher) {
   
-    return res.status(400).send({ status: "Teacher already exists" });
+    return res.status(400).json({status: "Teacher alredy exists with this email address"});
     }
+    //gererate teacher ID
+    const lastTeacher = await Teacher.findOne().sort({teacherId: -1});
+    let newIdNumber = 1;
+    if(lastTeacher && lastTeacher.teacherId){
+      const lastIdNum = parseInt(lastTeacher.teacherId.split("_")[1]);
+      newIdNumber = lastIdNum + 1
+    }
+    const teacherId = `TEC_${String(newIdNumber).padStart(3, "0")}`;
 
-    // Hash password
+    //generate otp
+    const otp = generateOTP();
+
+    const qualificationsFilePath = req.file ? req.file.path : "";
+
+    // Hash otp
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedOtp = await bcrypt.hash(otp, salt);
 
     // Create and save teacher
     const newTeacher = new Teacher({
       teacherId,
-      name,
+      firstName,
+      lastName,
+      address,
+      contactNumber,
+      email,
+      subject,
+      grade,
       age,
       gender,
-      assignedClass,
-      password: hashedPassword,
+      qualifications: qualificationsFilePath,
+      otp: hashedOtp,
+      isFirstLoging: true,
     
     });
 
     await newTeacher.save();
-    res.json({ status: "Teacher added successfully" });
+
+    const mailOptions = {
+      from: 'dilnadeesha1232001@gmail.com',
+      to: email,
+      subject: "Your Login OTP",
+      text: `Hello ${firstName}, \n\n Your OTP is: ${otp} \n You can log one time using this `
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.json({ status: "Teacher added successfully and OTP send to email",teacherId
+      
+     });
   } catch (err) {
     console.error(err);
     res.status(500).send({ status: "Error adding teacher", error: err.message });
@@ -239,6 +297,18 @@ router.get("/student/count", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+//register student 
+router.get("/student-add" , async(req,res) =>{
+  const {name,age,gender,grade,motherName,FatherName} = req.body
+
+  try{
+
+  }
+  catch(err){
+
+  }
+})
 
 
 
