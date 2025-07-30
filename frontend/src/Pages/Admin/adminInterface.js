@@ -129,13 +129,13 @@ function AdminInterface() {
   const currentStudents = students.slice(startIndex, endIndex);
 
   return (
-    <div className=" bg-gradient-to-br from-blue-50 to-indigo-100 w-full mt-[50px] justify-center items-center ml-[-80px]">
+    <div className=" bg-gradient-to-br from-blue-50 to-indigo-100  mt-[50px]  ml-[-165px] w-[1500px] !p-0">
     
       
 
-      <div className="flex">
+      <div className="flex ">
     {/* Main Content */}
-        <main className="flex-1 p-6 ">
+        <main className="flex-1 p-6">
           {selectedSection === "Dashboard" && (
             <div className="space-y-6">
               {/* School Images Carousel */}

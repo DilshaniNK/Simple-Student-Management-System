@@ -14,12 +14,57 @@ const studentSchema = new Schema({
 
 // Teacher Schema
 const teacherSchema = new Schema({
-  teacherId: { type: String, required: true },
-  name: { type: String, required: true },
-  gender: { type: String, required: true },
-  age: { type: Number, required: true },
-  password: { type: String, required: true },
-  assignedClass: { type: String, required: true }, // New field
+    teacherId:{
+        type: String,
+        required: true,
+        unique:true
+    },
+    firstName:{
+        type:String,
+        required:true
+    },
+    lastName:{
+        type: String,
+        required:true
+    },
+    address:{
+        type: String,
+        required: true
+    },
+    contactNumber:{
+        type: String,
+        required: true
+    },
+    email:{
+        type: String
+    },
+    subject:{
+        type: String
+    },
+    grade:{
+        type: String
+    },
+    age:{
+        type: Number,
+        required: true
+    },
+    gender:{
+        type: String,
+        required: true
+    },
+    qualifications: {
+        type:String
+    },
+    password: {
+        type: String,
+    },
+    otp:{
+        type:String
+    },
+    isFirstLoging: {
+        type: Boolean,
+        default: true
+    }
 });
 
 
@@ -55,7 +100,9 @@ const adminSchema = new Schema({
 const marksSchema = new Schema({
     subject: { type: String, required: true },
     studentId: { type: String, required: true },
-    marks: { type: Number, required: true }
+    marks: { type: Number, required: true },
+    year: { type: String, required: true }, // New field for year
+    term: { type: String, required: true }  // New field for term
 });
 
 const classSchema = new Schema({

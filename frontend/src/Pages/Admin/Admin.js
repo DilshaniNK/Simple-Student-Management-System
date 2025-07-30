@@ -41,8 +41,8 @@ const Admin = () => {
         />
 
         <div style={{marginLeft: 240,padding: 24}}>
-              <Routes>
-                  
+            <Routes>
+                <Route path='/' element={<AdminInterface/>}/>
                 <Route path='interface' element={<AdminInterface/>}/>
                 <Route path='view_courses' element={<Addminviewcourses/>}/>
                 <Route path='add_courses' element={<Addcourses/>}/>
