@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TextField, Button, Paper, Typography, Box } from "@mui/material";
 import axios from "axios";
-import Sidebar from "./teacher-sidebar"; // Adjust path as needed
+import Sidebar from "../../Component/teacher-sidebar"; // Adjust path as needed
 import Navbar from "./navbar";
 
 export default function AddStudent() {

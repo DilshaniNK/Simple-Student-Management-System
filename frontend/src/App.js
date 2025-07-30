@@ -2,6 +2,10 @@ import './App.css';
 import Home from './Component/home';
 import { BrowserRouter as Router, Route, Routes, useLocation, BrowserRouter } from "react-router-dom";
 import Admin from './Pages/Admin/Admin';
+import Teacherinterface from './Component/teacherinterface';
+
+
+
 // import StudentLogin from './Component/StudentLogin';
 // import TeacherLogin from './Component/teacherLogin';
 // import AdminLogin from './Component/Adminlogin';
@@ -80,10 +84,13 @@ function App() {
       {/* <AppRoutes /> */}
       <Routes>
         <Route path='admin/*' element={<Admin/>}/>
-        <Route path='/' element={<Home/>}/>
+        <Route path='/' element={<Home />} />
       </Routes>
       
-
+  <Routes>
+        <Route path='teacher/*' element={<Admin/>}/>
+        <Route path='/' element={<Home />} />
+      </Routes>
     </Router>
     
   );

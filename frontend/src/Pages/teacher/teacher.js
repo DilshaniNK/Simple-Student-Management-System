@@ -2,12 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import SideBar from '../../Component/Common-Components/SideBar';
-import AdminInterface from './adminInterface';
-import Addminviewcourses from './addminviewcourses';
-import Addcourses from './addcourses';
-import AdminNavbar from '../../Component/Common-Components/navbar';
-import TeacherReg from './teacherreg';
-import TeacherDetails from './teacherdetails';
+
 
 const Admin = () => {
     const [isSidebarOpen,setIsSidebarOpen] = useState(false);
@@ -21,10 +16,10 @@ const Admin = () => {
 
     const getActiveItem = () => {
         const path = location.pathname;
-        if (path.includes('/admin/interface')) return 'dashboard';
-        if(path.includes('/admin/view_courses')) return 'courses'
-        if(path.includes('/admin/add_courses')) return 'addcourses';
-        if(path.includes('/admin/view_teacher')) return 'allteachers';
+        if (path.includes('/teacher/interface')) return 'dashboard';
+        if(path.includes('/teacher/view_courses')) return 'courses'
+        if(path.includes('/teacher/add_courses')) return 'addcourses';
+        if(path.includes('/teacher/view_teacher')) return 'allteachers';
         
 
         return 'dashboard';
