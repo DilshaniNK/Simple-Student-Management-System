@@ -1,39 +1,40 @@
 const router = require("express").Router();
-const { Teacher } = require("../models/Scheam.js");
+const { Teacher,Marks,Student } = require("../models/Scheam.js");
 const bcrypt = require("bcryptjs"); // Import bcryptjs
 
+
 // Add Teacher route with password hashing
-router.route("/add").post(async (req, res) => {
-  const { teacherId, name, age, gender, password } = req.body;
+// router.route("/add").post(async (req, res) => {
+//   const { teacherId, name, age, gender, password } = req.body;
 
-  try {
-    // Check if teacher already exists
-    const existingTeacher = await Teacher.findOne({ teacherId });
+//   try {
+//     // Check if teacher already exists
+//     const existingTeacher = await Teacher.findOne({ teacherId });
 
-    if (existingTeacher) {
-      return res.status(400).send({ status: "Teacher already exists" });
-    }
+//     if (existingTeacher) {
+//       return res.status(400).send({ status: "Teacher already exists" });
+//     }
 
-    // Hash the password before storing it
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+//     // Hash the password before storing it
+//     const salt = await bcrypt.genSalt(10);
+//     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create new teacher with hashed password
-    const newTeacher = new Teacher({
-      teacherId,
-      name,
-      age,
-      gender,
-      password: hashedPassword, // Store hashed password
-    });
+//     // Create new teacher with hashed password
+//     const newTeacher = new Teacher({
+//       teacherId,
+//       name,
+//       age,
+//       gender,
+//       password: hashedPassword, // Store hashed password
+//     });
 
-    await newTeacher.save();
-    res.json("Teacher added successfully");
-  } catch (err) {
-    console.log(err);
-    res.status(500).send({ status: "Error adding teacher", error: err.message });
-  }
-});
+//     await newTeacher.save();
+//     res.json("Teacher added successfully");
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).send({ status: "Error adding teacher", error: err.message });
+//   }
+// });
 
 // Login route with password verification
 router.route("/login").post(async (req, res) => {
@@ -121,5 +122,100 @@ router.route("/delete").delete(async (req, res) => {
     res.status(500).send({ status: "Error deleting teacher", error: err.message });
   }
 });
+
+//methana idn hadanna marks add krna eka
+router.post("/add-marks", async (req, res) => {
+  const { subject, studentId, marks } = req.body;
+
+  try {
+    const newMark = new Marks({
+      subject,
+      studentId,
+      marks,
+    });
+
+    await newMark.save();
+    res.json({ message: "Marks Added Successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: "Error adding marks", error: err.message });
+  }
+});
+
+
+router.post("/add-student", async (req, res) => {
+  const { studentId, name, age, gender, password, class: studentClass } = req.body;
+
+  try {
+    const existingStudent = await Student.findOne({ studentId });
+
+    if (existingStudent) {
+      return res.status(400).send({ status: "Student already exists" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newStudent = new Student({
+      studentId,
+      name,
+      age,
+      gender,
+      password: hashedPassword,
+      class: studentClass,
+    });
+
+    await newStudent.save();
+    res.json({ status: "Student added successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ status: "Error adding student", error: err.message });
+  }
+});
+
+
+
+
+
+router.put("/student/update/:studentId", async (req, res) => {
+  const studentId = req.params.studentId; // Get studentId from URL params
+  const { name, age, gender, class: studentClass, password } = req.body; // destructure update fields from body
+
+  try {
+    const updateData = {};
+
+    if (name) updateData.name = name;
+    if (age) updateData.age = age;
+    if (gender) updateData.gender = gender;
+    if (studentClass) updateData.class = studentClass;
+
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      updateData.password = hashedPassword;
+    }
+
+    const updatedStudent = await Student.findOneAndUpdate(
+      { studentId },      // query filter
+      { $set: updateData },  // update operation
+      { new: true }       // return the updated document
+    );
+
+    if (!updatedStudent) {
+      return res.status(404).json({ status: "Student not found" });
+    }
+
+    res.status(200).json({ status: "Student updated successfully", updatedStudent });
+  } catch (err) {
+    console.error("Error updating student:", err);
+    res.status(500).json({ status: "Error updating student", error: err.message });
+  }
+});
+
+
+
+
+
+
 
 module.exports = router;
