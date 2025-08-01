@@ -30,37 +30,7 @@ const transporter = nodemailer.createTransport({
   },
 })
 
-// Add Admin
-router.route("/add").post(async (req, res) => {
-    const { adminId, adminName, adminAge, adminGender, adminPassword } = req.body;
 
-    try {
-        // Check if admin already exists
-        const existingAdmin = await Admin.findOne({ adminName });
-
-        if (existingAdmin) {
-            return res.status(400).send({ status: "Error", message: "Admin already exists" });
-        }
-
-        // Hash the password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(adminPassword, salt);
-
-        const newAdmin = new Admin({
-            adminId,
-            adminName,
-            adminAge,
-            adminGender,
-            adminPassword: hashedPassword, // Store hashed password
-        });
-
-        await newAdmin.save();
-        res.json("Admin Added");
-    } catch (err) {
-        console.log(err);
-        res.status(500).send({ status: "Error adding admin", error: err.message });
-    }
-});
 
 // View admins
 router.route("/").get(async (req, res) => {
@@ -101,18 +71,7 @@ router.route("/update").put(async (req, res) => {
     }
 });
 
-// Delete Admin
-router.route("/delete").delete(async (req, res) => {
-    const { adminId } = req.body;
 
-    try {
-        await Admin.findOneAndDelete({ adminId });
-        res.status(200).send({ status: "User deleted" });
-    } catch (err) {
-        console.log(err.message);
-        res.status(500).send({ status: "Error deleting admin", error: err.message });
-    }
-});
 
 // Get admin by ID
 router.route("/get/").get(async (req, res) => {
@@ -150,11 +109,11 @@ router.route("/login").post(async (req, res) => {
 
 // Route to add teacher (only admin should access this)
 router.post("/add-teacher", upload.single("qualifications") ,async (req, res) => {
-  const { firstName,lastName,address,contactNumber,email,subject,grade,age,gender} = req.body;
+  
 
   try {
     // Check if teacher already exists
-    const existingTeacher = await Teacher.findOne({ email });
+    const existingTeacher = await Teacher.findOne({ email: req.body.email });
     if (existingTeacher) {
   
     return res.status(400).json({status: "Teacher alredy exists with this email address"});
@@ -179,16 +138,8 @@ router.post("/add-teacher", upload.single("qualifications") ,async (req, res) =>
 
     // Create and save teacher
     const newTeacher = new Teacher({
+      ...req.body,
       teacherId,
-      firstName,
-      lastName,
-      address,
-      contactNumber,
-      email,
-      subject,
-      grade,
-      age,
-      gender,
       qualifications: qualificationsFilePath,
       otp: hashedOtp,
       isFirstLoging: true,
@@ -199,9 +150,9 @@ router.post("/add-teacher", upload.single("qualifications") ,async (req, res) =>
 
     const mailOptions = {
       from: 'dilnadeesha1232001@gmail.com',
-      to: email,
+      to: req.body.email,
       subject: "Your Login OTP",
-      text: `Hello ${firstName}, \n\n Your OTP is: ${otp} \n You can log one time using this `
+      text: `Hello ${req.body.firstName}, \n\n Your OTP is: ${otp} \n You can log one time using this `
     };
 
     await transporter.sendMail(mailOptions);
@@ -210,7 +161,7 @@ router.post("/add-teacher", upload.single("qualifications") ,async (req, res) =>
       
      });
   } catch (err) {
-    console.error(err);
+    console.error("Error saving student:", err);
     res.status(500).send({ status: "Error adding teacher", error: err.message });
   }
 });
@@ -276,6 +227,7 @@ router.delete("/teachers/delete", async (req, res) => {
 
 // In your admin routes
 const { Student } = require("../models/Scheam");
+const { error } = require("console");
 
 // Get total counts
 // For teachers
@@ -299,16 +251,41 @@ router.get("/student/count", async (req, res) => {
 });
 
 //register student 
-router.get("/student-add" , async(req,res) =>{
-  const {name,age,gender,grade,motherName,FatherName} = req.body
+router.post("/add-student" , upload.single("qualifications"), async(req,res) =>{
 
   try{
+    const count = await Student.countDocuments();
+    //generate student Id
+    const lastStudent = await Student.findOne().sort({studentId: -1});
+    let newIdNumber = 1;
+    if(lastStudent && lastStudent.studentId){
+      const lastIdNum = parseInt(lastStudent.studentId.split("_")[1]);
+      newIdNumber = lastIdNum + 1
+    }
+    const studentId = `STU_${String(newIdNumber).padStart(3, "0")}`;
 
+    //genarate index number
+
+    const yearPrefix = new Date().getFullYear().toString().slice(-2);
+    const indexNumber = `${yearPrefix}${String(count + 1).padStart(5, '0')}`;
+
+    const qualificationsFilePath = req.file ? req.file.path : "";
+
+    const newStudent = new Student({
+      ...req.body,
+      studentId,
+      indexNumber,
+      qualifications: qualificationsFilePath
+    })
+
+    await newStudent.save();
+    res.json({status: `Student Register Sucessfull and This is Student Index Number :  ${indexNumber}`})
   }
   catch(err){
+    res.status(500).send({status: "Error registering student ", error: err.message});
 
   }
-})
+});
 
 
 

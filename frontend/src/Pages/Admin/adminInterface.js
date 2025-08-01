@@ -287,7 +287,7 @@ function AdminInterface() {
               {/* Action Buttons */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <button
-                  onClick={() => setSelectedSection("Students")}
+                  onClick={() => navigate('/admin/add_student')}
                   className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center justify-center space-x-2"
                 >
                   <UserPlus className="w-5 h-5" />
@@ -334,157 +334,9 @@ function AdminInterface() {
             </div>
           )}
 
-          {selectedSection === "Students" && (
-            <div className="space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-3xl font-bold text-gray-800">Student Management</h2>
-                <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-medium transition-colors flex items-center space-x-2">
-                  <Plus className="w-5 h-5" />
-                  <span>Add New Student</span>
-                </button>
-              </div>
+          
 
-              <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50/50 border-b border-gray-200">
-                      <tr>
-                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Grade</th>
-                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Gender</th>
-                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Age</th>
-                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {currentStudents.map((student) => (
-                        <tr key={student.id} className="hover:bg-gray-50/50 transition-colors">
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-medium mr-3">
-                                {student.name.split(' ').map(n => n[0]).join('')}
-                              </div>
-                              <span className="font-medium text-gray-800">{student.name}</span>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-700">{student.grade}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                              student.gender === "Male" ? "bg-blue-100 text-blue-800" : "bg-pink-100 text-pink-800"
-                            }`}>
-                              {student.gender}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-700">{student.age}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-700">{student.email}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <button className="text-blue-600 hover:text-blue-800 font-medium">
-                              <Eye className="w-4 h-4" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Pagination */}
-                <div className="bg-gray-50/50 px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-                  <div className="text-sm text-gray-700">
-                    Showing {startIndex + 1} to {Math.min(endIndex, students.length)} of {students.length} students
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                      disabled={currentPage === 1}
-                      className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Previous
-                    </button>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                      <button
-                        key={page}
-                        onClick={() => setCurrentPage(page)}
-                        className={`px-3 py-2 text-sm font-medium rounded-lg ${
-                          currentPage === page
-                            ? "bg-blue-500 text-white"
-                            : "text-gray-700 hover:bg-gray-100"
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    ))}
-                    <button
-                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                      disabled={currentPage === totalPages}
-                      className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Next
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* {selectedSection === "Teachers" && (
-            <div className="space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-3xl font-bold text-gray-800">Teacher Management</h2>
-                <button className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-medium transition-colors flex items-center space-x-2">
-                  <Plus className="w-5 h-5" />
-                  <span>Add New Teacher</span>
-                </button>
-              </div>
-
-              <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50/50 border-b border-gray-200">
-                      <tr>
-                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Subject</th>
-                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Gender</th>
-                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Experience</th>
-                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                        <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {teachers.map((teacher) => (
-                        <tr key={teacher.id} className="hover:bg-gray-50/50 transition-colors">
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-medium mr-3">
-                                {teacher.name.split(' ').map(n => n[0]).join('').substring(0, 2)}
-                              </div>
-                              <span className="font-medium text-gray-800">{teacher.name}</span>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-700">{teacher.subject}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                              teacher.gender === "Male" ? "bg-blue-100 text-blue-800" : "bg-pink-100 text-pink-800"
-                            }`}>
-                              {teacher.gender}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-700">{teacher.experience} years</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-700">{teacher.email}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <button className="text-green-600 hover:text-green-800 font-medium">
-                              <Eye className="w-4 h-4" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )} */}
+          
 
           {selectedSection === "Analytics" && (
             <div className="text-center py-20">

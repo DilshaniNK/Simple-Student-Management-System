@@ -3,13 +3,113 @@ const Schema = mongoose.Schema;
 
 // Student Schema
 const studentSchema = new Schema({
-    studentId: { type: String, required: true },
-    name: { type: String, required: true },
-    age: { type: Number, required: true },
-    gender: { type: String, required: true },
-      class: {type:String},
+   studentId:{
+    type:String,
+    required:true,
+    unique: true
+   },
+   firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
+  },
+  address: {
+    type: String,
+    required: true,
+  },
+  contactNumber: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  grade: {
+    type: String,
+    required: true,
+  },
+  age: {
+    type: Number,
+    required: true,
+  },
+  gender: {
+    type: String,
+    enum: ["male", "female", "other"],
+    required: true,
+  },
+  dateOfBirth: {
+    type: Date,
+    required: true,
+  },
+  bloodGroup: {
+    type: String,
+  },
+  medicalConditions: {
+    type: String,
+  },
+  emergencyContact: {
+    type: String,
+  },
+  qualifications: {
+    type: String// array of qualifications (if any)
+    
+  },
 
-    password: { type: String, required: true }
+  indexNumber :{
+    type: String,
+    unique: true
+  },
+
+  // Mother Details
+  motherFirstName: {
+    type: String,
+  },
+  motherLastName: {
+    type: String,
+  },
+  motherAge: {
+    type: Number,
+  },
+  motherJob: {
+    type: String,
+  },
+  motherContactNumber: {
+    type: String,
+  },
+  motherEmail: {
+    type: String,
+  },
+  motherAddress: {
+    type: String,
+  },
+
+  // Father Details
+  fatherFirstName: {
+    type: String,
+  },
+  fatherLastName: {
+    type: String,
+  },
+  fatherAge: {
+    type: Number,
+  },
+  fatherJob: {
+    type: String,
+  },
+  fatherContactNumber: {
+    type: String,
+  },
+  fatherEmail: {
+    type: String,
+  },
+  fatherAddress: {
+    type: String,
+  },
+
 });
 
 // Teacher Schema

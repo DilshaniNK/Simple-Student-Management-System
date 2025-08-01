@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { User, Mail, Phone, MapPin, BookOpen, Calendar, Upload, Save, X } from 'lucide-react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default function TeacherRegistrationForm() {
   const [formData, setFormData] = useState({
@@ -109,6 +110,7 @@ export default function TeacherRegistrationForm() {
   e.preventDefault();
 
   if (validateForm()) {
+    console.log('Form submitted: ', formData);
     const data = new FormData();
     data.append("firstName", formData.firstName);
     data.append("lastName", formData.lastName);
@@ -130,8 +132,12 @@ export default function TeacherRegistrationForm() {
         },
       });
 
-      alert("Teacher registered successfully!");
-      console.log("Response:", response.data);
+       Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Teacher registered successfully!',
+        confirmButtonColor: '#1E2A5E'
+      });
 
       // Reset form after success
       setFormData({
@@ -148,7 +154,13 @@ export default function TeacherRegistrationForm() {
       });
     } catch (err) {
       console.error("Error registering teacher:", err);
-      alert(err.response?.data?.status || "Failed to register teacher");
+      Swal.fire({
+        icon: 'error',
+        title: 'Registration Failed',
+        text: err.response?.data?.status || "Failed to register teacher",
+        confirmButtonColor: '#d33'
+      });
+
     }
   }
 };
@@ -162,14 +174,7 @@ export default function TeacherRegistrationForm() {
   return (
     <div className=" bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50  mt-[50px] ml-[-200px] w-[1550px]">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mb-4">
-            <User className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Teacher Registration</h1>
-          <p className="text-gray-600">Register New Teacher to the School</p>
-        </div>
+       
 
         {/* Main Form */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden w-[1500px] ml-[-290px]">
