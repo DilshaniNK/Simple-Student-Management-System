@@ -8,6 +8,7 @@ import Addcourses from './addcourses';
 import AdminNavbar from '../../Component/Common-Components/navbar';
 import TeacherReg from './teacherreg';
 import TeacherDetails from './teacherdetails';
+import Studentreg from './studentreg';
 
 const Admin = () => {
     const [isSidebarOpen,setIsSidebarOpen] = useState(false);
@@ -48,6 +49,7 @@ const Admin = () => {
                 <Route path='add_courses' element={<Addcourses/>}/>
                 <Route path='add_teacher' element={<TeacherReg/>}/>
                 <Route path='view_teacher' element={<TeacherDetails/>}/>
+                <Route path='add_student' element={<Studentreg/>}/>
             </Routes>
 
         </div>
