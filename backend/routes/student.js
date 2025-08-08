@@ -138,4 +138,45 @@ router.route("/login").post(async (req, res) => {
     }
 });
 
+
+// routes/studentRoutes.js
+router.get("/students-by-class/:className", async (req, res) => {
+  const className = req.params.className; // keep as string
+
+  try {
+    const students = await Student.find({ class: className });
+    res.json({ status: "Success", students });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ status: "Error retrieving students", error: err.message });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = router;

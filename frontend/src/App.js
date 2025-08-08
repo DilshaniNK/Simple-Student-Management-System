@@ -1,10 +1,15 @@
-import './App.css';
-import Home from './Component/home';
-import { BrowserRouter as Router, Route, Routes, useLocation, BrowserRouter } from "react-router-dom";
-import Admin from './Pages/Admin/Admin';
-import Teacherinterface from './Component/teacherinterface';
-
-
+import "./App.css";
+import Home from "./Component/home";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+  BrowserRouter,
+} from "react-router-dom";
+import Admin from "./Pages/Admin/Admin";
+import Teacherinterface from "./Component/teacherinterface";
+import Teacher from "./Pages/teacher/teacher";
 
 // import StudentLogin from './Component/StudentLogin';
 // import TeacherLogin from './Component/teacherLogin';
@@ -29,7 +34,6 @@ import Teacherinterface from './Component/teacherinterface';
 // import AdminViewTeachers from './Component/viewteachers';
 // import AddTeacher from './Component/Addteacher';  // Adjust the path as needed
 // import AddStudent from './Component/teacheraddstudents'; // Adjust the path as needed
-
 
 // function AppRoutes() {
 //   const location = useLocation();
@@ -67,9 +71,6 @@ import Teacherinterface from './Component/teacherinterface';
 // <Route path="/addteacher" element={<AddTeacher />} />
 //         <Route path="/teacher-view-course" element={<Viewcourse />} />
 //         <Route path="/teacher-add-student" element={<AddStudent/>} />
-        
-
-        
 
 //       </Routes>
 //     </>
@@ -78,21 +79,14 @@ import Teacherinterface from './Component/teacherinterface';
 
 function App() {
   return (
-
-    
     <Router>
       {/* <AppRoutes /> */}
       <Routes>
-        <Route path='admin/*' element={<Admin/>}/>
-        <Route path='/' element={<Home />} />
-      </Routes>
-      
-  <Routes>
-        <Route path='teacher/*' element={<Admin/>}/>
-        <Route path='/' element={<Home />} />
+        <Route path="admin/*" element={<Admin />} />
+        <Route path="/" element={<Home />} />
+        <Route path="teacher/*" element={<Teacher />} />
       </Routes>
     </Router>
-    
   );
 }
 

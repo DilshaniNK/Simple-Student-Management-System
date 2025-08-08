@@ -2,11 +2,17 @@ import React from 'react'
 import { useState } from 'react'
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import SideBar from '../../Component/Common-Components/SideBar';
+import Teacherinterface from './teacherinterface';
+import AdminNavbar from '../../Component/Common-Components/navbar';
+import ViewAssignment from './TeacherViewAssignment';
+import Addmarks from './addmarks';
+import TeacherAnnouncements from './teacherAnnouncements';
 
 
-const Admin = () => {
+
+const Teacher = () => {
     const [isSidebarOpen,setIsSidebarOpen] = useState(false);
-    const userRole = 'admin';
+    const userRole = 'teacher';
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -17,9 +23,10 @@ const Admin = () => {
     const getActiveItem = () => {
         const path = location.pathname;
         if (path.includes('/teacher/interface')) return 'dashboard';
-        if(path.includes('/teacher/view_courses')) return 'courses'
-        if(path.includes('/teacher/add_courses')) return 'addcourses';
-        if(path.includes('/teacher/view_teacher')) return 'allteachers';
+        if(path.includes('/teacher/view_assigments')) return 'assigments'
+        if (path.includes('/teacher/Addmarks')) return 'addmarks';
+        if (path.includes('/teacher/announcements')) return 'announcements';
+        // if(path.includes('/teacher/view_teacher')) return 'allteachers';
         
 
         return 'dashboard';
@@ -38,11 +45,11 @@ const Admin = () => {
         <div style={{marginLeft: 240,padding: 24}}>
               <Routes>
                   
-                <Route path='interface' element={<AdminInterface/>}/>
-                <Route path='view_courses' element={<Addminviewcourses/>}/>
-                <Route path='add_courses' element={<Addcourses/>}/>
-                <Route path='add_teacher' element={<TeacherReg/>}/>
-                <Route path='view_teacher' element={<TeacherDetails/>}/>
+                <Route path='interface' element={<Teacherinterface/>}/>
+                <Route path='view_assigments' element={<ViewAssignment/>}/>
+                <Route path='Addmarks' element={<Addmarks/>}/>
+                <Route path='announcements' element={<TeacherAnnouncements/>}/>
+                {/* <Route path='view_teacher' element={<TeacherDetails/>}/> */}
             </Routes>
 
         </div>
@@ -50,4 +57,4 @@ const Admin = () => {
   )
 }
 
-export default Admin
+export default Teacher

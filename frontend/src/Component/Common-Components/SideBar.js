@@ -37,14 +37,12 @@ const SideBar = ({
       { id: 'courses', label: 'Courses', icon: BookOpen, path: '/admin/view_courses', badge: null },
       { id: 'allteachers', label: 'All Teachers', icon: UserRoundSearch, path: '/admin/view_teacher', badge: null },
     ],
-
-  teacher: [
-      { id: 'dashbord', label: 'Dashboard', icon: Home, path: `/admin/interface`, badge: null },
-      { id: 'courses', label: 'Courses', icon: BookOpen, path: '/admin/view_courses', badge: null },
-      { id: 'allteachers', label: 'All Teachers', icon: UserRoundSearch, path: '/admin/view_teacher', badge: null },
+     teacher: [
+      { id: 'dashbord', label: 'Dashboard', icon: Home, path: `/teacher/interface`, badge: null },
+       { id: 'marks', label: 'Marks', icon: BookOpen, path: '/teacher/Addmarks', badge: null },
+      {id: 'announcements', label: 'Announcements', icon: FolderOpen, path: '/teacher/announcements', badge: null },
+      // { id: 'allteachers', label: 'All Teachers', icon: UserRoundSearch, path: '/admin/view_teacher', badge: null },
     ]
-
-
   };
 
   const currentMenu = menuItems[userRole] || menuItems.Designer;
@@ -265,5 +263,11 @@ const SideBar = ({
     </>
   );
 };
+
+
+
+
+
+
 
 export default SideBar;
