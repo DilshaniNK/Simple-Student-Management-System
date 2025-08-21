@@ -214,6 +214,41 @@ router.put("/student/update/:studentId", async (req, res) => {
 
 
 
+//get teachers assigend class
+// routes/teacherRoutes.js
+router.get("/assigned-class/:teacherId", async (req, res) => {
+  const { teacherId } = req.params;
+
+  try {
+    const teacher = await Teacher.findOne({ teacherId });
+
+    if (!teacher) {
+      return res.status(404).send({ status: "Teacher not found" });
+    }
+
+    res.json({ status: "Success", assignedClass: teacher.assignedClass });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ status: "Error retrieving class", error: err.message });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

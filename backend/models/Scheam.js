@@ -200,7 +200,9 @@ const adminSchema = new Schema({
 const marksSchema = new Schema({
     subject: { type: String, required: true },
     studentId: { type: String, required: true },
-    marks: { type: Number, required: true }
+    marks: { type: Number, required: true },
+    year: { type: String, required: true }, // New field for year
+    term: { type: String, required: true }  // New field for term
 });
 
 const classSchema = new Schema({
