@@ -55,7 +55,7 @@ function TeacherInterface() {
   // Fetch assigned class or fallback to "5"
   const assignedClass = teacherId
     ? await fetchAssignedClass(teacherId)
-    : "5";
+    : "Grade 10";
 
   try {
     const response = await fetch(`http://localhost:8070/student/students-by-class/${assignedClass}`);
@@ -88,7 +88,7 @@ const fetchAssignedClass = async (teacherId) => {
   try {
     const response = await fetch(`http://localhost:8070/teacher/assigned-class/${teacherId}`);
     const data = await response.json();
-    return data.assignedClass || "5"; // fallback again if not assigned
+    return data.assignedClass || "Grade 10"; // fallback again if not assigned
   } catch (err) {
     console.error("Error fetching assigned class:", err);
     return "5";

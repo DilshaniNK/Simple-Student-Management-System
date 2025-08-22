@@ -8,14 +8,13 @@ import {
   BrowserRouter,
 } from "react-router-dom";
 import Admin from "./Pages/Admin/Admin";
-import Teacherinterface from "./Component/teacherinterface";
 import Teacher from "./Pages/teacher/teacher";
 
 // import StudentLogin from './Component/StudentLogin';
-// import TeacherLogin from './Component/teacherLogin';
+import TeacherLogin from './Pages/teacher/teacherLogin';
 // import AdminLogin from './Component/Adminlogin';
 // import StudentInterface from './Component/StudentInterface';
-// import Teacherinterface from './Component/teacherinterface';
+import Teacherinterface from './Pages/teacher/teacherinterface';
 // import Studentreg from './Component/studentreg';
 // import Header from './Component/header';
 // import TeacherReg from './Component/teacherreg';
@@ -52,7 +51,6 @@ import Teacher from "./Pages/teacher/teacher";
 //         <Route path="/teacherlogin" element={<TeacherLogin />} />
 //         <Route path="/adminlogin" element={<AdminLogin />} />
 //         <Route path="/studentinterface" element={<StudentInterface />} />
-//         <Route path="/teacherinterface" element={<Teacherinterface />} />
 //         <Route path="/studentreg" element={<Studentreg />} />
 //         <Route path="/teacherreg" element={<TeacherReg />} />
 //         <Route path="/add-course" element={<Addcourses />} />
@@ -85,6 +83,9 @@ function App() {
         <Route path="admin/*" element={<Admin />} />
         <Route path="/" element={<Home />} />
         <Route path="teacher/*" element={<Teacher />} />
+                <Route path="/teacherlogin" element={<TeacherLogin />} />
+        <Route path="/teacherinterface" element={<Teacherinterface />} />
+
       </Routes>
     </Router>
   );
