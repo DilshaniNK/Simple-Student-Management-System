@@ -4,8 +4,8 @@ const { Announcement } = require("../models/Scheam.js");
 // Add announcement
 router.post("/add", async (req, res) => {
   try {
-    const { title, description, date } = req.body;
-
+    const { title, description, date, teacherId } = req.body;
+      console.log(teacherId , "jiii");
     // Validate required fields
     if (!title || !description || !date) {
       return res.status(400).json({ message: "Title, description and date are required" });
@@ -15,7 +15,8 @@ router.post("/add", async (req, res) => {
     const newAnnouncement = new Announcement({
       title,
       description,
-      date,
+        date,
+        teacherId,
     });
 
     // Save to DB
@@ -44,7 +45,7 @@ router.get("/", async (req, res) => {
 
 
 // Delete announcement
-router.delete("/:id", async (req, res) => {
+router.delete("/delete/:id", async (req, res) => {
     try {
         const { id } = req.params;
         await Announcement.findByIdAndDelete(id);

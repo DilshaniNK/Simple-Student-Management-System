@@ -34,16 +34,14 @@ function TeacherAnnouncements() {
     expiryDate: "",
     isUrgent: false,
   });
-console.log(teacherId, teacherName, teacherClass);
+  // console.log(teacherId, teacherName, teacherClass);
   // Fetch announcements
   useEffect(() => {
     if (!teacherId) return;
     const fetchAnnouncements = async () => {
       setLoading(true);
       try {
-        const res = await fetch(
-          `http://localhost:8070/announcement/`
-        );
+        const res = await fetch(`http://localhost:8070/announcement/`);
         if (!res.ok) throw new Error("Failed to fetch announcements");
         const data = await res.json();
         setAnnouncements(data);
@@ -57,49 +55,48 @@ console.log(teacherId, teacherName, teacherClass);
   }, [teacherId]);
 
   // Create announcement
-const handleCreateAnnouncement = async (e) => {
-  e.preventDefault();
+  const handleCreateAnnouncement = async (e) => {
+    e.preventDefault();
 
-  // Ensure required fields are filled
-  if (!formData.title || !formData.content) {
-    setError("Title and content are required");
-    return;
-  }
+    // Ensure required fields are filled
+    if (!formData.title || !formData.content) {
+      setError("Title and content are required");
+      return;
+    }
 
-  setLoading(true);
-  try {
-    // Prepare payload for backend
-    const newAnnouncement = {
-      title: formData.title,
-      description: formData.content,
-      date: new Date().toISOString(), // Using current date; change if you add a date input
-    };
+    setLoading(true);
+    try {
+      // Prepare payload for backend
+      const newAnnouncement = {
+        title: formData.title,
+        description: formData.content,
+        date: new Date().toISOString(), // Using current date; change if you add a date input
+ teacherId: teacherId,      };
+      console.log(teacherId);
+      const response = await fetch("http://localhost:8070/announcement/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newAnnouncement),
+      });
 
-    const response = await fetch("http://localhost:8070/announcement/add", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newAnnouncement),
-    });
+      const data = await response.json();
 
-    const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || "Failed to create announcement");
 
-    if (!response.ok) throw new Error(data.message || "Failed to create announcement");
+      // Add new announcement to state
+      setAnnouncements((prev) => [data.newAnnouncement, ...prev]);
 
-    // Add new announcement to state
-    setAnnouncements((prev) => [data.newAnnouncement, ...prev]);
-
-    // Reset form
-    setFormData({ title: "", content: "" });
-    setSuccess("Announcement created successfully!");
-    setTimeout(() => setSuccess(""), 3000);
-  } catch (err) {
-    setError(err.message || "Failed to create announcement");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
+      // Reset form
+      setFormData({ title: "", content: "", teacherId: "" }); // reset teacherId too
+      setSuccess("Announcement created successfully!");
+      setTimeout(() => setSuccess(""), 3000);
+    } catch (err) {
+      setError(err.message || "Failed to create announcement");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Edit announcement
   const handleEditAnnouncement = async (id) => {
@@ -472,7 +469,7 @@ const handleCreateAnnouncement = async (e) => {
                       </button>
                       <button
                         onClick={() =>
-                          handleDeleteAnnouncement(announcement.id)
+                          handleDeleteAnnouncement(announcement._id)
                         }
                         className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
                         title="Delete"

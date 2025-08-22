@@ -224,6 +224,7 @@ const announcementSchema = new mongoose.Schema({
   description: { type: String, required: true }, // content from frontend
   date: { type: Date, required: true, default: Date.now },
   createdBy: { type: String }, // optional (can add teacherId later)
+  teacherId: { type: String } ,// Link to Teacher who created it
 });
 
 
