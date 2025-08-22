@@ -36,31 +36,101 @@ const bcrypt = require("bcryptjs"); // Import bcryptjs
 //   }
 // });
 
+
+
+
+
+
 // Login route with password verification
-router.route("/login").post(async (req, res) => {
-  const { name, password } = req.body;
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
 
   try {
-    // Find teacher by name
-    const teacher = await Teacher.findOne({ name });
+    const teacher = await Teacher.findOne({ email });
 
     if (!teacher) {
-      return res.status(401).send({ status: "Invalid credentials" });
+      return res.status(404).send({ status: "Teacher not found" });
     }
 
-    // Compare the provided password with the hashed password
+    if (teacher.isFirstLogin) {
+      return res.status(400).send({ status: "First login required with OTP" });
+    }
+
     const isMatch = await bcrypt.compare(password, teacher.password);
 
-    if (isMatch) {
-      res.status(200).send({ status: "Login successful", teacherId: teacher.teacherId, user: teacher });
-    } else {
-      res.status(401).send({ status: "Invalid credentials" });
+    if (!isMatch) {
+      return res.status(401).send({ status: "Invalid password" });
     }
+
+    res.status(200).send({ status: "Login successful", teacherId: teacher._id });
+
   } catch (err) {
-    console.error('Error during login:', err);
+    console.error(err);
     res.status(500).send({ status: "Error logging in", error: err.message });
   }
 });
+
+
+
+
+router.post("/first-login", async (req, res) => {
+  const { email, otp, password } = req.body;
+
+  try {
+    const teacher = await Teacher.findOne({ email });
+
+    if (!teacher) {
+      return res.status(404).send({ status: "Teacher not found" });
+    }
+
+    if (teacher.isFirstLogin===false) {
+      return res.status(400).send({ status: "First login already completed" });
+    }
+
+    if (teacher.otp !== otp) {
+      return res.status(401).send({ status: "Invalid OTP" });
+    }
+
+    // Save hashed password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    teacher.password = hashedPassword;
+    teacher.isFirstLoging = false;
+    // teacher.otp = null; // clear OTP after use
+    await teacher.save();
+
+    res.status(200).send({ status: "Password set successfully. You can now log in with email & password" });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ status: "Error during first login", error: err.message });
+  }
+});
+
+
+router.post("/check", async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const teacher = await Teacher.findOne({ email });
+
+    if (!teacher) {
+      return res.status(404).send({ status: "Teacher not found" });
+    }
+
+  if (teacher.isFirstLoging === true) {
+  res.status(200).send({ isFirstLogin: true, status: "First login, please enter OTP and create a password" });
+} else {
+  res.status(200).send({ isFirstLogin: false, status: "Please enter your password" });
+}
+
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ status: "Error checking teacher", error: err.message });
+  }
+});
+
+
 
 // Update Teacher route with password hashing
 router.route("/update").put(async (req, res) => {
