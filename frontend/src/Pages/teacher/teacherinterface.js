@@ -15,16 +15,16 @@ function TeacherInterface() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // Get teacher info from localStorage on component mount
+  // Get teacher info from localStorage
   useEffect(() => {
     const storedTeacherName = localStorage.getItem("TeacherName");
     const storedTeacherId = localStorage.getItem("TeacherId");
-    const storedTeacherClass = localStorage.getItem("TeacherClass"); // Add this if you store class info
+    const storedTeacherClass = localStorage.getItem("TeacherClass");
     
     if (storedTeacherName && storedTeacherId) {
       setTeacherName(storedTeacherName);
       setTeacherId(storedTeacherId);
-      setTeacherClass(storedTeacherClass || "Not Assigned"); // Fallback if class not stored
+      setTeacherClass(storedTeacherClass || "Not Assigned");
     } else {
       setError("Teacher information not found. Please login again.");
     }
@@ -32,76 +32,51 @@ function TeacherInterface() {
 
   // Fetch students when teacher info is available
   useEffect(() => {
-    if (teacherId) {
-      fetchStudents();
-    }
+    if (teacherId) fetchStudents();
   }, [teacherId]);
 
-  // Filter students based on search term
+  // Filter students
   useEffect(() => {
     const filtered = students.filter(student =>
-      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.studentId.toLowerCase().includes(searchTerm.toLowerCase())
+      student.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.studentId?.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredStudents(filtered);
   }, [searchTerm, students]);
 
- const fetchStudents = async () => {
-  setLoading(true);
-  setError("");
+  const fetchStudents = async () => {
+    setLoading(true);
+    setError("");
 
-  const teacherId = localStorage.getItem("TeacherId");
-
-  // Fetch assigned class or fallback to "5"
-  const assignedClass = teacherId
-    ? await fetchAssignedClass(teacherId)
-    : "Grade 10";
-
-  try {
-    const response = await fetch(`http://localhost:8070/student/students-by-class/${assignedClass}`);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    try {
+      const response = await fetch(`http://localhost:8070/student/students-by-grade/${teacherClass}`);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      setStudents(data.students);
+      setFilteredStudents(data.students);
+    } catch (err) {
+      console.error("Error fetching students:", err);
+      setError("Failed to load students. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const data = await response.json();
-
-    // Directly use the student list from the backend
-    setStudents(data.students);
-    setFilteredStudents(data.students);
-
-  } catch (err) {
-    console.error("Error fetching students:", err);
-    setError("Failed to load students. Please check your connection and try again.");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-
-
-
-
-
-const fetchAssignedClass = async (teacherId) => {
-  try {
-    const response = await fetch(`http://localhost:8070/teacher/assigned-class/${teacherId}`);
-    const data = await response.json();
-    return data.assignedClass || "Grade 10"; // fallback again if not assigned
-  } catch (err) {
-    console.error("Error fetching assigned class:", err);
-    return "5";
-  }
-};
-
-
-
+  const fetchAssignedClass = async (teacherId) => {
+    try {
+      const response = await fetch(`http://localhost:8070/teacher/assigned-class/${teacherId}`);
+      const data = await response.json();
+      return data.assignedClass || "Grade 10";
+    } catch (err) {
+      console.error("Error fetching assigned class:", err);
+      return "Grade 5";
+    }
+  };
 
   const handleEditClick = (student) => {
     setEditingStudentId(student.studentId);
     setEditData({
-      name: student.name,
+      firstName: student.firstName,
       age: student.age,
       gender: student.gender,
       class: student.class || student.className
@@ -120,7 +95,7 @@ const fetchAssignedClass = async (teacherId) => {
     
     try {
       const updatedStudent = {
-        name: editData.name,
+        firstName: editData.firstName,
         age: Number(editData.age),
         gender: editData.gender,
         class: editData.class,
@@ -130,19 +105,13 @@ const fetchAssignedClass = async (teacherId) => {
         `http://localhost:8070/teacher/student/update/${studentId}`,
         {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updatedStudent),
         }
       );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-      const result = await response.json();
-      
       // Update local state
       const updatedStudents = students.map(student =>
         student.studentId === studentId ? { ...student, ...editData } : student
@@ -150,38 +119,14 @@ const fetchAssignedClass = async (teacherId) => {
       setStudents(updatedStudents);
       setEditingStudentId(null);
       setEditData({});
-      
       setSuccess("Student updated successfully!");
       setTimeout(() => setSuccess(""), 3000);
-      
     } catch (err) {
       console.error("Error updating student:", err);
       setError("Failed to update student. Please try again.");
     } finally {
       setLoading(false);
     }
-  };
-
-  const calculateAttendance = (student) => {
-    // This is a placeholder - implement based on your attendance data structure
-    // You might need to fetch attendance data separately
-    return student.attendance || "N/A";
-  };
-
-  const getLastSeen = (student) => {
-    // This is a placeholder - implement based on your attendance/login data
-    // You might need to fetch this data separately
-    if (student.lastLogin) {
-      const lastLogin = new Date(student.lastLogin);
-      const today = new Date();
-      const diffTime = today - lastLogin;
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      
-      if (diffDays === 0) return "Today";
-      if (diffDays === 1) return "Yesterday";
-      return `${diffDays} days ago`;
-    }
-    return "Unknown";
   };
 
   const StatCard = ({ icon: Icon, title, value, color }) => (
@@ -207,23 +152,18 @@ const fetchAssignedClass = async (teacherId) => {
           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
           Loading...
         </>
-      ) : (
-        "Refresh Data"
-      )}
+      ) : "Refresh Data"}
     </button>
   );
 
   return (
-<div className=" min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50  mt-[50px]  ml-[-165px] w-[1500px] !p-0">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 mt-[50px] ml-[-165px] w-[1500px] !p-0">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
           <div className="flex justify-between items-center py-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Welcome, {teacherName || "Teacher"}
-              </h1>
+              <h1 className="text-3xl font-bold text-gray-900">Welcome, {teacherName || "Teacher"}</h1>
               <p className="text-gray-600 mt-1">Managing {teacherClass}</p>
             </div>
             <div className="text-right">
@@ -235,7 +175,6 @@ const fetchAssignedClass = async (teacherId) => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Error/Success Messages */}
         {error && (
           <div className="mb-6 bg-red-50 border border-red-200 rounded-md p-4">
             <div className="flex items-center">
@@ -257,33 +196,11 @@ const fetchAssignedClass = async (teacherId) => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <StatCard
-            icon={Users}
-            title="Total Students"
-            value={students.length}
-            color="border-blue-500"
-          />
-          <StatCard
-            icon={BookOpen}
-            title="Class"
-            value={teacherClass}
-            color="border-green-500"
-          />
-          {/* <StatCard
-            icon={Calendar}
-            title="Present Today"
-            value={students.filter(s => getLastSeen(s) === "Today").length}
-            color="border-purple-500"
-          />
-          <StatCard
-            icon={User}
-            title="Average Age"
-            value={students.length > 0 ? Math.round(students.reduce((sum, s) => sum + (s.age || 0), 0) / students.length) : 0}
-            color="border-orange-500"
-          /> */}
+          <StatCard icon={Users} title="Total Students" value={students.length} color="border-blue-500" />
+          <StatCard icon={BookOpen} title="Class" value={teacherClass} color="border-green-500" />
         </div>
 
-        {/* Search and Actions */}
+        {/* Search */}
         <div className="bg-white rounded-xl shadow-md p-6 mb-8">
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
             <div className="relative flex-1 max-w-md">
@@ -345,25 +262,21 @@ const fetchAssignedClass = async (teacherId) => {
                   ) : (
                     filteredStudents.map((student, index) => (
                       <tr key={student.studentId || student._id} className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-25'}`}>
-                        <td className="px-6 py-4">
-                          <span className="font-mono text-sm text-blue-600 font-medium">
-                            {student.studentId}
-                          </span>
-                        </td>
+                        <td className="px-6 py-4"><span className="font-mono text-sm text-blue-600 font-medium">{student.studentId}</span></td>
                         <td className="px-6 py-4">
                           {editingStudentId === student.studentId ? (
                             <input
                               type="text"
-                              value={editData.name}
-                              onChange={(e) => setEditData({...editData, name: e.target.value})}
+                              value={editData.firstName}
+                              onChange={(e) => setEditData({...editData, firstName: e.target.value})}
                               className="w-full px-3 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                             />
                           ) : (
                             <div className="flex items-center">
                               <div className="h-8 w-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-sm mr-3">
-                                {student.name ? student.name.charAt(0).toUpperCase() : '?'}
+                                {student.firstName ? student.firstName.charAt(0).toUpperCase() : '?'}
                               </div>
-                              <span className="font-medium text-gray-900">{student.name}</span>
+                              <span className="font-medium text-gray-900">{student.firstName}</span>
                             </div>
                           )}
                         </td>
@@ -375,9 +288,7 @@ const fetchAssignedClass = async (teacherId) => {
                               onChange={(e) => setEditData({...editData, age: parseInt(e.target.value) || ''})}
                               className="w-20 px-3 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                             />
-                          ) : (
-                            <span className="text-gray-900">{student.age || 'N/A'}</span>
-                          )}
+                          ) : <span className="text-gray-900">{student.age || 'N/A'}</span>}
                         </td>
                         <td className="px-6 py-4">
                           {editingStudentId === student.studentId ? (
@@ -392,11 +303,9 @@ const fetchAssignedClass = async (teacherId) => {
                             </select>
                           ) : (
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              student.gender === 'Female' 
-                                ? 'bg-pink-100 text-pink-800' 
-                                : student.gender === 'Male'
-                                ? 'bg-blue-100 text-blue-800'
-                                : 'bg-gray-100 text-gray-800'
+                              student.gender === 'Female' ? 'bg-pink-100 text-pink-800' :
+                              student.gender === 'Male' ? 'bg-blue-100 text-blue-800' :
+                              'bg-gray-100 text-gray-800'
                             }`}>
                               {student.gender || 'N/A'}
                             </span>

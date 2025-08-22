@@ -62,13 +62,20 @@ router.post("/login", async (req, res) => {
       return res.status(401).send({ status: "Invalid password" });
     }
 
-    res.status(200).send({ status: "Login successful", teacherId: teacher._id });
+    // Send teacher info along with login success
+    res.status(200).send({
+      status: "Login successful",
+      teacherId: teacher.teacherId,       // MongoDB document ID
+      teacherName: teacher.firstName,    // Teacher name
+      teacherClass: teacher.grade   // Teacher class/grade
+    });
 
   } catch (err) {
     console.error(err);
     res.status(500).send({ status: "Error logging in", error: err.message });
   }
 });
+
 
 
 
@@ -193,24 +200,7 @@ router.route("/delete").delete(async (req, res) => {
   }
 });
 
-//methana idn hadanna marks add krna eka
-router.post("/add-marks", async (req, res) => {
-  const { subject, studentId, marks } = req.body;
 
-  try {
-    const newMark = new Marks({
-      subject,
-      studentId,
-      marks,
-    });
-
-    await newMark.save();
-    res.json({ message: "Marks Added Successfully" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send({ message: "Error adding marks", error: err.message });
-  }
-});
 
 
 router.post("/add-student", async (req, res) => {
@@ -249,12 +239,12 @@ router.post("/add-student", async (req, res) => {
 
 router.put("/student/update/:studentId", async (req, res) => {
   const studentId = req.params.studentId; // Get studentId from URL params
-  const { name, age, gender, class: studentClass, password } = req.body; // destructure update fields from body
+  const { firstName, age, gender, class: studentClass, password } = req.body; // destructure update fields from body
 
   try {
     const updateData = {};
 
-    if (name) updateData.name = name;
+    if (firstName) updateData.firstName = firstName;
     if (age) updateData.age = age;
     if (gender) updateData.gender = gender;
     if (studentClass) updateData.class = studentClass;

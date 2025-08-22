@@ -36,8 +36,11 @@ function TeacherLogin() {
         password,
       });
       if (res.status === 200) {
+        // Save teacher info in localStorage
+        localStorage.setItem("TeacherEmail", email);
+        localStorage.setItem("TeacherId", res.data.teacherId); // <-- save teacherId
         setStep("loggedIn");
-        navigate("/teacherinterface");
+        navigate("/teacher/interface");
       }
     } catch (err) {
       if (err.response && err.response.data && err.response.data.status) {
@@ -49,22 +52,30 @@ function TeacherLogin() {
   };
 
   const handleLoginSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    try {
-      const res = await axios.post("http://localhost:8070/teacher/login", {
-        email,
-        password,
-      });
-      if (res.status === 200) {
-        localStorage.setItem("TeacherEmail", email);
-        localStorage.setItem("TeacherId", res.data.teacherId);
-        navigate("/teacher/interface");
-      }
-    } catch (err) {
-      setError("Invalid email or password.");
+  e.preventDefault();
+  setError("");
+
+  try {
+    const res = await axios.post("http://localhost:8070/teacher/login", {
+      email,
+      password,
+    });
+
+    if (res.status === 200) {
+      // Store teacher info in localStorage for later use
+      // localStorage.setItem("TeacherEmail", email);
+      localStorage.setItem("TeacherId", res.data.teacherId); // MongoDB _id
+      localStorage.setItem("TeacherName", res.data.teacherName || ""); // fallback
+      localStorage.setItem("TeacherClass", res.data.teacherClass || ""); // fallback
+
+      setStep("loggedIn"); // optional step state for UI
+      navigate("/teacher/interface"); // redirect to teacher interface
     }
-  };
+  } catch (err) {
+    setError("Invalid email or password.");
+  }
+};
+
 
   return (
     <div className="container">
@@ -88,9 +99,7 @@ function TeacherLogin() {
               />
             </div>
             <div className="btn">
-              <button type="submit" className="button">
-                Next
-              </button>
+              <button type="submit" className="button">Next</button>
             </div>
           </form>
         )}
@@ -122,9 +131,7 @@ function TeacherLogin() {
               />
             </div>
             <div className="btn">
-              <button type="submit" className="button">
-                Submit
-              </button>
+              <button type="submit" className="button">Submit</button>
             </div>
           </form>
         )}
@@ -144,9 +151,7 @@ function TeacherLogin() {
               />
             </div>
             <div className="btn">
-              <button type="submit" className="button">
-                Login
-              </button>
+              <button type="submit" className="button">Login</button>
             </div>
           </form>
         )}
