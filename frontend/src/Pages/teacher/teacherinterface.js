@@ -17,18 +17,20 @@ function TeacherInterface() {
 
   // Get teacher info from localStorage on component mount
   useEffect(() => {
-    const storedTeacherName = localStorage.getItem("TeacherName");
-    const storedTeacherId = localStorage.getItem("TeacherId");
-    const storedTeacherClass = localStorage.getItem("TeacherClass"); // Add this if you store class info
+  const storedTeacherName = localStorage.getItem("TeacherName");
+  const storedTeacherId = localStorage.getItem("TeacherId"); // <-- fix the key
+  const storedTeacherClass = localStorage.getItem("TeacherClass");
+  
     
-    if (storedTeacherName && storedTeacherId) {
-      setTeacherName(storedTeacherName);
-      setTeacherId(storedTeacherId);
-      setTeacherClass(storedTeacherClass || "Not Assigned"); // Fallback if class not stored
-    } else {
-      setError("Teacher information not found. Please login again.");
-    }
-  }, []);
+  if (storedTeacherName && storedTeacherId) {
+    setTeacherName(storedTeacherName);
+    setTeacherId(storedTeacherId);
+    setTeacherClass(storedTeacherClass || "Not Assigned");
+  } else {
+    setError("Teacher information not found. Please login again.");
+  }
+}, []);
+
 
   // Fetch students when teacher info is available
   useEffect(() => {

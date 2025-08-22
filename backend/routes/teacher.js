@@ -62,13 +62,20 @@ router.post("/login", async (req, res) => {
       return res.status(401).send({ status: "Invalid password" });
     }
 
-    res.status(200).send({ status: "Login successful", teacherId: teacher._id });
+    // Send teacher info along with login success
+    res.status(200).send({
+      status: "Login successful",
+      teacherId: teacher.teacherId,       // MongoDB document ID
+      teacherName: teacher.firstName,    // Teacher name
+      teacherClass: teacher.grade   // Teacher class/grade
+    });
 
   } catch (err) {
     console.error(err);
     res.status(500).send({ status: "Error logging in", error: err.message });
   }
 });
+
 
 
 
