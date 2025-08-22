@@ -217,6 +217,20 @@ const classSchema = new Schema({
 });
 
 
+
+
+const announcementSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true }, // content from frontend
+  date: { type: Date, required: true, default: Date.now },
+  createdBy: { type: String }, // optional (can add teacherId later)
+  teacherId: { type: String } ,// Link to Teacher who created it
+});
+
+
+
+
+
 // Models
 const Student = mongoose.model("Student", studentSchema);
 const Teacher = mongoose.model("Teacher", teacherSchema);
@@ -225,6 +239,7 @@ const Assignment = mongoose.model("Assignment", assignmentSchema);
 const Admin = mongoose.model("Admin", adminSchema);
 const Marks = mongoose.model("Marks", marksSchema);  // ✅ Added Marks Model
 const Classes = mongoose.model("Classes", classSchema);
+const Announcement = mongoose.model("Announcement", announcementSchema); // Announcement Model
 
 module.exports = {
     Student,
@@ -233,5 +248,6 @@ module.exports = {
     Assignment,
     Admin,
     Marks , // ✅ Exported Marks
-    Classes
+  Classes,
+  Announcement
 };
