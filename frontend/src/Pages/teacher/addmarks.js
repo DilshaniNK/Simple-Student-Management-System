@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { BookOpen, Calendar, Hash, User, Save, CheckCircle, AlertCircle } from "lucide-react";
 
 function AddMarks() {
@@ -8,21 +9,11 @@ function AddMarks() {
   const [students, setStudents] = useState([]);
   const [marks, setMarks] = useState({});
   const [loading, setLoading] = useState(false);
+  const [fetchingStudents, setFetchingStudents] = useState(false);
   const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); // For fetch errors
+  const [submitError, setSubmitError] = useState(""); // For submission errors
   const [teacherClass, setTeacherClass] = useState("Grade 5A");
-
-  // Mock students data - replace with your API call
-  const mockStudents = [
-    { id: "S001", name: "Emma Thompson" },
-    { id: "S002", name: "Liam Chen" },
-    { id: "S003", name: "Sophia Rodriguez" },
-    { id: "S004", name: "Noah Williams" },
-    { id: "S005", name: "Ava Davis" },
-    { id: "S006", name: "Oliver Johnson" },
-    { id: "S007", name: "Isabella Martinez" },
-    { id: "S008", name: "Mason Brown" }
-  ];
 
   const subjects = [
     "Mathematics",
@@ -41,19 +32,37 @@ function AddMarks() {
     { value: "3", label: "Term 3" }
   ];
 
+  // Fetch students on load or when teacherClass changes
   useEffect(() => {
-    // Simulate fetching teacher's assigned students
-    setStudents(mockStudents);
-    // Initialize marks object
-    const initialMarks = {};
-    mockStudents.forEach(student => {
-      initialMarks[student.id] = "";
-    });
-    setMarks(initialMarks);
-  }, []);
+    const storedTeacherClass = localStorage.getItem("TeacherClass");
+    if (storedTeacherClass) setTeacherClass(storedTeacherClass);
+
+    const fetchStudents = async () => {
+      setFetchingStudents(true);
+      setError("");
+      try {
+        const response = await fetch(`http://localhost:8070/student/students-by-grade/${storedTeacherClass || teacherClass}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        setStudents(data.students);
+
+        const initialMarks = {};
+        data.students.forEach(student => {
+          initialMarks[student.id] = "";
+        });
+        setMarks(initialMarks);
+      } catch (err) {
+        console.error("Error fetching students:", err);
+        setError("Failed to load students. Please check your connection and try again.");
+      } finally {
+        setFetchingStudents(false);
+      }
+    };
+
+    fetchStudents();
+  }, [teacherClass]);
 
   const handleMarkChange = (studentId, value) => {
-    // Validate mark is between 0-100
     if (value === "" || (Number(value) >= 0 && Number(value) <= 100)) {
       setMarks(prev => ({
         ...prev,
@@ -63,68 +72,58 @@ function AddMarks() {
   };
 
   const handleSubmit = async () => {
-    // Validation
     if (!year || !term || !selectedSubject) {
-      setError("Please fill in Year, Term, and Subject");
+      setSubmitError("Please fill in Year, Term, and Subject");
       return;
     }
 
     const emptyMarks = Object.values(marks).some(mark => mark === "");
     if (emptyMarks) {
-      setError("Please enter marks for all students");
+      setSubmitError("Please enter marks for all students");
       return;
     }
 
-    const invalidMarks = Object.values(marks).some(mark => 
+    const invalidMarks = Object.values(marks).some(mark =>
       isNaN(Number(mark)) || Number(mark) < 0 || Number(mark) > 100
     );
     if (invalidMarks) {
-      setError("Please enter valid marks (0-100)");
+      setSubmitError("Please enter valid marks (0-100)");
       return;
     }
 
     setLoading(true);
-    setError("");
+    setSubmitError("");
 
     try {
-      // Simulate API call
       const marksData = students.map(student => ({
         studentId: student.id,
         marks: Number(marks[student.id]),
         subject: selectedSubject,
-        year: year,
-        term: term
+        year,
+        term
       }));
 
-      // Replace with your actual API call
-      // await axios.post("http://localhost:8070/teacher/add-marks", {
-      //   year,
-      //   term,
-      //   subject: selectedSubject,
-      //   marks: marksData
-      // });
+      const response = await axios.post(
+        "http://localhost:8070/marks/add-marks",
+        { marksData, year, term, subject: selectedSubject }
+      );
 
-      console.log("Submitting marks:", { year, term, subject: selectedSubject, marks: marksData });
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (response.status === 201) {
+        setSuccess(`Marks for ${selectedSubject} - ${year} Term ${term} submitted successfully!`);
 
-      setSuccess(`Marks for ${selectedSubject} - ${year} Term ${term} submitted successfully!`);
-      
-      // Clear marks for next subject
-      const clearedMarks = {};
-      students.forEach(student => {
-        clearedMarks[student.id] = "";
-      });
-      setMarks(clearedMarks);
-      setSelectedSubject("");
+        // Clear marks
+        const clearedMarks = {};
+        students.forEach(student => { clearedMarks[student.id] = ""; });
+        setMarks(clearedMarks);
+        setSelectedSubject("");
 
-      // Clear success message after 3 seconds
-      setTimeout(() => setSuccess(""), 3000);
-
+        setTimeout(() => setSuccess(""), 3000);
+      } else {
+        setSubmitError("Failed to submit marks. Please try again.");
+      }
     } catch (err) {
-      setError("Failed to submit marks. Please try again.");
       console.error("Error submitting marks:", err);
+      setSubmitError("Failed to submit marks. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -140,7 +139,7 @@ function AddMarks() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50  mt-[50px]  ml-[-165px] w-[1500px] !p-0">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 mt-[50px] ml-[-165px] w-[1500px] !p-0">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -157,7 +156,7 @@ function AddMarks() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Year and Term Selection */}
+        {/* Year and Term */}
         <div className="bg-white rounded-xl shadow-md p-6 mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
             <Calendar className="h-5 w-5 mr-2 text-blue-600" />
@@ -165,9 +164,7 @@ function AddMarks() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Academic Year
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Academic Year</label>
               <input
                 type="text"
                 value={year}
@@ -177,9 +174,7 @@ function AddMarks() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Term
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Term</label>
               <select
                 value={term}
                 onChange={(e) => setTerm(e.target.value)}
@@ -196,7 +191,7 @@ function AddMarks() {
           </div>
         </div>
 
-        {/* Marks Entry Table */}
+        {/* Marks Table */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600">
             <h2 className="text-xl font-semibold text-white">Student Marks Entry</h2>
@@ -232,9 +227,7 @@ function AddMarks() {
                         >
                           <option value="">Select Subject</option>
                           {subjects.map(subject => (
-                            <option key={subject} value={subject}>
-                              {subject}
-                            </option>
+                            <option key={subject} value={subject}>{subject}</option>
                           ))}
                         </select>
                       </div>
@@ -242,73 +235,98 @@ function AddMarks() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {students.map((student, index) => (
-                    <tr key={student.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="py-4 px-4">
-                        <span className="inline-flex items-center justify-center h-8 w-8 bg-blue-100 text-blue-800 rounded-full font-semibold text-sm">
-                          {index + 1}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4">
-                        <div className="flex items-center">
-                          <div className="h-10 w-10 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold mr-3">
-                            {student.name.charAt(0)}
-                          </div>
-                          <div>
-                            <div className="font-medium text-gray-900">{student.name}</div>
-                            <div className="text-sm text-gray-500">{student.id}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-4 px-4">
-                        {selectedSubject ? (
-                          <div className="flex items-center space-x-3">
-                            <input
-                              type="number"
-                              min="0"
-                              max="100"
-                              value={marks[student.id]}
-                              onChange={(e) => handleMarkChange(student.id, e.target.value)}
-                              placeholder="Enter marks (0-100)"
-                              className={`w-32 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${getMarkColor(marks[student.id])}`}
-                            />
-                            {marks[student.id] && (
-                              <div className="flex items-center">
-                                {Number(marks[student.id]) >= 60 ? (
-                                  <CheckCircle className="h-5 w-5 text-green-500" />
-                                ) : (
-                                  <AlertCircle className="h-5 w-5 text-red-500" />
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          <span className="text-gray-400 italic">Select a subject first</span>
-                        )}
+                  {fetchingStudents ? (
+                    <tr>
+                      <td colSpan={3} className="py-8 text-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                        <p className="mt-2 text-gray-500">Loading students...</p>
                       </td>
                     </tr>
-                  ))}
+                  ) : students.length > 0 ? (
+                    students.map((student, index) => (
+                      <tr key={student.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="py-4 px-4">
+                          <span className="inline-flex items-center justify-center h-8 w-8 bg-blue-100 text-blue-800 rounded-full font-semibold text-sm">
+                            {index + 1}
+                          </span>
+                        </td>
+                        <td className="py-4 px-4">
+                          <div className="flex items-center">
+                            <div className="h-10 w-10 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold mr-3">
+                              {student.firstName.charAt(0)}
+                            </div>
+                            <div>
+                              <div className="font-medium text-gray-900">{student.firstName}</div>
+                              <div className="text-sm text-gray-500">{student.id}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-4 px-4">
+                          {selectedSubject ? (
+                            <div className="flex items-center space-x-3">
+                              <input
+                                type="number"
+                                min="0"
+                                max="100"
+                                value={marks[student.id]}
+                                onChange={(e) => handleMarkChange(student.id, e.target.value)}
+                                placeholder="Enter marks (0-100)"
+                                className={`w-32 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${getMarkColor(marks[student.id])}`}
+                              />
+                              {marks[student.id] && (
+                                <div className="flex items-center">
+                                  {Number(marks[student.id]) >= 60 ? (
+                                    <CheckCircle className="h-5 w-5 text-green-500" />
+                                  ) : (
+                                    <AlertCircle className="h-5 w-5 text-red-500" />
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-gray-400 italic">Select a subject first</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3} className="py-8 text-center text-gray-500 italic">
+                        No students found for this class.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
 
-        {/* Messages */}
-        {success && (
-          <div className="mt-6 bg-green-50 border border-green-200 rounded-md p-4">
-            <div className="flex items-center">
-              <CheckCircle className="h-5 w-5 text-green-400 mr-3" />
-              <p className="text-green-800">{success}</p>
-            </div>
-          </div>
-        )}
-
+        {/* Fetch Error */}
         {error && (
           <div className="mt-6 bg-red-50 border border-red-200 rounded-md p-4">
             <div className="flex items-center">
               <AlertCircle className="h-5 w-5 text-red-400 mr-3" />
               <p className="text-red-800">{error}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Submission Messages */}
+        {submitError && (
+          <div className="mt-6 bg-red-50 border border-red-200 rounded-md p-4">
+            <div className="flex items-center">
+              <AlertCircle className="h-5 w-5 text-red-400 mr-3" />
+              <p className="text-red-800">{submitError}</p>
+            </div>
+          </div>
+        )}
+
+        {success && (
+          <div className="mt-6 bg-green-50 border border-green-200 rounded-md p-4">
+            <div className="flex items-center">
+              <CheckCircle className="h-5 w-5 text-green-400 mr-3" />
+              <p className="text-green-800">{success}</p>
             </div>
           </div>
         )}

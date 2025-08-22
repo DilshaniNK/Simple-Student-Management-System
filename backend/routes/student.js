@@ -140,15 +140,20 @@ router.route("/login").post(async (req, res) => {
 
 
 // routes/studentRoutes.js
-router.get("/students-by-class/:className", async (req, res) => {
-  const className = req.params.className; // keep as string
+router.get("/students-by-grade/:grade", async (req, res) => {
+  const grade = req.params.grade;
 
   try {
-    const students = await Student.find({ class: className });
-    res.json({ status: "Success", students });
+    const students = await Student.find({ grade: grade });
+
+    if (!students || students.length === 0) {
+      return res.status(404).json({ students: [] }); // empty array if none found
+    }
+
+    res.status(200).json({ students });
   } catch (err) {
-    console.error(err);
-    res.status(500).send({ status: "Error retrieving students", error: err.message });
+    console.error("Error fetching students:", err);
+    res.status(500).json({ error: "Server error while fetching students" });
   }
 });
 
