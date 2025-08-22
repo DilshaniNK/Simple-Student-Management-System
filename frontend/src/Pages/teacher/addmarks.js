@@ -257,7 +257,7 @@ function AddMarks() {
                             </div>
                             <div>
                               <div className="font-medium text-gray-900">{student.firstName}</div>
-                              <div className="text-sm text-gray-500">{student.id}</div>
+                              <div className="text-sm text-gray-500">{student.studentId}</div>
                             </div>
                           </div>
                         </td>
