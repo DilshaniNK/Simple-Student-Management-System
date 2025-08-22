@@ -96,7 +96,7 @@ function AddMarks() {
 
     try {
       const marksData = students.map(student => ({
-        studentId: student.id,
+        studentId: student.studentId,
         marks: Number(marks[student.id]),
         subject: selectedSubject,
         year,
@@ -244,7 +244,7 @@ function AddMarks() {
                     </tr>
                   ) : students.length > 0 ? (
                     students.map((student, index) => (
-                      <tr key={student.id} className="hover:bg-gray-50 transition-colors">
+                      <tr key={student.studentId} className="hover:bg-gray-50 transition-colors">
                         <td className="py-4 px-4">
                           <span className="inline-flex items-center justify-center h-8 w-8 bg-blue-100 text-blue-800 rounded-full font-semibold text-sm">
                             {index + 1}
