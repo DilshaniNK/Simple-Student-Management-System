@@ -1,12 +1,20 @@
-import './App.css';
-import Home from './Component/home';
-import { BrowserRouter as Router, Route, Routes, useLocation, BrowserRouter } from "react-router-dom";
-import Admin from './Pages/Admin/Admin';
+import "./App.css";
+import Home from "./Component/home";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+  BrowserRouter,
+} from "react-router-dom";
+import Admin from "./Pages/Admin/Admin";
+import Teacher from "./Pages/teacher/teacher";
+
 // import StudentLogin from './Component/StudentLogin';
-// import TeacherLogin from './Component/teacherLogin';
+import TeacherLogin from './Pages/teacher/teacherLogin';
 // import AdminLogin from './Component/Adminlogin';
 // import StudentInterface from './Component/StudentInterface';
-// import Teacherinterface from './Component/teacherinterface';
+import Teacherinterface from './Pages/teacher/teacherinterface';
 // import Studentreg from './Component/studentreg';
 // import Header from './Component/header';
 // import TeacherReg from './Component/teacherreg';
@@ -26,7 +34,6 @@ import Admin from './Pages/Admin/Admin';
 // import AddTeacher from './Component/Addteacher';  // Adjust the path as needed
 // import AddStudent from './Component/teacheraddstudents'; // Adjust the path as needed
 
-
 // function AppRoutes() {
 //   const location = useLocation();
 
@@ -44,7 +51,6 @@ import Admin from './Pages/Admin/Admin';
 //         <Route path="/teacherlogin" element={<TeacherLogin />} />
 //         <Route path="/adminlogin" element={<AdminLogin />} />
 //         <Route path="/studentinterface" element={<StudentInterface />} />
-//         <Route path="/teacherinterface" element={<Teacherinterface />} />
 //         <Route path="/studentreg" element={<Studentreg />} />
 //         <Route path="/teacherreg" element={<TeacherReg />} />
 //         <Route path="/add-course" element={<Addcourses />} />
@@ -63,9 +69,6 @@ import Admin from './Pages/Admin/Admin';
 // <Route path="/addteacher" element={<AddTeacher />} />
 //         <Route path="/teacher-view-course" element={<Viewcourse />} />
 //         <Route path="/teacher-add-student" element={<AddStudent/>} />
-        
-
-        
 
 //       </Routes>
 //     </>
@@ -74,18 +77,17 @@ import Admin from './Pages/Admin/Admin';
 
 function App() {
   return (
-
-    
     <Router>
       {/* <AppRoutes /> */}
       <Routes>
-        <Route path='admin/*' element={<Admin/>}/>
-        <Route path='/' element={<Home/>}/>
-      </Routes>
-      
+        <Route path="admin/*" element={<Admin />} />
+        <Route path="/" element={<Home />} />
+        <Route path="teacher/*" element={<Teacher />} />
+                <Route path="/teacherlogin" element={<TeacherLogin />} />
+        <Route path="/teacherinterface" element={<Teacherinterface />} />
 
+      </Routes>
     </Router>
-    
   );
 }
 

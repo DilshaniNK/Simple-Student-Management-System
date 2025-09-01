@@ -31,6 +31,8 @@ const coursesRoute = require("./routes/courses.js");
 const AssigmentRoute = require("./routes/assigments.js");
 const AdminRouter = require("./routes/admin.js");
 const CommonRouter = require("./routes/common.js");
+const MarksRoute = require("./routes/marks.js");
+const AnnouncementRoute = require("./routes/announcements.js");
 
 app.use("/student",studentRoute);//http://localhost:8070/student
 app.use("/teacher",teacherRoute);//http://localhost:8070/teacher 
@@ -38,7 +40,8 @@ app.use("/course",coursesRoute);//http://localhost:8070/course
 app.use("/assignment",AssigmentRoute);//http://localhost:8070/assigment
 app.use("/admin",AdminRouter);//http://localhost:8070/admin
 app.use("/common", CommonRouter);//http://localhost:8070/common
-
+app.use("/marks", MarksRoute);//http://localhost:8070/marks
+app.use("/announcement", AnnouncementRoute);//http://localhost:8070/announcement
 
 
 app.listen(PORT, () =>{

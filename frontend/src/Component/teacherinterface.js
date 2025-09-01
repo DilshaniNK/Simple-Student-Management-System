@@ -15,7 +15,7 @@ import {
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./teacher-sidebar";
-import Navbar from "./navbar";
+// import Navbar from "./navbar";
 import { useNavigate } from "react-router-dom";
 
 function Teacherinterface() {
@@ -107,7 +107,7 @@ function Teacherinterface() {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <Navbar />
+      {/* <Navbar /> */}
 
       <Box sx={{ display: "flex", flexGrow: 1 }}>
         <Sidebar

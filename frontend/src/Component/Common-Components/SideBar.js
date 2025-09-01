@@ -37,6 +37,12 @@ const SideBar = ({
       
       { id: 'allteachers', label: 'All Teachers', icon: UserRoundSearch, path: '/admin/view_teacher', badge: null },
       {id: 'clubs', label: 'Clubs and Sociaty', icon: BadgeCheck,path:'/admin/clubs', badge: null},
+    ],
+     teacher: [
+      { id: 'dashbord', label: 'Dashboard', icon: Home, path: `/teacher/interface`, badge: null },
+       { id: 'marks', label: 'Marks', icon: BookOpen, path: '/teacher/Addmarks', badge: null },
+      {id: 'announcements', label: 'Announcements', icon: FolderOpen, path: '/teacher/announcements', badge: null },
+      // { id: 'allteachers', label: 'All Teachers', icon: UserRoundSearch, path: '/admin/view_teacher', badge: null },
     ]
   };
 
@@ -258,5 +264,11 @@ const SideBar = ({
     </>
   );
 };
+
+
+
+
+
+
 
 export default SideBar;
