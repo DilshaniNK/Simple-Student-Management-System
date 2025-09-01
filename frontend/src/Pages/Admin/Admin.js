@@ -3,12 +3,12 @@ import { useState } from 'react'
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import SideBar from '../../Component/Common-Components/SideBar';
 import AdminInterface from './adminInterface';
-import Addminviewcourses from './addminviewcourses';
-import Addcourses from './addcourses';
+
 import AdminNavbar from '../../Component/Common-Components/navbar';
 import TeacherReg from './teacherreg';
 import TeacherDetails from './teacherdetails';
 import Studentreg from './studentreg';
+import Clubandsociaty from './clubandsociaty';
 
 const Admin = () => {
     const [isSidebarOpen,setIsSidebarOpen] = useState(false);
@@ -23,9 +23,9 @@ const Admin = () => {
     const getActiveItem = () => {
         const path = location.pathname;
         if (path.includes('/admin/interface')) return 'dashboard';
-        if(path.includes('/admin/view_courses')) return 'courses'
-        if(path.includes('/admin/add_courses')) return 'addcourses';
+        
         if(path.includes('/admin/view_teacher')) return 'allteachers';
+        if(path.includes('/admin/clubs')) return 'clubs'
         
 
         return 'dashboard';
@@ -45,11 +45,11 @@ const Admin = () => {
             <Routes>
                 <Route path='/' element={<AdminInterface/>}/>
                 <Route path='interface' element={<AdminInterface/>}/>
-                <Route path='view_courses' element={<Addminviewcourses/>}/>
-                <Route path='add_courses' element={<Addcourses/>}/>
+                
                 <Route path='add_teacher' element={<TeacherReg/>}/>
                 <Route path='view_teacher' element={<TeacherDetails/>}/>
                 <Route path='add_student' element={<Studentreg/>}/>
+                <Route path='clubs' element={<Clubandsociaty/>}/>
             </Routes>
 
         </div>

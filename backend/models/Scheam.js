@@ -167,15 +167,37 @@ const teacherSchema = new Schema({
     }
 });
 
+//clubs and socity and special classes
+const clubSchema = new Schema({
+  id:{
+    type: String
+  },
+  name: {
+    type: String
+  },
+  description:{
+    type: String
+  },
+  instructor:{
+    type: String
+  },
+  location:{
+    type: String
+  },
+  schedule:{
+    type: Date
+  },
+  capacity:{
+    type: Number
+  },
+  members:[{
+    type: String
+  }],
+  type:{
+    type: String,
+    enum:['club','sociaty','specialClass']
+  }
 
-// Course Schema
-const courseSchema = new Schema({
-    courseId: { type: String, required: true },
-    courseName: { type: String, required: true },
-    NoOfStudent: { type: Number, required: true },
-    courseFee: { type: String, required: true },
-    lectureName: { type: String, required: true },
-    Duration: { type: String, required: true }
 });
 
 // Assignment Schema
@@ -223,6 +245,7 @@ const Assignment = mongoose.model("Assignment", assignmentSchema);
 const Admin = mongoose.model("Admin", adminSchema);
 const Marks = mongoose.model("Marks", marksSchema);  // ✅ Added Marks Model
 const Classes = mongoose.model("Classes", classSchema);
+const Clubs = mongoose.model("Clubs", clubSchema);
 
 module.exports = {
     Student,
@@ -231,5 +254,6 @@ module.exports = {
     Assignment,
     Admin,
     Marks , // ✅ Exported Marks
-    Classes
+    Classes,
+    Clubs
 };
