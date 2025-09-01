@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { Admin, User } = require("../models/Scheam.js");
+const { Admin, User, Clubs } = require("../models/Scheam.js");
 const bcrypt = require("bcrypt");
 const { Teacher } = require("../models/Scheam.js");  // Adjust path if needed
 const multer = require("multer");
@@ -241,7 +241,7 @@ router.post("/add-student" , authMiddlware(['admin']) , upload.single("qualifica
         console.log("Email sent: " + info.response);
       }
     });
-    res
+    
     res.json({status: `Student Register Sucessfull and This is Student Index Number :  ${indexNumber}`})
   }
   catch(err){
@@ -273,6 +273,30 @@ router.get("/student/count", async (req, res) => {
   }
 });
 
+router.post("/add-clubs",async(req,res)=>{
+  try{
+
+    const newClub = new Clubs({
+      ...req.body
+    })
+    await newClub.save()
+    res.json({message: "Register Club successfully"})
+  }catch(error){
+    res.status(500).json({message: "Failed to Register Club"})
+  }
+
+});
+
+router.get("/clubs",async(req,res)=>{
+   try {
+    const clubs = await Clubs.find();
+    res.status(200).json(clubs);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ status: "Error fetching clubs", error: err.message });
+  }
+
+})
 
 
 

@@ -181,10 +181,8 @@ const clubSchema = new Schema({
   instructor:{
     type: String
   },
-  location:{
-    type: String
-  },
-  schedule:{
+ 
+  startDate:{
     type: Date
   },
   capacity:{

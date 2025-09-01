@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Users, Calendar, MapPin, User, X, Edit, Trash2 } from 'lucide-react';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 const Clubandsociaty = () => {
   const [activeTab, setActiveTab] = useState('clubs');
@@ -14,15 +16,31 @@ const Clubandsociaty = () => {
     name: '',
     description: '',
     instructor: '',
-    location: '',
-    schedule: '',
+    startDate: '',
     capacity: '',
     type: ''
   });
+    
 
 
 
   const [selectedStudents, setSelectedStudents] = useState([]);
+  useEffect(()=>{
+    const fetchData = async()=>{
+      try{
+        const res = await axios.get("http://localhost:8070/admin/clubs");
+        const data = res.data;
+
+        setClubs(data.filter(item => item.type === "club"));
+        setSocieties(data.filter(item => item.type === "sociaty"));
+        setSpecialClasses(data.filter(item => item.type === "specialClass"));
+
+      }catch(err){
+        console.error("Error fetching clubs",err);
+      }
+    };
+    fetchData();
+  },[]);
 
   const getCurrentData = () => {
     switch (activeTab) {
@@ -41,22 +59,26 @@ const Clubandsociaty = () => {
     }
   };
 
-  const handleAddItem = () => {
-    if (!newItem.name.trim()) return;
-    
-    const currentData = getCurrentData();
-    const newId = Math.max(...currentData.map(item => item.id), 0) + 1;
-    const item = {
-      ...newItem,
-      id: newId,
-      capacity: parseInt(newItem.capacity) || 0,
-      enrolled: 0,
-      members: []
-    };
-    
-    setCurrentData([...currentData, item]);
-    setNewItem({ name: '', description: '', instructor: '', location: '', schedule: '', capacity: '' });
-    setShowAddModal(false);
+  const handleAddItem = async () => {
+    if(!newItem.name.trim()) return;
+    try{
+      const res = await axios.post("http://localhost:8070/admin/add-clubs",{
+        ...newItem,
+        capacity: parseInt(newItem.capacity) || 0,
+        members: [],
+        type: activeTab === 'clubs' ? 'club' : activeTab === 'societies' ? 'societies' : 'specialClass'
+
+      })
+      
+      // Update frontend state
+      setCurrentData([...getCurrentData(), res.data]);
+
+      setNewItem({ name: '', description: '', instructor: '', location: '', schedule: '', capacity: '' });
+      setShowAddModal(false);
+    }catch(err){
+      console.error("Error adding item:", err);
+
+    }
   };
 
   const handleAssignStudents = () => {
@@ -187,7 +209,7 @@ const Clubandsociaty = () => {
                     </div>
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <Calendar size={16} />
-                      <span>{item.schedule}</span>
+                      <span>{item.startDate}</span>
                     </div>
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <Users size={16} />
@@ -200,20 +222,22 @@ const Clubandsociaty = () => {
                     <div className="bg-gray-200 rounded-full h-2">
                       <div
                         className="bg-blue-600 h-2 rounded-full transition-all"
-                        style={{ width: `${(item.enrolled / item.capacity) * 100}%` }}
+                        style={{
+                          width: `${((item.enrolled || 0) / (item.capacity || 1)) * 100}%`
+                        }}
                       ></div>
                     </div>
                   </div>
 
                   {/* Members */}
                   <div className="mb-4">
-                    <h4 className="font-medium text-gray-900 mb-2">Members ({item.members.length})</h4>
+                    <h4 className="font-medium text-gray-900 mb-2">Members ({item.members ? item.members.length : 0})</h4>
                     <div className="space-y-1 max-h-24 overflow-y-auto">
-                      {item.members.map((member, index) => (
+                      {(item.members || []).map((member, index) => (
                         <div key={index} className="flex justify-between items-center text-sm">
                           <span className="text-gray-600">{member}</span>
                           <button
-                            onClick={() => handleRemoveMember(item.id, member)}
+                            onClick={() => handleRemoveMember(item._id, member)}
                             className="text-red-500 hover:text-red-700 transition-colors"
                           >
                             <X size={14} />
@@ -283,7 +307,7 @@ const Clubandsociaty = () => {
                 <input
                   type="text"
                   placeholder="Schedule"
-                  value={newItem.schedule}
+                  value={newItem.startDate}
                   onChange={(e) => setNewItem({...newItem, schedule: e.target.value})}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
