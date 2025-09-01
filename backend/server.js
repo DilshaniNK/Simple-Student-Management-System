@@ -33,6 +33,7 @@ const AdminRouter = require("./routes/admin.js");
 const CommonRouter = require("./routes/common.js");
 const MarksRoute = require("./routes/marks.js");
 const AnnouncementRoute = require("./routes/announcements.js");
+const AuthRoute = require("./routes/auth.js");
 
 app.use("/student",studentRoute);//http://localhost:8070/student
 app.use("/teacher",teacherRoute);//http://localhost:8070/teacher 
@@ -42,6 +43,7 @@ app.use("/admin",AdminRouter);//http://localhost:8070/admin
 app.use("/common", CommonRouter);//http://localhost:8070/common
 app.use("/marks", MarksRoute);//http://localhost:8070/marks
 app.use("/announcement", AnnouncementRoute);//http://localhost:8070/announcement
+app.use("/api",AuthRoute);//http://localhost:8070/api
 
 
 app.listen(PORT, () =>{

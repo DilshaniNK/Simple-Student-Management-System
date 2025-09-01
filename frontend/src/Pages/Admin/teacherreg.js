@@ -126,16 +126,20 @@ export default function TeacherRegistrationForm() {
     }
 
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.post("http://localhost:8070/admin/add-teacher", data, {
         headers: {
           "Content-Type": "multipart/form-data",
+          "authorization": `Bearer ${token}`
         },
       });
+
+      
 
        Swal.fire({
         icon: 'success',
         title: 'Success!',
-        text: 'Teacher registered successfully!',
+        text: response.data.message,
         confirmButtonColor: '#1E2A5E'
       });
 
@@ -157,7 +161,7 @@ export default function TeacherRegistrationForm() {
       Swal.fire({
         icon: 'error',
         title: 'Registration Failed',
-        text: err.response?.data?.status || "Failed to register teacher",
+        text: err.response?.data?.message || "Failed to register teacher",
         confirmButtonColor: '#d33'
       });
 

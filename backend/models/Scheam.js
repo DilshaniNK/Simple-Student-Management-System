@@ -200,6 +200,15 @@ const clubSchema = new Schema({
 
 });
 
+const courseSchema = new Schema({
+    courseId: { type: String, required: true },
+    courseName: { type: String, required: true },
+    NoOfStudent: { type: Number, required: true },
+    courseFee: { type: String, required: true },
+    lectureName: { type: String, required: true },
+    Duration: { type: String, required: true }
+});
+
 // Assignment Schema
 const assignmentSchema = new Schema({
     assignmentId: { type: String, required: true },
@@ -250,6 +259,30 @@ const announcementSchema = new mongoose.Schema({
 });
 
 
+const userSchema = new mongoose.Schema({
+  email:{
+    type: String,
+    require: true,
+    
+  },
+  password:{
+    type: String,
+    
+  },
+  role:{
+    type: String,
+    enum: ['admin','teacher','student'],
+    require: true
+  },
+  isFirstLoging:{
+    type: Boolean,
+    default: true
+  },
+  
+});
+
+  
+
 
 
 
@@ -263,6 +296,7 @@ const Marks = mongoose.model("Marks", marksSchema);  // ✅ Added Marks Model
 const Classes = mongoose.model("Classes", classSchema);
 const Clubs = mongoose.model("Clubs", clubSchema);
 const Announcement = mongoose.model("Announcement", announcementSchema); // Announcement Model
+const User = mongoose.model("User", userSchema);
 
 module.exports = {
     Student,
@@ -273,6 +307,7 @@ module.exports = {
     Marks , // ✅ Exported Marks
     Classes,
     Clubs,
-    Announcement
+    Announcement,
+    User
   
 };

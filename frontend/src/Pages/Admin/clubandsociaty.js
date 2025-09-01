@@ -6,6 +6,10 @@ const Clubandsociaty = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [clubs, setClubs] = useState([]);
+  const [societies, setSocieties] = useState([]);
+  const [specialClasses, setSpecialClasses] = useState([]);
+  const [availableStudents, setAvailableStudents] = useState([]);
   const [newItem, setNewItem] = useState({
     name: '',
     description: '',

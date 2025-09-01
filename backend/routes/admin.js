@@ -1,10 +1,14 @@
 const router = require("express").Router();
-const { Admin } = require("../models/Scheam.js");
+const { Admin, User } = require("../models/Scheam.js");
 const bcrypt = require("bcrypt");
 const { Teacher } = require("../models/Scheam.js");  // Adjust path if needed
 const multer = require("multer");
 const nodemailer = require("nodemailer");
 const path = require("path");
+const authMiddlware = require("../models/authMiddlware.js");
+
+
+
 require("dotenv").config();
 //------------------------multer setup for document store-------------------------
 
@@ -29,105 +33,27 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS,
   },
 })
-
-
-
-// View admins
-router.route("/").get(async (req, res) => {
-    try {
-        const admins = await Admin.find();
-        res.json(admins);
-    } catch (err) {
-        console.log(err);
-        res.status(500).send({ status: "Error fetching admins", error: err.message });
-    }
-});
-
-// Update admin
-router.route("/update").put(async (req, res) => {
-    const { adminId, newadminName, newadminAge, newadminPassword } = req.body;
-
-    try {
-        let hashedPassword = newadminPassword;
-        // Hash the new password
-        if(newadminPassword){
-        const salt = await bcrypt.genSalt(10);
-        hashedPassword = await bcrypt.hash(newadminPassword, salt);
-        }
-        const updatedAdmin = await Admin.findOneAndUpdate(
-            { adminId },
-            { adminName: newadminName, adminAge: newadminAge, adminPassword: hashedPassword },
-            { new: true }
-        );
-
-        if (updatedAdmin) {
-            res.status(200).send({ status: "Update successful", user: updatedAdmin });
-        } else {
-            res.status(404).send({ status: "Admin not found" });
-        }
-    } catch (err) {
-        console.log(err);
-        res.status(500).send({ status: "Error updating admin", error: err.message });
-    }
-});
-
-
-
-// Get admin by ID
-router.route("/get/").get(async (req, res) => {
-    const { adminId } = req.query;
-
-    try {
-        const admin = await Admin.findOne({ adminId });
-        res.status(200).send({ status: "User fetched", user: admin });
-    } catch (err) {
-        console.log(err);
-        res.status(500).send({ status: "Error fetching admin", error: err.message });
-    }
-});
-
-// Login Admin
-router.route("/login").post(async (req, res) => {
-    const { adminName, adminPassword } = req.body;
-
-    try {
-        // Find admin by name
-        const admin = await Admin.findOne({ adminName });
-
-        if (admin && await bcrypt.compare(adminPassword, admin.adminPassword)) { // Compare hashed passwords
-            res.status(200).send({ status: "Login successful", adminId: admin.adminId });
-        } else {
-            res.status(401).send({ status: "Invalid credentials" });
-        }
-    } catch (err) {
-        console.error('Error during login:', err);
-        res.status(500).send({ status: "Error logging in", error: err.message });
-    }
-});
-
-
-
 // Route to add teacher (only admin should access this)
-router.post("/add-teacher", upload.single("qualifications") ,async (req, res) => {
-  
-
+router.post("/add-teacher", authMiddlware(['admin']) ,upload.single("qualifications"), async (req, res) => {
   try {
-    // Check if teacher already exists
+    // Check if teacher already exists in User
     const existingTeacher = await Teacher.findOne({ email: req.body.email });
     if (existingTeacher) {
-  
-    return res.status(400).json({status: "Teacher alredy exists with this email address"});
+      return res
+        .status(400)
+        .json({ message: "Teacher already exists with this email address" });
     }
-    //gererate teacher ID
-    const lastTeacher = await Teacher.findOne().sort({teacherId: -1});
+
+    // Generate teacher ID
+    const lastTeacher = await Teacher.findOne().sort({ teacherId: -1 });
     let newIdNumber = 1;
-    if(lastTeacher && lastTeacher.teacherId){
+    if (lastTeacher && lastTeacher.teacherId) {
       const lastIdNum = parseInt(lastTeacher.teacherId.split("_")[1]);
-      newIdNumber = lastIdNum + 1
+      newIdNumber = lastIdNum + 1;
     }
     const teacherId = `TEC_${String(newIdNumber).padStart(3, "0")}`;
 
-    //generate otp
+    // Generate OTP
     const otp = generateOTP();
 
     const qualificationsFilePath = req.file ? req.file.path : "";
@@ -136,39 +62,57 @@ router.post("/add-teacher", upload.single("qualifications") ,async (req, res) =>
     const salt = await bcrypt.genSalt(10);
     const hashedOtp = await bcrypt.hash(otp, salt);
 
-    // Create and save teacher
+    // Save User first
+    const newUser = new User({
+      email: req.body.email,
+      password: hashedOtp, // empty initially
+      role: 'teacher',
+      isFirstLoging: true, // ensure it matches your login flow
+      
+    });
+
+    await newUser.save();
+
+    // Save Teacher profile
     const newTeacher = new Teacher({
       ...req.body,
       teacherId,
       qualifications: qualificationsFilePath,
       otp: hashedOtp,
       isFirstLoging: true,
-    
     });
 
     await newTeacher.save();
 
+
     const mailOptions = {
-      from: 'dilnadeesha1232001@gmail.com',
+      from: "chalkboardsystem123@gmail.com",
       to: req.body.email,
       subject: "Your Login OTP",
       text: `Hello ${req.body.firstName}, \n\n Your OTP is: ${otp} \n You can log one time using this `
     };
-
-    await transporter.sendMail(mailOptions);
-
-    res.json({ status: "Teacher added successfully and OTP send to email",teacherId
-      
-     });
+    console.log("Sending OTP to:", req.body.email);
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+    res.json({
+      message: "Teacher added successfully and OTP sent to email",
+      teacherId,
+    });
   } catch (err) {
-    console.error("Error saving student:", err);
-    res.status(500).send({ status: "Error adding teacher", error: err.message });
+    console.error("Error adding teacher:", err);
+    res
+      .status(500)
+      .send({ status: "Error adding teacher", error: err.message });
   }
 });
 
-
 // View all teachers
-router.get("/teachers/view", async (req, res) => {
+router.get("/teachers/view",authMiddlware(['admin']), async (req, res) => {
   try {
     const teachers = await Teacher.find();
     res.status(200).json(teachers);
@@ -177,6 +121,10 @@ router.get("/teachers/view", async (req, res) => {
     res.status(500).send({ status: "Error fetching teachers", error: err.message });
   }
 });
+
+
+
+
 
 
 router.put("/teachers/update", async (req, res) => {
@@ -229,6 +177,81 @@ router.delete("/teachers/delete", async (req, res) => {
 const { Student } = require("../models/Scheam");
 const { error } = require("console");
 
+//register student 
+router.post("/add-student" , authMiddlware(['admin']) , upload.single("qualifications"), async(req,res) =>{
+
+  try{
+    const count = await Student.countDocuments();
+    const existingStudent = await Student.findOne({ email: req.body.email });
+    if (existingStudent) {
+      return res
+        .status(400)
+        .json({ message: "Student already exists with this email address" });
+    }
+    //generate student Id
+    const lastStudent = await Student.findOne().sort({studentId: -1});
+    let newIdNumber = 1;
+    if(lastStudent && lastStudent.studentId){
+      const lastIdNum = parseInt(lastStudent.studentId.split("_")[1]);
+      newIdNumber = lastIdNum + 1
+    }
+    const studentId = `STU_${String(newIdNumber).padStart(3, "0")}`;
+   
+    const otp = generateOTP();
+    //genarate index number
+
+    const yearPrefix = new Date().getFullYear().toString().slice(-2);
+    const indexNumber = `${yearPrefix}${String(count + 1).padStart(5, '0')}`;
+
+    const qualificationsFilePath = req.file ? req.file.path : "";
+      // Hash otp
+    const salt = await bcrypt.genSalt(10);
+    const hashedOtp = await bcrypt.hash(otp, salt);
+
+    // Save User first
+    const newUser = new User({
+      email: req.body.email,
+      password: hashedOtp, // empty initially
+      role: 'student',
+      isFirstLoging: true, // ensure it matches your login flow
+      
+    });
+
+    await newUser.save();
+
+    const newStudent = new Student({
+      ...req.body,
+      studentId,
+      indexNumber,
+      qualifications: qualificationsFilePath
+    })
+
+    await newStudent.save();
+        const mailOptions = {
+      from: "chalkboardsystem123@gmail.com",
+      to: req.body.email,
+      subject: "Your Login OTP",
+      text: `Hello ${req.body.firstName}, \n\n Your OTP is: ${otp} \n You can log one time using this  \n This is Your index number : ${indexNumber}`
+    };
+    console.log("Sending OTP to:", req.body.email);
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+    res
+    res.json({status: `Student Register Sucessfull and This is Student Index Number :  ${indexNumber}`})
+  }
+  catch(err){
+    res.status(500).send({status: "Error registering student ", error: err.message});
+
+  }
+});
+
+
+
 // Get total counts
 // For teachers
 router.get("/teacher/count", async (req, res) => {
@@ -250,42 +273,6 @@ router.get("/student/count", async (req, res) => {
   }
 });
 
-//register student 
-router.post("/add-student" , upload.single("qualifications"), async(req,res) =>{
-
-  try{
-    const count = await Student.countDocuments();
-    //generate student Id
-    const lastStudent = await Student.findOne().sort({studentId: -1});
-    let newIdNumber = 1;
-    if(lastStudent && lastStudent.studentId){
-      const lastIdNum = parseInt(lastStudent.studentId.split("_")[1]);
-      newIdNumber = lastIdNum + 1
-    }
-    const studentId = `STU_${String(newIdNumber).padStart(3, "0")}`;
-
-    //genarate index number
-
-    const yearPrefix = new Date().getFullYear().toString().slice(-2);
-    const indexNumber = `${yearPrefix}${String(count + 1).padStart(5, '0')}`;
-
-    const qualificationsFilePath = req.file ? req.file.path : "";
-
-    const newStudent = new Student({
-      ...req.body,
-      studentId,
-      indexNumber,
-      qualifications: qualificationsFilePath
-    })
-
-    await newStudent.save();
-    res.json({status: `Student Register Sucessfull and This is Student Index Number :  ${indexNumber}`})
-  }
-  catch(err){
-    res.status(500).send({status: "Error registering student ", error: err.message});
-
-  }
-});
 
 
 
